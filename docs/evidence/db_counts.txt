@@ -1,0 +1,11 @@
+ status  | count 
+---------+-------
+ flagged |     2
+ tagged  |    50
+(2 rows)
+
+ owner_type |        model         | count 
+------------+----------------------+-------
+ image      | gemini-embedding-001 |    52
+ post       | gemini-embedding-001 |    15
+(2 rows)

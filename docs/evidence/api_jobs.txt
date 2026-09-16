@@ -1,0 +1,16 @@
+
+===== HEALTH http://localhost:8010 =====
+GET /health -> 200
+
+===== JOBS - queued via the API, executed by the background worker =====
+POST /jobs/tag-images -> 202
+POST /jobs/tag-images -> 202
+  first job id=10 status=completed; repeat request returned job id=11
+  job 10 tag_images: completed 0/0 flagged=0 failed=0
+  job 11 tag_images: completed 0/0 flagged=0 failed=0
+POST /jobs/embed -> 202
+  job 12 embed_images: queued 0/52 flagged=0 failed=0
+  job 13 embed_posts: queued 0/15 flagged=0 failed=0
+  job 12 embed_images: running 51/52 flagged=0 failed=0
+  job 12 embed_images: completed 52/52 flagged=0 failed=0
+  job 13 embed_posts: completed 15/15 flagged=0 failed=0

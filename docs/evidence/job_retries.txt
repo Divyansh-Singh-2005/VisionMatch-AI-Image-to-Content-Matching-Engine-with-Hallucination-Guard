@@ -1,0 +1,24 @@
+ id |     kind     |  status   | total | done | flagged | failed 
+----+--------------+-----------+-------+------+---------+--------
+  1 | tag_images   | completed |     0 |    0 |       0 |      0
+  2 | tag_images   | aborted   |    50 |   20 |       0 |      3
+  3 | tag_images   | completed |    30 |   30 |       2 |      0
+  4 | tag_images   | completed |    14 |   14 |       0 |      0
+  5 | embed_images | completed |    50 |   50 |       0 |      0
+  6 | embed_posts  | completed |    12 |   12 |       0 |      0
+  7 | embed_images | completed |    50 |   50 |       0 |      0
+  8 | embed_posts  | completed |    15 |   15 |       0 |      0
+  9 | tag_images   | completed |     2 |    2 |       2 |      0
+ 10 | tag_images   | completed |     0 |    0 |       0 |      0
+ 11 | tag_images   | completed |     0 |    0 |       0 |      0
+ 12 | embed_images | completed |    52 |   52 |       0 |      0
+ 13 | embed_posts  | completed |    15 |   15 |       0 |      0
+(13 rows)
+
+ job | image | status | attempts |                               last_error                               
+-----+-------+--------+----------+------------------------------------------------------------------------
+   2 |     6 | tagged |        2 | 
+   2 |    21 | failed |        3 | api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429
+   2 |    22 | failed |        3 | api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429
+   2 |    23 | failed |        3 | api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429
+(4 rows)

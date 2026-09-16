@@ -1,0 +1,20 @@
+ id  |     kind     |         model         |        target_ref        | job_id | in_tok | out_tok |    usd    | latency_ms | ok | error 
+-----+--------------+-----------------------+--------------------------+--------+--------+---------+-----------+------------+----+-------
+ 170 | embed        | gemini-embedding-001  | concept:sourdough bread  |        |      4 |       0 | 0.0000006 |        452 | t  | 
+ 169 | embed        | gemini-embedding-001  | concept:gray wolf        |        |      3 |       0 | 0.0000005 |        443 | t  | 
+ 168 | embed        | gemini-embedding-001  | concept:wild fox species |        |      4 |       0 | 0.0000006 |        450 | t  | 
+ 167 | embed        | gemini-embedding-001  | concept:Vulpes vulpes    |        |      4 |       0 | 0.0000006 |        457 | t  | 
+ 166 | embed        | gemini-embedding-001  | concept:red fox          |        |      2 |       0 | 0.0000003 |        664 | t  | 
+ 165 | embed        | gemini-embedding-001  | image:52                 |     12 |     38 |       0 | 0.0000057 |        477 | t  | 
+ 164 | embed        | gemini-embedding-001  | image:51                 |     12 |     36 |       0 | 0.0000054 |        788 | t  | 
+ 163 | vision       | gemini-3.1-flash-lite | image:52                 |      9 |   1321 |      97 | 0.0001709 |       2198 | t  | 
+ 162 | vision       | gemini-3.1-flash-lite | image:51                 |      9 |   1359 |      97 | 0.0001747 |       2178 | t  | 
+ 161 | embed        | gemini-embedding-001  | post:15                  |      8 |     42 |       0 | 0.0000063 |        562 | t  | 
+ 160 | post_subject | gemini-3.1-flash-lite | post:15                  |      8 |    181 |      42 | 0.0000349 |       2869 | t  | 
+ 159 | embed        | gemini-embedding-001  | post:14                  |      8 |     48 |       0 | 0.0000072 |        569 | t  | 
+(12 rows)
+
+ calls | failed_calls | unattributed | est_usd  
+-------+--------------+--------------+----------
+   170 |           11 |            0 | 0.016994
+(1 row)

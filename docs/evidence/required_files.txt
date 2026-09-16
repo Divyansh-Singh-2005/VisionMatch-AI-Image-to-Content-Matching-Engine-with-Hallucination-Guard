@@ -1,0 +1,11 @@
+README.md                      present
+capstone.yaml                  present
+EVIDENCE.md                    generated below from docs/evidence
+BUILDLOG.md                    present
+.env.example                   present
+LICENSE                        present
+docs/DESIGN.md                 present
+Dockerfile                     present
+docker-compose.yml             present
+eval/labels.json               present
+data/snapshot/snapshot.json    present

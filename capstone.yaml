@@ -1,6 +1,33 @@
-﻿# Evaluator manifest (filled in as the system comes together)
-run: docker compose up --build
-seed: TBD
-test: TBD
-base_url: http://localhost:8000
-endpoints: []
+# Evaluator manifest - run every command from the repository root.
+name: flyrank-capstone-image-relevance
+run: docker compose up -d --build
+seed: docker compose exec -T api python -m scripts.seed --snapshot
+test: docker compose run --rm --no-deps api python -m pytest -q
+eval: docker compose exec -T api python -m scripts.eval
+probes_script: docker compose exec -T api python -m scripts.api_probes --base-url http://localhost:8000
+base_url: http://localhost:8010
+healthcheck: GET /health
+notes:
+  - "seed --snapshot loads committed tags, post subjects and embeddings - probes 2-5 need no API key"
+  - "live AI jobs (probe 1 re-run) need GEMINI_API_KEY in .env - see README"
+  - "host ports: API 8010, Postgres 5434"
+endpoints:
+  - GET /health
+  - GET /images?status=flagged
+  - GET /posts
+  - GET /posts/red-fox-behavior/images
+  - POST /posts/red-fox-behavior/images/10/check
+  - GET /posts/emperor-penguins/images
+  - GET /suggestions/{id}
+  - POST /suggestions/{id}/review
+  - POST /jobs/tag-images
+  - POST /jobs/embed
+  - GET /jobs/{id}
+  - GET /costs
+probes:
+  "1": "POST /jobs/tag-images (worker runs it), then GET /images?status=flagged"
+  "2": "GET /posts/red-fox-behavior/images?ranking=60"
+  "3": "POST /posts/red-fox-behavior/images/10/check  (image 10 = gray wolf)"
+  "4": "GET /posts/emperor-penguins/images, /posts/sourdough-starter/images, /posts/arctic-fox-winter/images"
+  "5": "docker compose exec -T api python -m scripts.eval"
+  "6": "GET /costs"

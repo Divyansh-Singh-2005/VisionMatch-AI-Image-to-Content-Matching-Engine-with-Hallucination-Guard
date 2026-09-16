@@ -4,19 +4,20 @@ GET /health -> 200
 
 ===== PROBE 1 - schema-valid tags on every image; low confidence flagged, not guessed =====
 GET /images?limit=500 -> 200
-  status counts: {'tagged': 50, 'flagged': 1, 'pending': 1}
+  status counts: {'tagged': 50, 'flagged': 2}
   tagged/flagged images without validated metadata: none
 GET /images?status=flagged -> 200
   FLAGGED img 51 img_051.jpg: red_fox conf=0.50 - low vision confidence 0.50 < 0.60
+  FLAGGED img 52 img_052.jpg: other conf=0.10 - low vision confidence 0.10 < 0.60
 
 ===== PROBE 2 - red fox article: fox first, wolf and dog clearly lower =====
 GET /posts/red-fox-behavior/images?ranking=60 -> 200
-  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=1
+  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=25
   rank 1: img 4 red_fox 0.868
   rank 2: img 5 red_fox 0.857
   rank 3: img 3 red_fox 0.854
-  best gray_wolf: rank 13 score 0.786 (and rejected by G2 if it ever reached the top 5)
-  best dog: rank 20 score 0.767 (and rejected by G2 if it ever reached the top 5)
+  best gray_wolf: rank 14 score 0.786 (and rejected by G2 if it ever reached the top 5)
+  best dog: rank 21 score 0.767 (and rejected by G2 if it ever reached the top 5)
 
 ===== PROBE 3 - force the wolf onto the fox post =====
 POST /posts/red-fox-behavior/images/10/check -> 200
@@ -46,28 +47,28 @@ GET /posts/arctic-fox-winter/images -> 200
 
 ===== PROBE 6 - cost log: every AI call attributed =====
 GET /costs?limit=3 -> 200
-  calls_today=162/500 unattributed_calls=0 total_est_cost_usd=0.016809
-  embed         gemini-embedding-001     calls= 70 ok= 70 in=  3219 out=    0 usd=0.000483
+  calls_today=170/500 unattributed_calls=0 total_est_cost_usd=0.016993
+  embed         gemini-embedding-001     calls= 77 ok= 77 in=  3310 out=    0 usd=0.000496
   post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.000465
   vision        gemini-2.5-flash         calls= 30 ok= 20 in=  9040 out= 2034 usd=0.007797
   vision        gemini-2.5-flash-lite    calls=  1 ok=  0 in=     0 out=    0 usd=0.000000
-  vision        gemini-3.1-flash-lite    calls= 46 ok= 46 in= 60086 out= 5139 usd=0.008064
-  recent #162 vision image:51 job=9 ok=True
-  recent #161 embed post:15 job=8 ok=True
-  recent #160 post_subject post:15 job=8 ok=True
+  vision        gemini-3.1-flash-lite    calls= 47 ok= 47 in= 61407 out= 5236 usd=0.008235
+  recent #170 embed concept:sourdough bread job=None ok=True
+  recent #169 embed concept:gray wolf job=None ok=True
+  recent #168 embed concept:wild fox species job=None ok=True
 
 ===== REVIEW - approve / reject / inspect, idempotent =====
-POST /suggestions/1/review -> 201
-  {'id': 1, 'suggestion_id': 1, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:38:16.563471Z', 'replayed': False}
-POST /suggestions/1/review -> 200
-  same key + same request -> replayed=True id=1
-POST /suggestions/1/review -> 409
+POST /suggestions/25/review -> 201
+  {'id': 2, 'suggestion_id': 25, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:45:55.114484Z', 'replayed': False}
+POST /suggestions/25/review -> 200
+  same key + same request -> replayed=True id=2
+POST /suggestions/25/review -> 409
   same key, different request -> "Idempotency-Key was already used for a different request"
-POST /suggestions/1/review -> 409
-  new key, already reviewed -> "suggestion 1 was already reviewed (approve)"
-POST /suggestions/6/review -> 409
-  approve a guard-rejected pairing -> "suggestion 6 is REJECTED; only guard-approved suggestions can be reviewed"
-GET /suggestions/6 -> 200
+POST /suggestions/25/review -> 409
+  new key, already reviewed -> "suggestion 25 was already reviewed (approve)"
+POST /suggestions/30/review -> 409
+  approve a guard-rejected pairing -> "suggestion 30 is REJECTED; only guard-approved suggestions can be reviewed"
+GET /suggestions/30 -> 200
   inspect why: post=red-fox-behavior image=10 (gray wolf) decision=REJECTED
     [PASS] G1_vision_quality: vision confidence 0.95
     [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)

@@ -66,3 +66,9 @@ price table in config). Budget guard: calls stop when DAILY_CALL_BUDGET is reach
 
 ## Non-goals
 No frontend UI, no model comparison, no user uploads, no multi-image layouts per post.
+
+## Changes after implementation (see BUILDLOG.md)
+- Taxonomy gained `antelope` (family bovid) after antelope photos were labelled `deer`.
+- G2 for posts outside the taxonomy rejects images of known animals; such posts use a stricter similarity bar (0.80).
+- Similarity threshold set from the labelled eval set (0.73), not guessed.
+- API runs on host port 8010; the worker claims jobs with FOR UPDATE SKIP LOCKED.

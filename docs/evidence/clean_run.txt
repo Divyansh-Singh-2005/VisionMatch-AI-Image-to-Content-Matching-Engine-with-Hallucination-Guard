@@ -1,0 +1,273 @@
+>>> docker compose -p imgrel-clean up -d --build   (empty DB volume)
+ Image flyrank-image-relevance:local Building 
+ Image flyrank-image-relevance:local Building 
+ Image flyrank-image-relevance:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.87kB done
+#1 DONE 0.0s
+
+#2 [worker internal] load build definition from Dockerfile
+#2 transferring dockerfile: 475B done
+#2 DONE 0.0s
+
+#3 [worker internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 0.0s
+
+#4 [api internal] load .dockerignore
+#4 transferring context: 107B done
+#4 DONE 0.0s
+
+#5 [worker 1/6] FROM docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea
+#5 resolve docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea 0.0s done
+#5 DONE 0.0s
+
+#6 [migrate internal] load build context
+#6 transferring context: 539.29kB 0.1s done
+#6 transferring context: 539.29kB 0.1s done
+#6 DONE 0.1s
+
+#7 [api 3/6] COPY requirements.lock.txt .
+#7 CACHED
+
+#8 [api 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [api 4/6] RUN pip install -r requirements.lock.txt
+#9 CACHED
+
+#10 [migrate 5/6] COPY . .
+#10 DONE 0.1s
+
+#11 [migrate 6/6] RUN useradd --create-home appuser && chown -R appuser /app
+#11 DONE 0.9s
+
+#12 [api] exporting to image
+#12 exporting layers
+#12 exporting layers 0.3s done
+#12 exporting manifest sha256:53a7a579fd3d3b16001ac38890d763e91278ace7a16f36b264ed7ef7a1b7b8de 0.1s done
+#12 exporting config sha256:0b87a273e45c3432d3778759a0a7dced4e4e7cd0c57558e0f4131d7414f20cce
+#12 exporting config sha256:0b87a273e45c3432d3778759a0a7dced4e4e7cd0c57558e0f4131d7414f20cce 0.1s done
+#12 exporting attestation manifest sha256:4f356a8357448bf37c40f77162fa6a29ac02b1a0f11f10bba143f8e2442d97df
+#12 exporting attestation manifest sha256:4f356a8357448bf37c40f77162fa6a29ac02b1a0f11f10bba143f8e2442d97df 0.1s done
+#12 exporting manifest list sha256:a6879d9251bfcd6c69a777968385bb5847a931edff1432bf5bcb56c80b6652e6 0.1s done
+#12 naming to docker.io/library/flyrank-image-relevance:local 0.0s done
+#12 unpacking to docker.io/library/flyrank-image-relevance:local
+#12 unpacking to docker.io/library/flyrank-image-relevance:local 0.2s done
+#12 DONE 1.0s
+
+#13 [migrate] exporting to image
+#13 exporting layers 0.3s done
+#13 exporting manifest sha256:fa5dfd649cc528af0a6a0a6e37b9dcd9912bff2e4ca636d7b1ccd7037a37e433 0.1s done
+#13 exporting config sha256:aec753d05c9cded9db45559b622cf005258e6f0e2af961d412354b708fab21e9 0.1s done
+#13 exporting attestation manifest sha256:7f89f603393e529e0d1bb51569492142bb678a63c31169146c0abb3722f159bd 0.1s done
+#13 exporting manifest list sha256:f191402155965ee1b1f77f7261a480bf0c8c24c8fb0f3f2699b57aecfcfe8bfd 0.1s done
+#13 naming to docker.io/library/flyrank-image-relevance:local 0.0s done
+#13 unpacking to docker.io/library/flyrank-image-relevance:local 0.2s done
+#13 DONE 1.0s
+
+#14 [worker] exporting to image
+#14 exporting layers 0.3s done
+#14 exporting manifest sha256:a9bf8acbeb98741f3a27fa7096df45314051a1d731386240a8d4c838e8d3f695 0.1s done
+#14 exporting config sha256:bc973230281bd78b61dd30fe3500e3d165f53d4a1c27ccda3a06fe4b77c80732 0.1s done
+#14 exporting attestation manifest sha256:940d6905f44afaf9ebe92c5f04951c81e8deb4897ff6122a6b570a8eb8b20c33 0.1s done
+#14 exporting manifest list sha256:a9572c70c2b8a3cfe549be6fa075cf5635c9594f33a2d0d66407c0ad367d760e 0.1s done
+#14 naming to docker.io/library/flyrank-image-relevance:local 0.0s done
+#14 unpacking to docker.io/library/flyrank-image-relevance:local 0.2s done
+#14 DONE 1.0s
+
+#15 [migrate] resolving provenance for metadata file
+#15 ...
+
+#16 [api] resolving provenance for metadata file
+#16 DONE 0.1s
+
+#15 [migrate] resolving provenance for metadata file
+#15 DONE 0.1s
+
+#17 [worker] resolving provenance for metadata file
+#17 DONE 0.0s
+ Image flyrank-image-relevance:local Built 
+ Image flyrank-image-relevance:local Built 
+ Image flyrank-image-relevance:local Built 
+ Network imgrel-clean_default Creating 
+ Volume imgrel-clean_pgdata Creating 
+ Network imgrel-clean_default Creating 
+ Volume imgrel-clean_pgdata Creating 
+ Volume imgrel-clean_pgdata Created 
+ Volume imgrel-clean_pgdata Created 
+ Network imgrel-clean_default Created 
+ Network imgrel-clean_default Created 
+ Container imgrel-clean-db-1 Creating 
+ Container imgrel-clean-db-1 Created 
+ Container imgrel-clean-migrate-1 Creating 
+ Container imgrel-clean-migrate-1 Created 
+ Container imgrel-clean-api-1 Creating 
+ Container imgrel-clean-worker-1 Creating 
+ Container imgrel-clean-worker-1 Created 
+ Container imgrel-clean-api-1 Created 
+ Container imgrel-clean-db-1 Starting 
+ Container imgrel-clean-db-1 Started 
+ Container imgrel-clean-db-1 Waiting 
+ Container imgrel-clean-db-1 Healthy 
+ Container imgrel-clean-migrate-1 Starting 
+ Container imgrel-clean-migrate-1 Started 
+ Container imgrel-clean-migrate-1 Waiting 
+ Container imgrel-clean-migrate-1 Waiting 
+ Container imgrel-clean-migrate-1 Exited 
+ Container imgrel-clean-api-1 Starting 
+ Container imgrel-clean-migrate-1 Exited 
+ Container imgrel-clean-worker-1 Starting 
+ Container imgrel-clean-api-1 Started 
+ Container imgrel-clean-worker-1 Started 
+
+>>> docker compose -p imgrel-clean exec -T api python -m scripts.seed --snapshot
+images: 52 new / 52 files | posts: 15 new / 15 in file
+snapshot applied: {'images': 52, 'posts': 15, 'embeddings': 67}
+
+>>> docker compose -p imgrel-clean exec -T api python -m scripts.eval
+== eval @ threshold 0.73 / unverified 0.80 ==
+post                       target      expected             decision             img  score  result
+red-fox-behavior           red_fox     one of 10 images     SUGGESTED              4  0.868  OK
+vulpes-vulpes-cities       red_fox     one of 10 images     SUGGESTED              2  0.822  OK
+wolf-pack-structure        gray_wolf   one of 10 images     SUGGESTED             11  0.838  OK
+canis-lupus-howling        gray_wolf   one of 10 images     SUGGESTED             17  0.809  OK
+family-dog-care            dog         one of 9 images      SUGGESTED             24  0.765  OK
+brown-bear-salmon          brown_bear  one of 9 images      SUGGESTED             33  0.816  OK
+ursus-arctos-hibernation   brown_bear  one of 9 images      SUGGESTED             34  0.797  OK
+deer-antlers               deer        one of 6 images      SUGGESTED             39  0.841  OK
+cervid-autumn-rut          deer        one of 6 images      SUGGESTED             46  0.854  OK
+savanna-antelopes          antelope    one of 3 images      SUGGESTED             41  0.822  OK
+arctic-fox-winter          arctic_fox  NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+black-bear-foraging        black_bear  NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+emperor-penguins           other       NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+coral-reef-health          other       NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+sourdough-starter          other       NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+{"posts": 15, "correct": 15, "top1_precision": 1.0, "suggestions_made": 10, "wrong_suggestions": 0, "refusal_cases": 5, "refusals_correct": 5}
+TOP1_PRECISION=1.000
+
+>>> python -m scripts.api_probes   (host -> clean stack on :8010)
+
+===== HEALTH http://localhost:8010 =====
+GET /health -> 200
+
+===== PROBE 1 - schema-valid tags on every image; low confidence flagged, not guessed =====
+GET /images?limit=500 -> 200
+  status counts: {'tagged': 50, 'flagged': 2}
+  tagged/flagged images without validated metadata: none
+GET /images?status=flagged -> 200
+  FLAGGED img 51 img_051.jpg: red_fox conf=0.50 - low vision confidence 0.50 < 0.60
+  FLAGGED img 52 img_052.jpg: other conf=0.10 - low vision confidence 0.10 < 0.60
+
+===== PROBE 2 - red fox article: fox first, wolf and dog clearly lower =====
+GET /posts/red-fox-behavior/images?ranking=60 -> 200
+  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=1
+  rank 1: img 4 red_fox 0.868
+  rank 2: img 5 red_fox 0.857
+  rank 3: img 3 red_fox 0.854
+  best gray_wolf: rank 14 score 0.786 (and rejected by G2 if it ever reached the top 5)
+  best dog: rank 21 score 0.767 (and rejected by G2 if it ever reached the top 5)
+
+===== PROBE 3 - force the wolf onto the fox post =====
+POST /posts/red-fox-behavior/images/10/check -> 200
+  Post: red-fox-behavior
+  Candidate: gray wolf (img 10)
+  Result: REJECTED
+  [PASS] G1_vision_quality: vision confidence 0.95
+  [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
+  [PASS] G3_similarity: similarity 0.748 >= threshold 0.73
+
+===== PROBE 4 - posts with no suitable image =====
+GET /posts/emperor-penguins/images -> 200
+  emperor-penguins: NO_CONFIDENT_MATCH (target=other)
+    - None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+    - image 50 (rank 1, score 0.743): Similarity 0.743 below unverified-subject threshold 0.80
+    - image 31 (rank 2, score 0.726): Subject mismatch: post topic is outside the library taxonomy, image shows a brown bear; Similarity 0.726 below unverified-subject threshold 0.80
+GET /posts/sourdough-starter/images -> 200
+  sourdough-starter: NO_CONFIDENT_MATCH (target=other)
+    - None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+    - image 15 (rank 1, score 0.704): Subject mismatch: post topic is outside the library taxonomy, image shows a gray wolf; Similarity 0.704 below unverified-subject threshold 0.80
+    - image 3 (rank 2, score 0.698): Subject mismatch: post topic is outside the library taxonomy, image shows a red fox; Similarity 0.698 below unverified-subject threshold 0.80
+GET /posts/arctic-fox-winter/images -> 200
+  arctic-fox-winter: NO_CONFIDENT_MATCH (target=arctic_fox)
+    - None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+    - image 4 (rank 1, score 0.822): Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+    - image 3 (rank 2, score 0.786): Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+
+===== PROBE 6 - cost log: every AI call attributed =====
+GET /costs?limit=3 -> 200
+  calls_today=0/500 unattributed_calls=0 total_est_cost_usd=0.0
+
+===== REVIEW - approve / reject / inspect, idempotent =====
+POST /suggestions/1/review -> 201
+  {'id': 1, 'suggestion_id': 1, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:46:16.359581Z', 'replayed': False}
+POST /suggestions/1/review -> 200
+  same key + same request -> replayed=True id=1
+POST /suggestions/1/review -> 409
+  same key, different request -> "Idempotency-Key was already used for a different request"
+POST /suggestions/1/review -> 409
+  new key, already reviewed -> "suggestion 1 was already reviewed (approve)"
+POST /suggestions/6/review -> 409
+  approve a guard-rejected pairing -> "suggestion 6 is REJECTED; only guard-approved suggestions can be reviewed"
+GET /suggestions/6 -> 200
+  inspect why: post=red-fox-behavior image=10 (gray wolf) decision=REJECTED
+    [PASS] G1_vision_quality: vision confidence 0.95
+    [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
+    [PASS] G3_similarity: similarity 0.748 >= threshold 0.73
+
+===== VALIDATION - bad input gets a clean 4xx, never a 500 =====
+POST /suggestions/1/review -> 422
+    [{"type": "literal_error", "loc": ["body", "action"], "msg": "Input should be 'approve' or 'reject'", "input": "maybe", "ctx": {"expected": "'approve' or 'reject'"}}]
+POST /suggestions/1/review -> 422
+    [{"type": "missing", "loc": ["header", "Idempotency-Key"], "msg": "Field required", "input": null}]
+POST /jobs/tag-images -> 422
+    [{"type": "greater_than_equal", "loc": ["body", "limit"], "msg": "Input should be greater than or equal to 1", "input": 0, "ctx": {"ge": 1}}]
+GET /images?status=weird -> 422
+    [{"type": "literal_error", "loc": ["query", "status"], "msg": "Input should be 'pending', 'tagged', 'flagged' or 'failed'", "input": "weird", "ctx": {"expected": "'pending', 'tagged', 'flagged' or 'failed'"}}]
+GET /images -> 422
+    [{"type": "int_parsing", "loc": ["header", "x-tenant-id"], "msg": "Input should be a valid integer, unable to parse string as an integer", "input": "abc"}]
+GET /images -> 404
+    "tenant 999 not found"
+GET /posts/does-not-exist/images -> 404
+    "post 'does-not-exist' not found"
+GET /jobs/999999 -> 404
+    "job 999999 not found"
+POST /posts/red-fox-behavior/images/999999/check -> 404
+    "image 999999 not found or not embedded for this tenant"
+
+>>> docker compose -p imgrel-clean run --rm --no-deps api python -m pytest -q
+ Container imgrel-clean-api-run-96e1e491c8c6 Creating 
+ Container imgrel-clean-api-run-96e1e491c8c6 Created 
+.......................................................                  [100%]
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+../usr/local/lib/python3.12/site-packages/starlette/testclient.py:53
+  /usr/local/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+55 passed, 2 warnings in 1.10s
+
+>>> docker compose -p imgrel-clean down -v
+ Container imgrel-clean-api-1 Stopping 
+ Container imgrel-clean-worker-1 Stopping 
+ Container imgrel-clean-api-1 Stopped 
+ Container imgrel-clean-api-1 Removing 
+ Container imgrel-clean-api-1 Removed 
+ Container imgrel-clean-worker-1 Stopped 
+ Container imgrel-clean-worker-1 Removing 
+ Container imgrel-clean-worker-1 Removed 
+ Container imgrel-clean-migrate-1 Stopping 
+ Container imgrel-clean-migrate-1 Stopped 
+ Container imgrel-clean-migrate-1 Removing 
+ Container imgrel-clean-migrate-1 Removed 
+ Container imgrel-clean-db-1 Stopping 
+ Container imgrel-clean-db-1 Stopped 
+ Container imgrel-clean-db-1 Removing 
+ Container imgrel-clean-db-1 Removed 
+ Network imgrel-clean_default Removing 
+ Volume imgrel-clean_pgdata Removing 
+ Volume imgrel-clean_pgdata Removed 
+ Network imgrel-clean_default Removed 

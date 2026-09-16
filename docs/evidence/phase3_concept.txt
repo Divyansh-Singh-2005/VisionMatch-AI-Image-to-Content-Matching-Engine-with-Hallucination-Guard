@@ -1,0 +1,5 @@
+== concept check: cosine similarity to 'red fox' ==
+  Vulpes vulpes      0.926
+  wild fox species   0.924
+  gray wolf          0.831
+  sourdough bread    0.769

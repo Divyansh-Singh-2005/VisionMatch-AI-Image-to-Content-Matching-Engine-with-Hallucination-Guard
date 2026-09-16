@@ -1,0 +1,10 @@
+# Console output captured during session 3 (first full tagging run, gemini-2.5-flash), copied verbatim.
+# The API error text was already truncated at 200 characters by the job's own logging.
+2026-09-17 01:15:06,773 WARNING jobs.tagging: image 6 attempt 1 failed (api_error: ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}); retry in 8s
+2026-09-17 01:15:25,286 INFO jobs.tagging: job 2 progress 6/50 image=6 -> tagged
+2026-09-17 01:18:39,982 WARNING jobs.tagging: image 21 attempt 1 failed (api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.); retry in 15s
+2026-09-17 01:18:55,588 WARNING jobs.tagging: image 21 attempt 2 failed (api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.); retry in 30s
+2026-09-17 01:19:26,265 WARNING jobs.tagging: image 21 attempt 3 failed (api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.); retry in 60s
+2026-09-17 01:20:26,295 INFO jobs.tagging: job 2 progress 21/50 image=21 -> failed
+2026-09-17 01:24:00,851 ERROR jobs.tagging: ALERT job 2 aborted after 3 consecutive failures; last error: api_error: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.
+job 2 aborted: done=20 flagged=0 failed=3

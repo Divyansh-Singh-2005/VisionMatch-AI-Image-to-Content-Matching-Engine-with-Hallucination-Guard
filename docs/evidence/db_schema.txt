@@ -1,0 +1,47 @@
+alembic current: 0001 (head)
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | ai_calls        | table | imgmatch
+ public | alembic_version | table | imgmatch
+ public | embeddings      | table | imgmatch
+ public | image_metadata  | table | imgmatch
+ public | images          | table | imgmatch
+ public | job_items       | table | imgmatch
+ public | jobs            | table | imgmatch
+ public | posts           | table | imgmatch
+ public | reviews         | table | imgmatch
+ public | suggestions     | table | imgmatch
+ public | tenants         | table | imgmatch
+(11 rows)
+
+    tablename    |              indexname              |                                           definition                                            
+-----------------+-------------------------------------+-------------------------------------------------------------------------------------------------
+ ai_calls        | ai_calls_pkey                       | CREATE UNIQUE INDEX ai_calls_pkey ON public.ai_calls USING btree (id)
+ ai_calls        | ix_ai_calls_kind                    | CREATE INDEX ix_ai_calls_kind ON public.ai_calls USING btree (kind)
+ ai_calls        | ix_ai_calls_tenant_created          | CREATE INDEX ix_ai_calls_tenant_created ON public.ai_calls USING btree (tenant_id, created_at)
+ alembic_version | alembic_version_pkc                 | CREATE UNIQUE INDEX alembic_version_pkc ON public.alembic_version USING btree (version_num)
+ embeddings      | embeddings_pkey                     | CREATE UNIQUE INDEX embeddings_pkey ON public.embeddings USING btree (id)
+ embeddings      | ix_embeddings_tenant_owner_type     | CREATE INDEX ix_embeddings_tenant_owner_type ON public.embeddings USING btree (tenant_id, owner
+ embeddings      | ix_embeddings_vector_hnsw           | CREATE INDEX ix_embeddings_vector_hnsw ON public.embeddings USING hnsw (vector vector_cosine_op
+ embeddings      | uq_embeddings_owner_model           | CREATE UNIQUE INDEX uq_embeddings_owner_model ON public.embeddings USING btree (owner_type, own
+ image_metadata  | image_metadata_pkey                 | CREATE UNIQUE INDEX image_metadata_pkey ON public.image_metadata USING btree (image_id)
+ image_metadata  | ix_image_metadata_subject_canonical | CREATE INDEX ix_image_metadata_subject_canonical ON public.image_metadata USING btree (subject_
+ images          | images_pkey                         | CREATE UNIQUE INDEX images_pkey ON public.images USING btree (id)
+ images          | ix_images_tenant_status             | CREATE INDEX ix_images_tenant_status ON public.images USING btree (tenant_id, status)
+ images          | uq_images_tenant_sha256             | CREATE UNIQUE INDEX uq_images_tenant_sha256 ON public.images USING btree (tenant_id, sha256)
+ job_items       | ix_job_items_job_status             | CREATE INDEX ix_job_items_job_status ON public.job_items USING btree (job_id, status)
+ job_items       | job_items_pkey                      | CREATE UNIQUE INDEX job_items_pkey ON public.job_items USING btree (id)
+ job_items       | uq_job_items_job_target             | CREATE UNIQUE INDEX uq_job_items_job_target ON public.job_items USING btree (job_id, target_id)
+ jobs            | ix_jobs_tenant_created              | CREATE INDEX ix_jobs_tenant_created ON public.jobs USING btree (tenant_id, created_at)
+ jobs            | jobs_pkey                           | CREATE UNIQUE INDEX jobs_pkey ON public.jobs USING btree (id)
+ posts           | posts_pkey                          | CREATE UNIQUE INDEX posts_pkey ON public.posts USING btree (id)
+ posts           | uq_posts_tenant_slug                | CREATE UNIQUE INDEX uq_posts_tenant_slug ON public.posts USING btree (tenant_id, slug)
+ reviews         | reviews_idempotency_key_key         | CREATE UNIQUE INDEX reviews_idempotency_key_key ON public.reviews USING btree (idempotency_key)
+ reviews         | reviews_pkey                        | CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (id)
+ reviews         | reviews_suggestion_id_key           | CREATE UNIQUE INDEX reviews_suggestion_id_key ON public.reviews USING btree (suggestion_id)
+ suggestions     | ix_suggestions_post_created         | CREATE INDEX ix_suggestions_post_created ON public.suggestions USING btree (post_id, created_at
+ suggestions     | suggestions_pkey                    | CREATE UNIQUE INDEX suggestions_pkey ON public.suggestions USING btree (id)
+ tenants         | tenants_name_key                    | CREATE UNIQUE INDEX tenants_name_key ON public.tenants USING btree (name)
+ tenants         | tenants_pkey                        | CREATE UNIQUE INDEX tenants_pkey ON public.tenants USING btree (id)
+(27 rows)
