@@ -44,3 +44,13 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
 - The Gemini embeddings API returns no token usage, so embedding cost uses a ~4 chars/token estimate.
 - gemini-embedding-001 vectors truncated to 768 dims are not unit length; normalised before storing.
 - The guard is a pure module (no DB/API) so each gate is unit-tested; ranking lives in matching.py.
+
+## Session 5 - Probe 4 fix + eval set
+- Bug found by my own report: posts outside the taxonomy (penguins, coral, sourdough) still got a
+  suggestion (penguin post -> a loon) because G2 passed everything for target 'other' and the 0.70
+  threshold sat below their scores. Fix: for 'other' posts, images of a known animal are rejected and
+  'other' images must clear UNVERIFIED_SUBJECT_THRESHOLD=0.80.
+- Fixed a misleading message: 0.698 printed as "0.70 below threshold 0.70"; scores now use 3 decimals.
+- Added 3 harder posts (arctic fox and black bear with no matching image, antelopes with 3) and a
+  15-post labelled set keyed by filename. scripts/eval.py computes top-1 precision offline (no API calls).
+- SIMILARITY_THRESHOLD=0.73 chosen by sweep (middle of the best-scoring range), not guessed.

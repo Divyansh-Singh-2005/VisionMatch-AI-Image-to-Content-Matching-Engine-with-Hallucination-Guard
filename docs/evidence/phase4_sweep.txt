@@ -1,0 +1,20 @@
+== threshold sweep (unverified-subject threshold fixed at 0.80) ==
+  0.70  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.71  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.72  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.73  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.74  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.75  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.76  correct 15/15  wrong_suggestions=0  refusals_ok=5/5
+  0.77  correct 14/15  wrong_suggestions=0  refusals_ok=5/5
+  0.78  correct 14/15  wrong_suggestions=0  refusals_ok=5/5
+  0.79  correct 14/15  wrong_suggestions=0  refusals_ok=5/5
+  0.80  correct 13/15  wrong_suggestions=0  refusals_ok=5/5
+  0.81  correct 12/15  wrong_suggestions=0  refusals_ok=5/5
+  0.82  correct 11/15  wrong_suggestions=0  refusals_ok=5/5
+  0.83  correct  9/15  wrong_suggestions=0  refusals_ok=5/5
+  0.84  correct  8/15  wrong_suggestions=0  refusals_ok=5/5
+  0.85  correct  7/15  wrong_suggestions=0  refusals_ok=5/5
+  0.86  correct  6/15  wrong_suggestions=0  refusals_ok=5/5
+  best range: 0.70-0.76 (15/15 correct) -> choosing middle
+BEST_THRESHOLD=0.73

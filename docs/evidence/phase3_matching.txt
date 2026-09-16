@@ -1,8 +1,3 @@
-== concept check: cosine similarity to 'red fox' ==
-  Vulpes vulpes      0.926
-  wild fox species   0.924
-  gray wolf          0.831
-  sourdough bread    0.769
 
 == post 1 red-fox-behavior | target=red_fox | SUGGESTED
   #1 img  4 red_fox     score=0.868 ACCEPT  <= SUGGESTED
@@ -77,33 +72,86 @@
   #5 img 42 deer        score=0.829 ACCEPT
   first non-deer image at rank 6 of 50
 
-== post 10 emperor-penguins | target=other | SUGGESTED
-  #1 img 50 other       score=0.743 ACCEPT  <= SUGGESTED
-  #2 img 31 brown_bear  score=0.726 ACCEPT
-  #3 img 46 deer        score=0.723 ACCEPT
-  #4 img 37 antelope    score=0.721 ACCEPT
-  #5 img 35 brown_bear  score=0.720 ACCEPT
+== post 10 emperor-penguins | target=other | NO_CONFIDENT_MATCH
+  #1 img 50 other       score=0.743 REJECT
+       Similarity 0.743 below unverified-subject threshold 0.80
+  #2 img 31 brown_bear  score=0.726 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a brown bear | Similarity 0.726 below unverified-subject threshold 0.80
+  #3 img 46 deer        score=0.723 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a deer | Similarity 0.723 below unverified-subject threshold 0.80
+  #4 img 37 antelope    score=0.721 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a antelope | Similarity 0.721 below unverified-subject threshold 0.80
+  #5 img 35 brown_bear  score=0.720 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a brown bear | Similarity 0.720 below unverified-subject threshold 0.80
+  reason: None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
 
-== post 11 coral-reef-health | target=other | SUGGESTED
-  #1 img 50 other       score=0.724 ACCEPT  <= SUGGESTED
-  #2 img 40 other       score=0.717 ACCEPT
-  #3 img 44 deer        score=0.717 ACCEPT
-  #4 img 47 other       score=0.712 ACCEPT
-  #5 img 43 deer        score=0.707 ACCEPT
+== post 11 coral-reef-health | target=other | NO_CONFIDENT_MATCH
+  #1 img 50 other       score=0.724 REJECT
+       Similarity 0.724 below unverified-subject threshold 0.80
+  #2 img 40 other       score=0.717 REJECT
+       Similarity 0.717 below unverified-subject threshold 0.80
+  #3 img 44 deer        score=0.717 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a deer | Similarity 0.717 below unverified-subject threshold 0.80
+  #4 img 47 other       score=0.712 REJECT
+       Similarity 0.712 below unverified-subject threshold 0.80
+  #5 img 43 deer        score=0.707 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a deer | Similarity 0.707 below unverified-subject threshold 0.80
+  reason: None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
 
-== post 12 sourdough-starter | target=other | SUGGESTED
-  #1 img 15 gray_wolf   score=0.704 ACCEPT  <= SUGGESTED
+== post 12 sourdough-starter | target=other | NO_CONFIDENT_MATCH
+  #1 img 15 gray_wolf   score=0.704 REJECT
+       Subject mismatch: post topic is outside the library taxonomy, image shows a gray wolf | Similarity 0.704 below unverified-subject threshold 0.80
   #2 img  3 red_fox     score=0.698 REJECT
-       Similarity 0.70 below threshold 0.70
+       Subject mismatch: post topic is outside the library taxonomy, image shows a red fox | Similarity 0.698 below unverified-subject threshold 0.80
   #3 img 13 gray_wolf   score=0.695 REJECT
-       Similarity 0.70 below threshold 0.70
+       Subject mismatch: post topic is outside the library taxonomy, image shows a gray wolf | Similarity 0.695 below unverified-subject threshold 0.80
   #4 img 50 other       score=0.694 REJECT
-       Similarity 0.69 below threshold 0.70
+       Similarity 0.694 below unverified-subject threshold 0.80
   #5 img 37 antelope    score=0.694 REJECT
-       Similarity 0.69 below threshold 0.70
+       Subject mismatch: post topic is outside the library taxonomy, image shows a antelope | Similarity 0.694 below unverified-subject threshold 0.80
+  reason: None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+
+== post 13 arctic-fox-winter | target=arctic_fox | NO_CONFIDENT_MATCH
+  #1 img  4 red_fox     score=0.822 REJECT
+       Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+  #2 img  3 red_fox     score=0.786 REJECT
+       Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+  #3 img  6 red_fox     score=0.784 REJECT
+       Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+  #4 img  2 red_fox     score=0.775 REJECT
+       Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+  #5 img  5 red_fox     score=0.775 REJECT
+       Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+  reason: None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+  first non-arctic_fox image at rank 1 of 50
+
+== post 14 black-bear-foraging | target=black_bear | NO_CONFIDENT_MATCH
+  #1 img 36 brown_bear  score=0.785 REJECT
+       Animal category mismatch: expected black bear, detected brown bear (both ursids - look-alike rejected)
+  #2 img 29 brown_bear  score=0.779 REJECT
+       Animal category mismatch: expected black bear, detected brown bear (both ursids - look-alike rejected)
+  #3 img 11 gray_wolf   score=0.774 REJECT
+       Category mismatch: expected black bear, detected gray wolf
+  #4 img 34 brown_bear  score=0.772 REJECT
+       Animal category mismatch: expected black bear, detected brown bear (both ursids - look-alike rejected)
+  #5 img 30 brown_bear  score=0.771 REJECT
+       Animal category mismatch: expected black bear, detected brown bear (both ursids - look-alike rejected)
+  reason: None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+  first non-black_bear image at rank 1 of 50
+
+== post 15 savanna-antelopes | target=antelope | SUGGESTED
+  #1 img 40 other       score=0.827 REJECT
+       Category mismatch: expected antelope, detected other
+  #2 img 41 antelope    score=0.822 ACCEPT  <= SUGGESTED
+  #3 img 44 deer        score=0.806 REJECT
+       Category mismatch: expected antelope, detected deer
+  #4 img 38 antelope    score=0.796 ACCEPT
+  #5 img 42 deer        score=0.782 REJECT
+       Category mismatch: expected antelope, detected deer
+  first non-antelope image at rank 1 of 50
 
 == threshold analysis ==
   lowest best-correct score on subject posts : 0.765 (family-dog-care)
   highest top-1 score on no-subject posts    : 0.743 (emperor-penguins)
-  highest wrong-subject score (G2 blocks it) : 0.820 (cervid-autumn-rut)
-  safe threshold window: (0.743, 0.765]  current=0.70
+  highest wrong-subject score (G2 blocks it) : 0.827 (savanna-antelopes)
+  safe threshold window: (0.743, 0.765]  current=0.73

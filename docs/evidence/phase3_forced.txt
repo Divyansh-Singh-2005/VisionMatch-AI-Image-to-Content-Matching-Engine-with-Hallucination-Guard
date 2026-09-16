@@ -5,23 +5,32 @@
   Result:    REJECTED
   [PASS] G1_vision_quality: vision confidence 0.95
   [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
-  [PASS] G3_similarity: similarity 0.75 >= 0.70
+  [PASS] G3_similarity: similarity 0.748 >= threshold 0.73
   Reason:    Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
 
-== forced check: post=red-fox-behavior image=19 ==
-  Post:      The behavior of red foxes  (target=red_fox)
-  Candidate: white dog barking [dog] score=0.739
+== forced check: post=arctic-fox-winter image=1 ==
+  Post:      How the arctic fox survives the polar winter  (target=arctic_fox)
+  Candidate: red fox [red_fox] score=0.773
   Result:    REJECTED
   [PASS] G1_vision_quality: vision confidence 0.95
-  [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected dog (both canids - look-alike rejected)
-  [PASS] G3_similarity: similarity 0.74 >= 0.70
-  Reason:    Animal category mismatch: expected red fox, detected dog (both canids - look-alike rejected)
+  [FAIL] G2_subject_match: Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+  [PASS] G3_similarity: similarity 0.773 >= threshold 0.73
+  Reason:    Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
 
-== forced check: post=deer-antlers image=37 ==
-  Post:      How deer grow antlers  (target=deer)
-  Candidate: two blackbucks [antelope] score=0.771
+== forced check: post=emperor-penguins image=50 ==
+  Post:      Emperor penguins survive the Antarctic winter  (target=other)
+  Candidate: a loon with chicks swimming [other] score=0.743
   Result:    REJECTED
   [PASS] G1_vision_quality: vision confidence 1.00
-  [FAIL] G2_subject_match: Category mismatch: expected deer, detected antelope
-  [PASS] G3_similarity: similarity 0.77 >= 0.70
-  Reason:    Category mismatch: expected deer, detected antelope
+  [PASS] G2_subject_match: post topic is outside the library taxonomy; subject cannot be verified, stricter similarity bar 0.80 applies
+  [FAIL] G3_similarity: Similarity 0.743 below unverified-subject threshold 0.80
+  Reason:    Similarity 0.743 below unverified-subject threshold 0.80
+
+== forced check: post=sourdough-starter image=15 ==
+  Post:      Keeping a sourdough starter alive  (target=other)
+  Candidate: gray wolf [gray_wolf] score=0.704
+  Result:    REJECTED
+  [PASS] G1_vision_quality: vision confidence 0.95
+  [FAIL] G2_subject_match: Subject mismatch: post topic is outside the library taxonomy, image shows a gray wolf
+  [FAIL] G3_similarity: Similarity 0.704 below unverified-subject threshold 0.80
+  Reason:    Subject mismatch: post topic is outside the library taxonomy, image shows a gray wolf; Similarity 0.704 below unverified-subject threshold 0.80

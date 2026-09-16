@@ -1,0 +1,20 @@
+== eval @ threshold 0.73 / unverified 0.80 ==
+post                       target      expected             decision             img  score  result
+red-fox-behavior           red_fox     one of 9 images      SUGGESTED              4  0.868  OK
+vulpes-vulpes-cities       red_fox     one of 9 images      SUGGESTED              2  0.822  OK
+wolf-pack-structure        gray_wolf   one of 9 images      SUGGESTED             11  0.838  OK
+canis-lupus-howling        gray_wolf   one of 9 images      SUGGESTED             17  0.809  OK
+family-dog-care            dog         one of 9 images      SUGGESTED             24  0.765  OK
+brown-bear-salmon          brown_bear  one of 9 images      SUGGESTED             33  0.816  OK
+ursus-arctos-hibernation   brown_bear  one of 9 images      SUGGESTED             34  0.797  OK
+deer-antlers               deer        one of 6 images      SUGGESTED             39  0.841  OK
+cervid-autumn-rut          deer        one of 6 images      SUGGESTED             46  0.854  OK
+savanna-antelopes          antelope    one of 3 images      SUGGESTED             41  0.822  OK
+arctic-fox-winter          arctic_fox  NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+black-bear-foraging        black_bear  NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+emperor-penguins           other       NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+coral-reef-health          other       NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+sourdough-starter          other       NO_CONFIDENT_MATCH   NO_CONFIDENT_MATCH     -      -  OK
+{"posts": 15, "correct": 15, "top1_precision": 1.0, "suggestions_made": 10, "wrong_suggestions": 0, "refusal_cases": 5, "refusals_correct": 5}
+TOP1_PRECISION=1.000
+wrote eval\results.json

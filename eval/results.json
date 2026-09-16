@@ -1,0 +1,152 @@
+{
+  "threshold": 0.73,
+  "unverified_subject_threshold": 0.8,
+  "vision_model": "gemini-3.1-flash-lite",
+  "embedding_model": "gemini-embedding-001",
+  "metrics": {
+    "posts": 15,
+    "correct": 15,
+    "top1_precision": 1.0,
+    "suggestions_made": 10,
+    "wrong_suggestions": 0,
+    "refusal_cases": 5,
+    "refusals_correct": 5
+  },
+  "rows": [
+    {
+      "post": "red-fox-behavior",
+      "target_subject": "red_fox",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 4,
+      "score": 0.8678,
+      "correct": true
+    },
+    {
+      "post": "vulpes-vulpes-cities",
+      "target_subject": "red_fox",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 2,
+      "score": 0.8224,
+      "correct": true
+    },
+    {
+      "post": "wolf-pack-structure",
+      "target_subject": "gray_wolf",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 11,
+      "score": 0.8377,
+      "correct": true
+    },
+    {
+      "post": "canis-lupus-howling",
+      "target_subject": "gray_wolf",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 17,
+      "score": 0.8092,
+      "correct": true
+    },
+    {
+      "post": "family-dog-care",
+      "target_subject": "dog",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 24,
+      "score": 0.765,
+      "correct": true
+    },
+    {
+      "post": "brown-bear-salmon",
+      "target_subject": "brown_bear",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 33,
+      "score": 0.8156,
+      "correct": true
+    },
+    {
+      "post": "ursus-arctos-hibernation",
+      "target_subject": "brown_bear",
+      "expected": "one of 9 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 34,
+      "score": 0.7974,
+      "correct": true
+    },
+    {
+      "post": "deer-antlers",
+      "target_subject": "deer",
+      "expected": "one of 6 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 39,
+      "score": 0.8405,
+      "correct": true
+    },
+    {
+      "post": "cervid-autumn-rut",
+      "target_subject": "deer",
+      "expected": "one of 6 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 46,
+      "score": 0.8536,
+      "correct": true
+    },
+    {
+      "post": "savanna-antelopes",
+      "target_subject": "antelope",
+      "expected": "one of 3 images",
+      "decision": "SUGGESTED",
+      "suggested_image": 41,
+      "score": 0.8222,
+      "correct": true
+    },
+    {
+      "post": "arctic-fox-winter",
+      "target_subject": "arctic_fox",
+      "expected": "NO_CONFIDENT_MATCH",
+      "decision": "NO_CONFIDENT_MATCH",
+      "suggested_image": null,
+      "score": null,
+      "correct": true
+    },
+    {
+      "post": "black-bear-foraging",
+      "target_subject": "black_bear",
+      "expected": "NO_CONFIDENT_MATCH",
+      "decision": "NO_CONFIDENT_MATCH",
+      "suggested_image": null,
+      "score": null,
+      "correct": true
+    },
+    {
+      "post": "emperor-penguins",
+      "target_subject": "other",
+      "expected": "NO_CONFIDENT_MATCH",
+      "decision": "NO_CONFIDENT_MATCH",
+      "suggested_image": null,
+      "score": null,
+      "correct": true
+    },
+    {
+      "post": "coral-reef-health",
+      "target_subject": "other",
+      "expected": "NO_CONFIDENT_MATCH",
+      "decision": "NO_CONFIDENT_MATCH",
+      "suggested_image": null,
+      "score": null,
+      "correct": true
+    },
+    {
+      "post": "sourdough-starter",
+      "target_subject": "other",
+      "expected": "NO_CONFIDENT_MATCH",
+      "decision": "NO_CONFIDENT_MATCH",
+      "suggested_image": null,
+      "score": null,
+      "correct": true
+    }
+  ]
+}
