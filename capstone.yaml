@@ -1,0 +1,6 @@
+﻿# Evaluator manifest (filled in as the system comes together)
+run: docker compose up --build
+seed: TBD
+test: TBD
+base_url: http://localhost:8000
+endpoints: []

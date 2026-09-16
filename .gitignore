@@ -1,0 +1,22 @@
+﻿# Secrets
+.env
+*.key
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Runtime artifacts
+logs/
+*.log
+pgdata/
