@@ -27,7 +27,7 @@ def section(name: str, title: str) -> list[str]:
 
 def grep(lines: list[str], *needles: str, limit: int = 40) -> list[str]:
     hits = [l for l in lines if any(n in l for n in needles)]
-    return hits[:limit] or ["(no matching lines)"]
+    return hits[:limit] or [f"(no matching lines for {needles})"]
 
 
 def block(lines: list[str], source: str) -> str:

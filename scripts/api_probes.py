@@ -82,7 +82,10 @@ def run_jobs(c: httpx.Client, force: bool) -> None:
     tag = r.json()
     r2 = c.post("/jobs/tag-images", json={"force": force})
     line(r2)
-    print(f"  first job id={tag['id']} status={tag['status']}; repeat request returned job id={r2.json()['id']}")
+    same = r2.json()["id"] == tag["id"]
+    print(f"  first request: job {tag['id']} ({tag['status']}, HTTP {r.status_code}); "
+          f"repeat request: job {r2.json()['id']} (HTTP {r2.status_code}) -> "
+          f"{'same job, no duplicate created' if same else 'DIFFERENT job'}")
     wait_jobs(c, [tag, r2.json()])
     r = c.post("/jobs/embed", json={"kind": "all"})
     line(r)

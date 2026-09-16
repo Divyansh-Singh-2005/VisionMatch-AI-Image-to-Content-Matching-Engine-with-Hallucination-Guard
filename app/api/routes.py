@@ -2,7 +2,7 @@
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Path, Query, Response
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, get_tenant_id
@@ -45,6 +45,20 @@ def start_tagging(db: DB, tenant: TenantId, response: Response, body: TagJobIn |
     if active is not None:
         response.status_code = 200  # idempotent: one active tagging job per tenant
         return active
+    if not body.force:
+        statuses = ["pending", "failed"] if body.retry_failed else ["pending"]
+        waiting = db.scalar(
+            select(func.count(Image.id)).where(Image.tenant_id == tenant, Image.status.in_(statuses))
+        )
+        if not waiting:
+            latest = db.scalar(
+                select(Job)
+                .where(Job.tenant_id == tenant, Job.kind == "tag_images")
+                .order_by(Job.id.desc())
+            )
+            if latest is not None:
+                response.status_code = 200  # nothing to tag: no empty job is created
+                return latest
     return create_tagging_job(db, tenant, retry_failed=body.retry_failed, limit=body.limit, force=body.force)
 
 

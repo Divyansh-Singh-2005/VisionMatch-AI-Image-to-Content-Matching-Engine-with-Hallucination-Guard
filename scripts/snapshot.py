@@ -5,13 +5,14 @@ import: python -m scripts.seed --snapshot   (no API key needed)
 """
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
-from app.db.models import Embedding, Image, ImageMetadata, Post
+from app.db.models import AICall, Embedding, Image, ImageMetadata, Post
 from app.db.session import SessionLocal
 
 SNAP = Path("data/snapshot/snapshot.json")
@@ -54,14 +55,25 @@ def export(path: Path = SNAP) -> None:
                 "text_hash": e.text_hash,
                 "vector": [round(float(x), 6) for x in e.vector],
             })
+    with SessionLocal() as s:
+        calls = [
+            {
+                "kind": c.kind, "model": c.model, "target_ref": c.target_ref,
+                "input_tokens": c.input_tokens, "output_tokens": c.output_tokens,
+                "est_cost_usd": c.est_cost_usd, "latency_ms": c.latency_ms, "ok": c.ok,
+                "error": c.error, "created_at": c.created_at.isoformat(),
+            }
+            for c in s.scalars(select(AICall).where(AICall.tenant_id == tenant).order_by(AICall.id))
+        ]
     data = {
+        "ai_calls": calls,
         "images": images,
         "posts": [{"slug": p.slug, "target_subject": p.target_subject} for p in posts],
         "embeddings": embeddings,
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"snapshot: {len(images)} images, {len(posts)} posts, {len(embeddings)} embeddings -> {path} "
+    print(f"snapshot: {len(calls)} ai_calls, {len(images)} images, {len(posts)} posts, {len(embeddings)} embeddings -> {path} "
           f"({path.stat().st_size / 1024:.0f} KB)")
 
 
@@ -106,8 +118,14 @@ def apply_snapshot(s: Session, tenant_id: int, path: Path = SNAP) -> dict:
             existing.text_hash = rec["text_hash"]
             existing.vector = rec["vector"]
         n_emb += 1
+    n_calls = 0
+    if s.scalar(select(AICall.id).where(AICall.tenant_id == tenant_id).limit(1)) is None:
+        for rec in data.get("ai_calls", []):
+            row = {**rec, "created_at": datetime.fromisoformat(rec["created_at"])}
+            s.add(AICall(tenant_id=tenant_id, job_id=None, **row))
+            n_calls += 1
     s.commit()
-    return {"images": n_images, "posts": len(data["posts"]), "embeddings": n_emb}
+    return {"images": n_images, "posts": len(data["posts"]), "embeddings": n_emb, "ai_calls_imported": n_calls}
 
 
 if __name__ == "__main__":
