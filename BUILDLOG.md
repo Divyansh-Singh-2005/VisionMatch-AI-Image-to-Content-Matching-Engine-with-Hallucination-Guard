@@ -19,3 +19,7 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   BOM-free writer and made JSON readers use utf-8-sig.
 - Added a circuit breaker (3 consecutive failed images abort the job) so a bad model name cannot burn quota.
 - Cost log records failed calls too (tokens are still spent on schema-invalid responses).
+- DB login failed on localhost:5433 because that port belonged to my other capstone's Postgres container;
+  this project's container had never started. 55432 then failed because Windows (Hyper-V/WSL) reserves
+  that range. The DB now uses host port 5434, picked by checking listeners and netsh excluded ranges.
+- Replaced a fragile cast-based ok-count in the costs report with COUNT(*) FILTER (WHERE ok).

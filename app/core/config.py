@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     embedding_model: str = "gemini-embedding-001"
     embedding_dim: int = 768
 
-    database_url: str = "postgresql+psycopg://imgmatch:imgmatch@localhost:5433/imgmatch"
+    database_url: str = "postgresql+psycopg://imgmatch:imgmatch@localhost:5434/imgmatch"
 
     similarity_threshold: float = 0.70
     min_vision_confidence: float = 0.60

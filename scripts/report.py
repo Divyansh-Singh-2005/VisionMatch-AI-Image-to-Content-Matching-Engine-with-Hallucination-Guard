@@ -37,7 +37,7 @@ def costs() -> None:
     with SessionLocal() as s:
         rows = s.execute(
             select(
-                AICall.kind, AICall.model, func.count(), func.sum(func.cast(AICall.ok, type_=func.count().type)),
+                AICall.kind, AICall.model, func.count(), func.count().filter(AICall.ok.is_(True)),
                 func.sum(AICall.input_tokens), func.sum(AICall.output_tokens),
                 func.sum(AICall.est_cost_usd), func.avg(AICall.latency_ms),
             ).group_by(AICall.kind, AICall.model)
