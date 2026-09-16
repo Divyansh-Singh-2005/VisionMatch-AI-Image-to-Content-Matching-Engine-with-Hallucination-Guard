@@ -1,0 +1,2 @@
+worker-1  | 2026-09-16 20:38:04,683 INFO jobs.worker: worker started; job kinds: tag_images, embed_images, embed_posts
+worker-1  | 2026-09-16 20:38:08,735 INFO jobs.worker: claimed job 9 (tag_images)

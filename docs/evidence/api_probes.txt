@@ -1,0 +1,94 @@
+
+===== HEALTH http://localhost:8010 =====
+GET /health -> 200
+
+===== PROBE 1 - schema-valid tags on every image; low confidence flagged, not guessed =====
+GET /images?limit=500 -> 200
+  status counts: {'tagged': 50, 'flagged': 1, 'pending': 1}
+  tagged/flagged images without validated metadata: none
+GET /images?status=flagged -> 200
+  FLAGGED img 51 img_051.jpg: red_fox conf=0.50 - low vision confidence 0.50 < 0.60
+
+===== PROBE 2 - red fox article: fox first, wolf and dog clearly lower =====
+GET /posts/red-fox-behavior/images?ranking=60 -> 200
+  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=1
+  rank 1: img 4 red_fox 0.868
+  rank 2: img 5 red_fox 0.857
+  rank 3: img 3 red_fox 0.854
+  best gray_wolf: rank 13 score 0.786 (and rejected by G2 if it ever reached the top 5)
+  best dog: rank 20 score 0.767 (and rejected by G2 if it ever reached the top 5)
+
+===== PROBE 3 - force the wolf onto the fox post =====
+POST /posts/red-fox-behavior/images/10/check -> 200
+  Post: red-fox-behavior
+  Candidate: gray wolf (img 10)
+  Result: REJECTED
+  [PASS] G1_vision_quality: vision confidence 0.95
+  [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
+  [PASS] G3_similarity: similarity 0.748 >= threshold 0.73
+
+===== PROBE 4 - posts with no suitable image =====
+GET /posts/emperor-penguins/images -> 200
+  emperor-penguins: NO_CONFIDENT_MATCH (target=other)
+    - None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+    - image 50 (rank 1, score 0.743): Similarity 0.743 below unverified-subject threshold 0.80
+    - image 31 (rank 2, score 0.726): Subject mismatch: post topic is outside the library taxonomy, image shows a brown bear; Similarity 0.726 below unverified-subject threshold 0.80
+GET /posts/sourdough-starter/images -> 200
+  sourdough-starter: NO_CONFIDENT_MATCH (target=other)
+    - None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+    - image 15 (rank 1, score 0.704): Subject mismatch: post topic is outside the library taxonomy, image shows a gray wolf; Similarity 0.704 below unverified-subject threshold 0.80
+    - image 3 (rank 2, score 0.698): Subject mismatch: post topic is outside the library taxonomy, image shows a red fox; Similarity 0.698 below unverified-subject threshold 0.80
+GET /posts/arctic-fox-winter/images -> 200
+  arctic-fox-winter: NO_CONFIDENT_MATCH (target=arctic_fox)
+    - None of the top 5 candidates cleared all gates (threshold 0.73, unverified-subject threshold 0.80)
+    - image 4 (rank 1, score 0.822): Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+    - image 3 (rank 2, score 0.786): Animal category mismatch: expected arctic fox, detected red fox (both canids - look-alike rejected)
+
+===== PROBE 6 - cost log: every AI call attributed =====
+GET /costs?limit=3 -> 200
+  calls_today=162/500 unattributed_calls=0 total_est_cost_usd=0.016809
+  embed         gemini-embedding-001     calls= 70 ok= 70 in=  3219 out=    0 usd=0.000483
+  post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.000465
+  vision        gemini-2.5-flash         calls= 30 ok= 20 in=  9040 out= 2034 usd=0.007797
+  vision        gemini-2.5-flash-lite    calls=  1 ok=  0 in=     0 out=    0 usd=0.000000
+  vision        gemini-3.1-flash-lite    calls= 46 ok= 46 in= 60086 out= 5139 usd=0.008064
+  recent #162 vision image:51 job=9 ok=True
+  recent #161 embed post:15 job=8 ok=True
+  recent #160 post_subject post:15 job=8 ok=True
+
+===== REVIEW - approve / reject / inspect, idempotent =====
+POST /suggestions/1/review -> 201
+  {'id': 1, 'suggestion_id': 1, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:38:16.563471Z', 'replayed': False}
+POST /suggestions/1/review -> 200
+  same key + same request -> replayed=True id=1
+POST /suggestions/1/review -> 409
+  same key, different request -> "Idempotency-Key was already used for a different request"
+POST /suggestions/1/review -> 409
+  new key, already reviewed -> "suggestion 1 was already reviewed (approve)"
+POST /suggestions/6/review -> 409
+  approve a guard-rejected pairing -> "suggestion 6 is REJECTED; only guard-approved suggestions can be reviewed"
+GET /suggestions/6 -> 200
+  inspect why: post=red-fox-behavior image=10 (gray wolf) decision=REJECTED
+    [PASS] G1_vision_quality: vision confidence 0.95
+    [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
+    [PASS] G3_similarity: similarity 0.748 >= threshold 0.73
+
+===== VALIDATION - bad input gets a clean 4xx, never a 500 =====
+POST /suggestions/1/review -> 422
+    [{"type": "literal_error", "loc": ["body", "action"], "msg": "Input should be 'approve' or 'reject'", "input": "maybe", "ctx": {"expected": "'approve' or 'reject'"}}]
+POST /suggestions/1/review -> 422
+    [{"type": "missing", "loc": ["header", "Idempotency-Key"], "msg": "Field required", "input": null}]
+POST /jobs/tag-images -> 422
+    [{"type": "greater_than_equal", "loc": ["body", "limit"], "msg": "Input should be greater than or equal to 1", "input": 0, "ctx": {"ge": 1}}]
+GET /images?status=weird -> 422
+    [{"type": "literal_error", "loc": ["query", "status"], "msg": "Input should be 'pending', 'tagged', 'flagged' or 'failed'", "input": "weird", "ctx": {"expected": "'pending', 'tagged', 'flagged' or 'failed'"}}]
+GET /images -> 422
+    [{"type": "int_parsing", "loc": ["header", "x-tenant-id"], "msg": "Input should be a valid integer, unable to parse string as an integer", "input": "abc"}]
+GET /images -> 404
+    "tenant 999 not found"
+GET /posts/does-not-exist/images -> 404
+    "post 'does-not-exist' not found"
+GET /jobs/999999 -> 404
+    "job 999999 not found"
+POST /posts/red-fox-behavior/images/999999/check -> 404
+    "image 999999 not found or not embedded for this tenant"

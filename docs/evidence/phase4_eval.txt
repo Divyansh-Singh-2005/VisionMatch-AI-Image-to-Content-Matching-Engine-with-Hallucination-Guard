@@ -1,9 +1,9 @@
 == eval @ threshold 0.73 / unverified 0.80 ==
 post                       target      expected             decision             img  score  result
-red-fox-behavior           red_fox     one of 9 images      SUGGESTED              4  0.868  OK
-vulpes-vulpes-cities       red_fox     one of 9 images      SUGGESTED              2  0.822  OK
-wolf-pack-structure        gray_wolf   one of 9 images      SUGGESTED             11  0.838  OK
-canis-lupus-howling        gray_wolf   one of 9 images      SUGGESTED             17  0.809  OK
+red-fox-behavior           red_fox     one of 10 images     SUGGESTED              4  0.868  OK
+vulpes-vulpes-cities       red_fox     one of 10 images     SUGGESTED              2  0.822  OK
+wolf-pack-structure        gray_wolf   one of 10 images     SUGGESTED             11  0.838  OK
+canis-lupus-howling        gray_wolf   one of 10 images     SUGGESTED             17  0.809  OK
 family-dog-care            dog         one of 9 images      SUGGESTED             24  0.765  OK
 brown-bear-salmon          brown_bear  one of 9 images      SUGGESTED             33  0.816  OK
 ursus-arctos-hibernation   brown_bear  one of 9 images      SUGGESTED             34  0.797  OK

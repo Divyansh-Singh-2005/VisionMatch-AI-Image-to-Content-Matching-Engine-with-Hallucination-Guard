@@ -1,4 +1,6 @@
-"""Idempotent seed: registers corpus images (dedup by sha256) and upserts posts by slug."""
+"""Idempotent seed: registers corpus images (dedup by sha256), upserts posts by slug and,
+with --snapshot, loads committed tags/subjects/embeddings so probes run without an API key."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -9,9 +11,11 @@ from app.core.config import get_settings
 from app.db.models import Image, Post
 from app.db.session import SessionLocal
 
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
+
 
 def seed_images(session, tenant_id: int, images_dir: str) -> tuple[int, int]:
-    files = sorted(p for p in Path(images_dir).iterdir() if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"})
+    files = sorted(p for p in Path(images_dir).iterdir() if p.suffix.lower() in IMAGE_SUFFIXES)
     added = 0
     for path in files:
         sha = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -39,11 +43,19 @@ def seed_posts(session, tenant_id: int, posts_file: str) -> tuple[int, int]:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--snapshot", action="store_true", help="load data/snapshot/snapshot.json")
+    args = parser.parse_args()
     settings = get_settings()
+    tenant = settings.default_tenant_id
     with SessionLocal() as s:
-        ia, it = seed_images(s, settings.default_tenant_id, settings.images_dir)
-        pa, pt = seed_posts(s, settings.default_tenant_id, settings.posts_file)
-    print(f"images: {ia} new / {it} files | posts: {pa} new / {pt} in file")
+        ia, it = seed_images(s, tenant, settings.images_dir)
+        pa, pt = seed_posts(s, tenant, settings.posts_file)
+        print(f"images: {ia} new / {it} files | posts: {pa} new / {pt} in file")
+        if args.snapshot:
+            from scripts.snapshot import apply_snapshot
+
+            print("snapshot applied:", apply_snapshot(s, tenant))
 
 
 if __name__ == "__main__":

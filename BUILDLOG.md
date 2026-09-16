@@ -54,3 +54,16 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
 - Added 3 harder posts (arctic fox and black bear with no matching image, antelopes with 3) and a
   15-post labelled set keyed by filename. scripts/eval.py computes top-1 precision offline (no API calls).
 - SIMILARITY_THRESHOLD=0.73 chosen by sweep (middle of the best-scoring range), not guessed.
+
+## Session 6 - API, worker, Docker, snapshot
+- Eval: 15/15 top-1 at threshold 0.73, but the threshold was tuned on the same 15 posts, and every value
+  0.70-0.76 scores 15/15 - the subject gate (G2) does most of the work. Documented as a limitation.
+- Vision confidence is not stable run to run: images 49/50 went 0.50 -> 0.95/1.00 on re-tag, so nothing
+  was flagged. Added two deliberately degraded copies (pixelated fox, near-black wolf) to exercise flagging.
+- API: guarded matching (GET persists suggestions so they can be reviewed), forced checks, review with a
+  tenant-scoped Idempotency-Key (same key + same request replays 200; different request 409), costs.
+- Worker claims queued jobs with FOR UPDATE SKIP LOCKED; the API only inserts job rows. A second job
+  request while one is active returns the existing job.
+- API runs on host port 8010 because 8000 belongs to my other capstone.
+- seed --snapshot loads committed tags/subjects/embeddings so an evaluator can run probes 2-5 without a key.
+- Fixed grammar in guard reasons ("a antelope" -> "an antelope").

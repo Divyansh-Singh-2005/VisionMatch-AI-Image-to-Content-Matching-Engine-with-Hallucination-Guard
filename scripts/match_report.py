@@ -82,7 +82,7 @@ def post_report(s, settings) -> None:
         hw = max(wrong_best)
         print(f"  highest wrong-subject score (G2 blocks it) : {hw[0]:.3f} ({hw[1]})")
     if correct_top and other_top:
-        print(f"  safe threshold window: ({max(other_top)[0]:.3f}, {min(correct_top)[0]:.3f}]"
+        print(f"  similarity-only window (no-subject posts now need the unverified bar {settings.unverified_subject_threshold:.2f}): ({max(other_top)[0]:.3f}, {min(correct_top)[0]:.3f}]"
               f"  current={settings.similarity_threshold:.2f}")
 
 

@@ -448,5 +448,27 @@
     "photographer": "Alex Moliski",
     "photographer_url": "https://www.pexels.com/@alexmoliski",
     "license": "Pexels License - https://www.pexels.com/license/"
+  },
+  {
+    "file": "img_051.jpg",
+    "source_query": "synthetic degraded",
+    "derived_from": "img_005.jpg",
+    "degradation": "pixelated to 20px wide, upscaled, gaussian blur r=12",
+    "pexels_id": 26970106,
+    "pexels_url": "https://www.pexels.com/photo/red-fox-sitting-on-the-steps-26970106/",
+    "photographer": "Radik 2707",
+    "photographer_url": "https://www.pexels.com/@radik-2707-170977881",
+    "license": "Pexels License - https://www.pexels.com/license/"
+  },
+  {
+    "file": "img_052.jpg",
+    "source_query": "synthetic degraded",
+    "derived_from": "img_012.jpg",
+    "degradation": "brightness x0.10, gaussian blur r=14",
+    "pexels_id": 31767241,
+    "pexels_url": "https://www.pexels.com/photo/gray-wolf-in-forest-clearing-during-daytime-31767241/",
+    "photographer": "Daniel Lengies",
+    "photographer_url": "https://www.pexels.com/@daniel-lengies-173739220",
+    "license": "Pexels License - https://www.pexels.com/license/"
   }
 ]
