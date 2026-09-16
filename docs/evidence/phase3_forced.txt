@@ -1,0 +1,27 @@
+
+== forced check: post=red-fox-behavior image=10 ==
+  Post:      The behavior of red foxes  (target=red_fox)
+  Candidate: gray wolf [gray_wolf] score=0.748
+  Result:    REJECTED
+  [PASS] G1_vision_quality: vision confidence 0.95
+  [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
+  [PASS] G3_similarity: similarity 0.75 >= 0.70
+  Reason:    Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
+
+== forced check: post=red-fox-behavior image=19 ==
+  Post:      The behavior of red foxes  (target=red_fox)
+  Candidate: white dog barking [dog] score=0.739
+  Result:    REJECTED
+  [PASS] G1_vision_quality: vision confidence 0.95
+  [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected dog (both canids - look-alike rejected)
+  [PASS] G3_similarity: similarity 0.74 >= 0.70
+  Reason:    Animal category mismatch: expected red fox, detected dog (both canids - look-alike rejected)
+
+== forced check: post=deer-antlers image=37 ==
+  Post:      How deer grow antlers  (target=deer)
+  Candidate: two blackbucks [antelope] score=0.771
+  Result:    REJECTED
+  [PASS] G1_vision_quality: vision confidence 1.00
+  [FAIL] G2_subject_match: Category mismatch: expected deer, detected antelope
+  [PASS] G3_similarity: similarity 0.77 >= 0.70
+  Reason:    Category mismatch: expected deer, detected antelope

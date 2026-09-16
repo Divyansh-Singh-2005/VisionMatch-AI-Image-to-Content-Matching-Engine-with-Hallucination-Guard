@@ -1,0 +1,13 @@
+kind     model                  calls   ok   in_tok  out_tok    est_usd  avg_ms
+vision   gemini-2.5-flash-lite      1    0        0        0   0.000000       0
+vision   gemini-2.5-flash          30   20     9040     2034   0.007797    3878
+post_subject gemini-3.1-flash-lite     12   12     1697      469   0.000357    1147
+embed    gemini-embedding-001      67   67     3074        0   0.000461     524
+vision   gemini-3.1-flash-lite     45   45    58727     5042   0.007890    3844
+
+last 5 calls:
+  #155 embed concept:sourdough bread ok=True in=4 out=0 usd=0.000001 ms=474 err=
+  #154 embed concept:gray wolf ok=True in=3 out=0 usd=0.000000 ms=453 err=
+  #153 embed concept:wild fox species ok=True in=4 out=0 usd=0.000001 ms=466 err=
+  #152 embed concept:Vulpes vulpes ok=True in=4 out=0 usd=0.000001 ms=475 err=
+  #151 embed concept:red fox ok=True in=2 out=0 usd=0.000000 ms=581 err=

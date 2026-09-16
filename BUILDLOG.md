@@ -34,3 +34,13 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
 - Added scripts/probe_vision.py (one logged call per candidate model); switched vision to gemini-3.1-flash-lite.
   Images 1-20 remain tagged by gemini-2.5-flash; image_metadata.model records which model tagged each image.
 - Disabled automatic function calling (SDK warning); thinking_config is only sent to 2.5 models.
+
+## Session 4 - Taxonomy fix + Phase 3 matching
+- Finding: the Pexels "deer" query returned blackbuck, nyala and gazelle photos, and the vision model
+  labelled them `deer` with 0.80-0.95 confidence because the taxonomy had no closer option (forced choice).
+  Added `antelope` (family bovid), told the prompt that antelopes are not deer, and re-tagged images 37-50.
+- gemini-3.1-flash-lite was missing from the price table, so its calls logged $0. Added an ASSUMED
+  flash-lite rate (to verify on the pricing page) and backfilled the existing rows.
+- The Gemini embeddings API returns no token usage, so embedding cost uses a ~4 chars/token estimate.
+- gemini-embedding-001 vectors truncated to 768 dims are not unit length; normalised before storing.
+- The guard is a pure module (no DB/API) so each gate is unit-tested; ranking lives in matching.py.

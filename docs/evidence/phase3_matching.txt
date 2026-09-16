@@ -1,0 +1,109 @@
+== concept check: cosine similarity to 'red fox' ==
+  Vulpes vulpes      0.926
+  wild fox species   0.924
+  gray wolf          0.831
+  sourdough bread    0.769
+
+== post 1 red-fox-behavior | target=red_fox | SUGGESTED
+  #1 img  4 red_fox     score=0.868 ACCEPT  <= SUGGESTED
+  #2 img  5 red_fox     score=0.857 ACCEPT
+  #3 img  3 red_fox     score=0.854 ACCEPT
+  #4 img  6 red_fox     score=0.842 ACCEPT
+  #5 img  2 red_fox     score=0.842 ACCEPT
+  first non-red_fox image at rank 10 of 50
+
+== post 2 vulpes-vulpes-cities | target=red_fox | SUGGESTED
+  #1 img  2 red_fox     score=0.822 ACCEPT  <= SUGGESTED
+  #2 img  6 red_fox     score=0.816 ACCEPT
+  #3 img  5 red_fox     score=0.815 ACCEPT
+  #4 img  3 red_fox     score=0.815 ACCEPT
+  #5 img  1 red_fox     score=0.811 ACCEPT
+  first non-red_fox image at rank 10 of 50
+
+== post 3 wolf-pack-structure | target=gray_wolf | SUGGESTED
+  #1 img 11 gray_wolf   score=0.838 ACCEPT  <= SUGGESTED
+  #2 img 13 gray_wolf   score=0.818 ACCEPT
+  #3 img 17 gray_wolf   score=0.818 ACCEPT
+  #4 img 15 gray_wolf   score=0.800 ACCEPT
+  #5 img 16 gray_wolf   score=0.798 ACCEPT
+  first non-gray_wolf image at rank 9 of 50
+
+== post 4 canis-lupus-howling | target=gray_wolf | SUGGESTED
+  #1 img 17 gray_wolf   score=0.809 ACCEPT  <= SUGGESTED
+  #2 img 13 gray_wolf   score=0.798 ACCEPT
+  #3 img 11 gray_wolf   score=0.796 ACCEPT
+  #4 img 15 gray_wolf   score=0.795 ACCEPT
+  #5 img 16 gray_wolf   score=0.792 ACCEPT
+  first non-gray_wolf image at rank 10 of 50
+
+== post 5 family-dog-care | target=dog | SUGGESTED
+  #1 img 24 dog         score=0.765 ACCEPT  <= SUGGESTED
+  #2 img 21 dog         score=0.760 ACCEPT
+  #3 img 20 dog         score=0.748 ACCEPT
+  #4 img 22 dog         score=0.748 ACCEPT
+  #5 img 15 gray_wolf   score=0.747 REJECT
+       Animal category mismatch: expected dog, detected gray wolf (both canids - look-alike rejected)
+  first non-dog image at rank 5 of 50
+
+== post 6 brown-bear-salmon | target=brown_bear | SUGGESTED
+  #1 img 33 brown_bear  score=0.816 ACCEPT  <= SUGGESTED
+  #2 img 36 brown_bear  score=0.813 ACCEPT
+  #3 img 35 brown_bear  score=0.811 ACCEPT
+  #4 img 31 brown_bear  score=0.795 ACCEPT
+  #5 img 28 brown_bear  score=0.794 ACCEPT
+  first non-brown_bear image at rank 10 of 50
+
+== post 7 ursus-arctos-hibernation | target=brown_bear | SUGGESTED
+  #1 img 34 brown_bear  score=0.797 ACCEPT  <= SUGGESTED
+  #2 img 35 brown_bear  score=0.778 ACCEPT
+  #3 img 28 brown_bear  score=0.775 ACCEPT
+  #4 img 36 brown_bear  score=0.770 ACCEPT
+  #5 img 31 brown_bear  score=0.770 ACCEPT
+  first non-brown_bear image at rank 9 of 50
+
+== post 8 deer-antlers | target=deer | SUGGESTED
+  #1 img 39 deer        score=0.841 ACCEPT  <= SUGGESTED
+  #2 img 45 deer        score=0.811 ACCEPT
+  #3 img 43 deer        score=0.810 ACCEPT
+  #4 img 46 deer        score=0.803 ACCEPT
+  #5 img 42 deer        score=0.795 ACCEPT
+  first non-deer image at rank 7 of 50
+
+== post 9 cervid-autumn-rut | target=deer | SUGGESTED
+  #1 img 46 deer        score=0.854 ACCEPT  <= SUGGESTED
+  #2 img 43 deer        score=0.850 ACCEPT
+  #3 img 45 deer        score=0.835 ACCEPT
+  #4 img 44 deer        score=0.834 ACCEPT
+  #5 img 42 deer        score=0.829 ACCEPT
+  first non-deer image at rank 6 of 50
+
+== post 10 emperor-penguins | target=other | SUGGESTED
+  #1 img 50 other       score=0.743 ACCEPT  <= SUGGESTED
+  #2 img 31 brown_bear  score=0.726 ACCEPT
+  #3 img 46 deer        score=0.723 ACCEPT
+  #4 img 37 antelope    score=0.721 ACCEPT
+  #5 img 35 brown_bear  score=0.720 ACCEPT
+
+== post 11 coral-reef-health | target=other | SUGGESTED
+  #1 img 50 other       score=0.724 ACCEPT  <= SUGGESTED
+  #2 img 40 other       score=0.717 ACCEPT
+  #3 img 44 deer        score=0.717 ACCEPT
+  #4 img 47 other       score=0.712 ACCEPT
+  #5 img 43 deer        score=0.707 ACCEPT
+
+== post 12 sourdough-starter | target=other | SUGGESTED
+  #1 img 15 gray_wolf   score=0.704 ACCEPT  <= SUGGESTED
+  #2 img  3 red_fox     score=0.698 REJECT
+       Similarity 0.70 below threshold 0.70
+  #3 img 13 gray_wolf   score=0.695 REJECT
+       Similarity 0.70 below threshold 0.70
+  #4 img 50 other       score=0.694 REJECT
+       Similarity 0.69 below threshold 0.70
+  #5 img 37 antelope    score=0.694 REJECT
+       Similarity 0.69 below threshold 0.70
+
+== threshold analysis ==
+  lowest best-correct score on subject posts : 0.765 (family-dog-care)
+  highest top-1 score on no-subject posts    : 0.743 (emperor-penguins)
+  highest wrong-subject score (G2 blocks it) : 0.820 (cervid-autumn-rut)
+  safe threshold window: (0.743, 0.765]  current=0.70

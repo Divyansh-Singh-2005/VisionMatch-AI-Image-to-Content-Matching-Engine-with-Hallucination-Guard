@@ -35,18 +35,18 @@
  34 img_034.jpg  brown bear             tagged   brown_bear   1.00  A brown bear rests on the ground in a shaded, rocky for
  35 img_035.jpg  brown bear             tagged   brown_bear   1.00  Three brown bears are playing and swimming together in 
  36 img_036.jpg  brown bear             tagged   brown_bear   1.00  A brown bear stands in a forest covered with fallen aut
- 37 img_037.jpg  deer                   tagged   deer         0.95  Two blackbucks stand together on a forest floor covered
- 38 img_038.jpg  deer                   tagged   deer         0.80  A nyala antelope stands in a dark, grassy field looking
+ 37 img_037.jpg  deer                   tagged   antelope     1.00  Two blackbucks stand together on a forest floor illumin
+ 38 img_038.jpg  deer                   tagged   antelope     0.95  A nyala stands in a dark, grassy field looking directly
  39 img_039.jpg  deer                   tagged   deer         1.00  A close-up portrait of a deer showing its eye and velve
- 40 img_040.jpg  deer                   tagged   other        1.00  A tall giraffe stands in a forest clearing while severa
- 41 img_041.jpg  deer                   tagged   deer         0.80  Four gazelles stand in a grassy field in front of a lin
+ 40 img_040.jpg  deer                   tagged   other        1.00  A tall giraffe stands in a wooded area while several an
+ 41 img_041.jpg  deer                   tagged   antelope     1.00  Four gazelles stand in a grassy field in front of a lin
  42 img_042.jpg  deer                   tagged   deer         1.00  A small herd of spotted fallow deer stands in a field d
- 43 img_043.jpg  deer                   tagged   deer         1.00  A group of red deer stands in a forest clearing with he
- 44 img_044.jpg  deer                   tagged   deer         1.00  A group of spotted deer graze in a grassy field near a 
+ 43 img_043.jpg  deer                   tagged   deer         1.00  Two red deer stand in a forest clearing with heather in
+ 44 img_044.jpg  deer                   tagged   deer         1.00  A group of fallow deer graze in a grassy field near a w
  45 img_045.jpg  deer                   tagged   deer         1.00  Two deer are resting together in a natural outdoor envi
  46 img_046.jpg  animal silhouette fog  tagged   deer         0.95  A group of deer are silhouetted against a thick morning
- 47 img_047.jpg  animal silhouette fog  tagged   other        1.00  A group of horses stands in a foggy, backlit pasture du
- 48 img_048.jpg  animal silhouette fog  tagged   other        1.00  Two horses are running through a misty, foggy field in 
- 49 img_049.jpg  animal silhouette fog  flagged  other        0.50  A silhouette of a sheep stands on a small hill against   [low vision confidence 0.50 < 0.60]
- 50 img_050.jpg  animal silhouette fog  flagged  other        0.50  A group of waterfowl swims across a calm, misty lake in  [low vision confidence 0.50 < 0.60]
-status counts: {'flagged': 2, 'tagged': 48}
+ 47 img_047.jpg  animal silhouette fog  tagged   other        1.00  A herd of horses grazes in a foggy, backlit field durin
+ 48 img_048.jpg  animal silhouette fog  tagged   other        1.00  Two horses run through a misty, foggy field in a black 
+ 49 img_049.jpg  animal silhouette fog  tagged   other        0.95  A silhouette of a sheep stands on a small hill against 
+ 50 img_050.jpg  animal silhouette fog  tagged   other        1.00  A loon and its two chicks swim across a calm, misty lak
+status counts: {'tagged': 50}
