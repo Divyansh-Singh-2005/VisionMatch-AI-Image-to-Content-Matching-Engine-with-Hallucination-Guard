@@ -23,3 +23,8 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   this project's container had never started. 55432 then failed because Windows (Hyper-V/WSL) reserves
   that range. The DB now uses host port 5434, picked by checking listeners and netsh excluded ranges.
 - Replaced a fragile cast-based ok-count in the costs report with COUNT(*) FILTER (WHERE ok).
+- Alembic printed its log format literally: logging.fileConfig reads `format` raw, so `%%` was never
+  unescaped. Switched to single `%`.
+- Hidden terminal input (Read-Host -AsSecureString) did not accept pasted keys in the VS Code terminal;
+  keys are now edited directly in the git-ignored .env. Verified no key ever reached git history.
+- Downloaded the Pexels corpus with neutral filenames and ran the first full tagging job.
