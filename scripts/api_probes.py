@@ -57,7 +57,11 @@ def wait_jobs(c: httpx.Client, jobs: list[dict], timeout: int = 1800) -> None:
     deadline = time.time() + timeout
     while pending and time.time() < deadline:
         for jid in sorted(pending):
-            j = c.get(f"/jobs/{jid}").json()
+            try:
+                j = c.get(f"/jobs/{jid}").json()
+            except httpx.TransportError as exc:
+                print(f"  (transient {type(exc).__name__} polling job {jid}; retrying)")
+                continue
             state = (j["status"], j["done"], j["failed"])
             if last.get(jid) != state:
                 print(f"  job {jid} {j['kind']}: {j['status']} {j['done']}/{j['total']} "
@@ -214,7 +218,9 @@ def main() -> None:
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--no-probes", action="store_true")
     args = parser.parse_args()
-    with httpx.Client(base_url=args.base_url, timeout=60) as c:
+    with httpx.Client(
+        base_url=args.base_url, timeout=60, limits=httpx.Limits(max_keepalive_connections=0)
+    ) as c:
         section(f"HEALTH {args.base_url}")
         wait_health(c)
         if args.run_jobs:
