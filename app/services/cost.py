@@ -69,3 +69,40 @@ def ensure_budget(session: Session, tenant_id: int, daily_limit: int) -> None:
     used = calls_today(session, tenant_id)
     if used >= daily_limit:
         raise BudgetExceeded(f"daily AI call budget reached ({used}/{daily_limit})")
+
+def cost_summary(session: Session, tenant_id: int, limit: int, daily_limit: int) -> dict:
+    grouped = session.execute(
+        select(
+            AICall.kind,
+            AICall.model,
+            func.count(),
+            func.count().filter(AICall.ok.is_(True)),
+            func.coalesce(func.sum(AICall.input_tokens), 0),
+            func.coalesce(func.sum(AICall.output_tokens), 0),
+            func.coalesce(func.sum(AICall.est_cost_usd), 0.0),
+        )
+        .where(AICall.tenant_id == tenant_id)
+        .group_by(AICall.kind, AICall.model)
+        .order_by(AICall.kind, AICall.model)
+    ).all()
+    totals = [
+        {
+            "kind": kind, "model": model, "calls": n, "ok_calls": ok,
+            "input_tokens": int(tin), "output_tokens": int(tout), "est_cost_usd": round(float(usd), 6),
+        }
+        for kind, model, n, ok, tin, tout, usd in grouped
+    ]
+    recent = session.scalars(
+        select(AICall).where(AICall.tenant_id == tenant_id).order_by(AICall.id.desc()).limit(limit)
+    ).all()
+    unattributed = session.scalar(
+        select(func.count(AICall.id)).where(AICall.tenant_id == tenant_id, AICall.target_ref.is_(None))
+    ) or 0
+    return {
+        "calls_today": calls_today(session, tenant_id),
+        "daily_call_budget": daily_limit,
+        "unattributed_calls": unattributed,
+        "total_est_cost_usd": round(sum(t["est_cost_usd"] for t in totals), 6),
+        "totals": totals,
+        "recent": recent,
+    }

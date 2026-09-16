@@ -55,6 +55,10 @@ def _label(value: str | None) -> str:
     return (value or "unknown").replace("_", " ")
 
 
+def _a(word: str) -> str:
+    return ("an " if word[:1] in "aeiou" else "a ") + word
+
+
 def _family(value: str | None) -> str | None:
     try:
         return SUBJECT_FAMILY[Subject(value)]
@@ -103,7 +107,7 @@ def evaluate(
             gates.append(GateResult(
                 "G2_subject_match", False,
                 f"Subject mismatch: post topic is outside the library taxonomy, "
-                f"image shows a {_label(c.subject_canonical)}",
+                f"image shows {_a(_label(c.subject_canonical))}",
             ))
     elif c.subject_canonical == target:
         gates.append(GateResult("G2_subject_match", True, f"subject matches: {_label(target)}"))

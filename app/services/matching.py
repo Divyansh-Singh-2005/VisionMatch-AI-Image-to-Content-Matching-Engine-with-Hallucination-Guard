@@ -6,6 +6,14 @@ from app.db.models import Embedding, Image, ImageMetadata, Post, Suggestion
 from app.services.guard import Candidate, Decision, Verdict, decide, evaluate
 
 
+def _guard_kwargs(settings: Settings) -> dict:
+    return {
+        "threshold": settings.similarity_threshold,
+        "min_confidence": settings.min_vision_confidence,
+        "unverified_threshold": settings.unverified_subject_threshold,
+    }
+
+
 def rank_images(session: Session, post: Post, model: str, limit: int | None = None) -> list[Candidate]:
     post_vec = session.scalar(
         select(Embedding.vector).where(
@@ -43,31 +51,18 @@ def rank_images(session: Session, post: Post, model: str, limit: int | None = No
 
 def match_post(session: Session, post: Post, settings: Settings) -> tuple[Decision, list[Candidate]]:
     candidates = rank_images(session, post, settings.embedding_model)
-    decision = decide(
-        post.target_subject,
-        candidates,
-        threshold=settings.similarity_threshold,
-        min_confidence=settings.min_vision_confidence,
-        unverified_threshold=settings.unverified_subject_threshold,
-        top_k=settings.top_k,
-    )
+    decision = decide(post.target_subject, candidates, top_k=settings.top_k, **_guard_kwargs(settings))
     return decision, candidates
 
 
 def check_candidate(session: Session, post: Post, image_id: int, settings: Settings) -> Verdict:
     for c in rank_images(session, post, settings.embedding_model):
         if c.image_id == image_id:
-            return evaluate(
-                post.target_subject,
-                c,
-                threshold=settings.similarity_threshold,
-                min_confidence=settings.min_vision_confidence,
-                unverified_threshold=settings.unverified_subject_threshold,
-            )
-    raise LookupError(f"image {image_id} has no embedding / is not in tenant {post.tenant_id}")
+            return evaluate(post.target_subject, c, **_guard_kwargs(settings))
+    raise LookupError(f"image {image_id} not found or not embedded for this tenant")
 
 
-def _gates_json(v: Verdict) -> list[dict]:
+def gates_json(v: Verdict) -> list[dict]:
     return [{"gate": g.gate, "passed": g.passed, "detail": g.detail} for g in v.gates]
 
 
@@ -81,7 +76,7 @@ def persist_decision(session: Session, post: Post, decision: Decision) -> list[S
             rank=rank,
             score=v.candidate.score,
             decision="SUGGESTED" if v.accepted else "REJECTED",
-            reasons=_gates_json(v),
+            reasons=gates_json(v),
         ))
     if decision.decision == "NO_CONFIDENT_MATCH":
         rows.append(Suggestion(
