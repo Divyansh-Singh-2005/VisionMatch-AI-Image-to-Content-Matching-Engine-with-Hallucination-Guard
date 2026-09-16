@@ -46,9 +46,17 @@ def _now() -> datetime:
 
 
 def create_tagging_job(
-    session: Session, tenant_id: int, *, retry_failed: bool = False, limit: int | None = None
+    session: Session,
+    tenant_id: int,
+    *,
+    retry_failed: bool = False,
+    limit: int | None = None,
+    force: bool = False,
 ) -> Job:
-    statuses = ["pending", "failed"] if retry_failed else ["pending"]
+    if force:
+        statuses = ["pending", "failed", "tagged", "flagged"]
+    else:
+        statuses = ["pending", "failed"] if retry_failed else ["pending"]
     stmt = (
         select(Image)
         .where(Image.tenant_id == tenant_id, Image.status.in_(statuses))
@@ -57,6 +65,9 @@ def create_tagging_job(
     if limit:
         stmt = stmt.limit(limit)
     images = session.scalars(stmt).all()
+    if force:
+        for img in images:
+            img.status = "pending"
     job = Job(tenant_id=tenant_id, kind="tag_images", total=len(images))
     if not images:
         job.status = "completed"

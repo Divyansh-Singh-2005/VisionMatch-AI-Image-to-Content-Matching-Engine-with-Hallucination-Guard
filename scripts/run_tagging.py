@@ -1,4 +1,4 @@
-"""Run the vision tagging batch job from the CLI (the API will trigger the same job in Phase 4)."""
+"""Run the vision tagging batch job in-process (the API queues the same job for the worker)."""
 import argparse
 
 from app.core.config import get_settings
@@ -10,13 +10,16 @@ from app.jobs.tagging import create_tagging_job, run_tagging_job
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--retry-failed", action="store_true")
+    parser.add_argument("--force", action="store_true", help="re-tag every image")
     parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args()
 
     setup_logging()
     settings = get_settings()
     with SessionLocal() as s:
-        job = create_tagging_job(s, settings.default_tenant_id, retry_failed=args.retry_failed, limit=args.limit)
+        job = create_tagging_job(
+            s, settings.default_tenant_id, retry_failed=args.retry_failed, limit=args.limit, force=args.force
+        )
     print(f"job {job.id}: {job.total} image(s) queued")
     if job.total == 0:
         return
