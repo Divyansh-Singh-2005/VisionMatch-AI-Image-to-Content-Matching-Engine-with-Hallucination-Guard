@@ -10,7 +10,9 @@ from app.services.vision import VisionCall
 POST_PROMPT = """You label blog posts for an image-matching backend.
 Pick the ONE subject the post is primarily about from the allowed values.
 Scientific and group names count: Vulpes vulpes = red_fox, Canis lupus = gray_wolf,
-Ursus arctos / grizzly = brown_bear, Cervidae / cervids / stags = deer.
+Ursus arctos / grizzly = brown_bear, Cervidae / cervids / stags = deer,
+Vulpes lagopus / white fox = arctic_fox, Ursus americanus = black_bear,
+antelope / gazelle / blackbuck / impala = antelope.
 Use "other" when the post is not about any allowed subject.
 Return JSON with target_subject and a one-sentence reason.
 

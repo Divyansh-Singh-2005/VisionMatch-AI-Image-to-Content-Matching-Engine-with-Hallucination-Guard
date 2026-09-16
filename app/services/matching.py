@@ -48,6 +48,7 @@ def match_post(session: Session, post: Post, settings: Settings) -> tuple[Decisi
         candidates,
         threshold=settings.similarity_threshold,
         min_confidence=settings.min_vision_confidence,
+        unverified_threshold=settings.unverified_subject_threshold,
         top_k=settings.top_k,
     )
     return decision, candidates
@@ -61,6 +62,7 @@ def check_candidate(session: Session, post: Post, image_id: int, settings: Setti
                 c,
                 threshold=settings.similarity_threshold,
                 min_confidence=settings.min_vision_confidence,
+                unverified_threshold=settings.unverified_subject_threshold,
             )
     raise LookupError(f"image {image_id} has no embedding / is not in tenant {post.tenant_id}")
 

@@ -14,7 +14,8 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+psycopg://imgmatch:imgmatch@localhost:5434/imgmatch"
 
-    similarity_threshold: float = 0.70
+    similarity_threshold: float = 0.75
+    unverified_subject_threshold: float = 0.80
     min_vision_confidence: float = 0.60
     top_k: int = 5
 

@@ -2,12 +2,17 @@
 
 Pure functions, no I/O - every rule is unit-testable.
 G1 vision quality  - image must be 'tagged' (flagged / failed images never get suggested)
-G2 subject match   - when the post has a target subject, the image's canonical subject must equal it
-G3 similarity      - cosine similarity must reach the threshold
+G2 subject match   - post with a known subject: image subject must equal it.
+                     post outside the taxonomy ('other'): an image of a known subject is rejected,
+                     an 'other' image is allowed but cannot be verified by subject.
+G3 similarity      - cosine >= threshold; unverifiable subjects must clear the stricter
+                     unverified_threshold instead.
 """
 from dataclasses import dataclass
 
 from app.schemas.vision import SUBJECT_FAMILY, Subject
+
+OTHER = Subject.other.value
 
 
 @dataclass(frozen=True)
@@ -57,7 +62,14 @@ def _family(value: str | None) -> str | None:
         return None
 
 
-def evaluate(target_subject: str | None, c: Candidate, *, threshold: float, min_confidence: float) -> Verdict:
+def evaluate(
+    target_subject: str | None,
+    c: Candidate,
+    *,
+    threshold: float,
+    min_confidence: float,
+    unverified_threshold: float = 0.80,
+) -> Verdict:
     gates: list[GateResult] = []
 
     # G1 - vision quality
@@ -73,16 +85,28 @@ def evaluate(target_subject: str | None, c: Candidate, *, threshold: float, min_
         gates.append(GateResult("G1_vision_quality", False, f"Image not usable: status '{c.status}'"))
 
     # G2 - subject match
-    target = target_subject or Subject.other.value
-    if target == Subject.other.value:
-        gates.append(GateResult("G2_subject_match", True, "post has no specific subject; similarity decides"))
-    elif c.subject_canonical == target:
-        gates.append(GateResult("G2_subject_match", True, f"subject matches: {_label(target)}"))
-    elif c.subject_canonical is None:
+    target = target_subject or OTHER
+    verified = target != OTHER
+    if c.subject_canonical is None:
         gates.append(GateResult(
             "G2_subject_match", False,
             f"Subject unknown: expected {_label(target)}, image has no validated tags",
         ))
+    elif not verified:
+        if c.subject_canonical == OTHER:
+            gates.append(GateResult(
+                "G2_subject_match", True,
+                f"post topic is outside the library taxonomy; subject cannot be verified, "
+                f"stricter similarity bar {unverified_threshold:.2f} applies",
+            ))
+        else:
+            gates.append(GateResult(
+                "G2_subject_match", False,
+                f"Subject mismatch: post topic is outside the library taxonomy, "
+                f"image shows a {_label(c.subject_canonical)}",
+            ))
+    elif c.subject_canonical == target:
+        gates.append(GateResult("G2_subject_match", True, f"subject matches: {_label(target)}"))
     else:
         fam_t, fam_d = _family(target), _family(c.subject_canonical)
         if fam_t and fam_t == fam_d and fam_t != "other":
@@ -95,11 +119,13 @@ def evaluate(target_subject: str | None, c: Candidate, *, threshold: float, min_
         gates.append(GateResult("G2_subject_match", False, detail))
 
     # G3 - similarity threshold
-    if c.score >= threshold:
-        gates.append(GateResult("G3_similarity", True, f"similarity {c.score:.2f} >= {threshold:.2f}"))
+    bar = threshold if verified else unverified_threshold
+    bar_name = "threshold" if verified else "unverified-subject threshold"
+    if c.score >= bar:
+        gates.append(GateResult("G3_similarity", True, f"similarity {c.score:.3f} >= {bar_name} {bar:.2f}"))
     else:
         gates.append(GateResult(
-            "G3_similarity", False, f"Similarity {c.score:.2f} below threshold {threshold:.2f}"
+            "G3_similarity", False, f"Similarity {c.score:.3f} below {bar_name} {bar:.2f}"
         ))
 
     return Verdict(candidate=c, accepted=all(g.passed for g in gates), gates=tuple(gates))
@@ -111,10 +137,14 @@ def decide(
     *,
     threshold: float,
     min_confidence: float,
+    unverified_threshold: float = 0.80,
     top_k: int = 5,
 ) -> Decision:
     verdicts = tuple(
-        evaluate(target_subject, c, threshold=threshold, min_confidence=min_confidence)
+        evaluate(
+            target_subject, c,
+            threshold=threshold, min_confidence=min_confidence, unverified_threshold=unverified_threshold,
+        )
         for c in candidates[:top_k]
     )
     accepted = [v for v in verdicts if v.accepted]
@@ -122,9 +152,12 @@ def decide(
         return Decision("SUGGESTED", accepted[0], verdicts, ())
     if not verdicts:
         return Decision("NO_CONFIDENT_MATCH", None, verdicts, ("No tagged images available to rank",))
-    reasons = [f"None of the top {len(verdicts)} candidates cleared all gates (threshold {threshold:.2f})"]
+    reasons = [
+        f"None of the top {len(verdicts)} candidates cleared all gates "
+        f"(threshold {threshold:.2f}, unverified-subject threshold {unverified_threshold:.2f})"
+    ]
     for rank, v in enumerate(verdicts, start=1):
         reasons.append(
-            f"image {v.candidate.image_id} (rank {rank}, score {v.candidate.score:.2f}): " + "; ".join(v.reasons)
+            f"image {v.candidate.image_id} (rank {rank}, score {v.candidate.score:.3f}): " + "; ".join(v.reasons)
         )
     return Decision("NO_CONFIDENT_MATCH", None, verdicts, tuple(reasons))
