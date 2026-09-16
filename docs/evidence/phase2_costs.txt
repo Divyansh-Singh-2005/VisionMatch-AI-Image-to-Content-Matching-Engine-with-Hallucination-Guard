@@ -1,0 +1,11 @@
+kind     model                  calls   ok   in_tok  out_tok    est_usd  avg_ms
+vision   gemini-2.5-flash          30   20     9040     2034   0.007797    3878
+vision   gemini-3.1-flash-lite     31   31    39858     3449   0.000000    4192
+vision   gemini-2.5-flash-lite      1    0        0        0   0.000000       0
+
+last 5 calls:
+  #62 vision image:50 ok=True in=1274 out=112 usd=0.000000 ms=2419 err=
+  #61 vision image:49 ok=True in=1258 out=104 usd=0.000000 ms=2185 err=
+  #60 vision image:48 ok=True in=1274 out=109 usd=0.000000 ms=2284 err=
+  #59 vision image:47 ok=True in=1267 out=116 usd=0.000000 ms=2796 err=
+  #58 vision image:46 ok=True in=1301 out=117 usd=0.000000 ms=3116 err=

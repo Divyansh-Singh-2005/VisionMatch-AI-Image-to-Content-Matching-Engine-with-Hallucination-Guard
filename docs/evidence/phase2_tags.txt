@@ -1,0 +1,52 @@
+ id file         source                 status   canonical    conf  caption / note
+  1 img_001.jpg  red fox                tagged   red_fox      0.95  A red fox with brown fur is lying down in green grass, 
+  2 img_002.jpg  red fox                tagged   red_fox      0.95  A red fox with orange fur and a white chest is lying do
+  3 img_003.jpg  red fox                tagged   red_fox      0.95  A close-up, eye-level portrait of a red fox with orange
+  4 img_004.jpg  red fox                tagged   red_fox      0.95  A red fox with orange fur and a white chest is lying on
+  5 img_005.jpg  red fox                tagged   red_fox      0.95  A red fox with orange fur and a white-tipped tail is si
+  6 img_006.jpg  red fox                tagged   red_fox      0.95  A red fox with orange fur, a white chest, and black leg
+  7 img_007.jpg  red fox                tagged   red_fox      0.95  Two red foxes are lying in a field of green grass with 
+  8 img_008.jpg  red fox                tagged   red_fox      0.95  Two red foxes are lying in a grassy field, one looking 
+  9 img_009.jpg  red fox                tagged   red_fox      0.95  A red fox with its eyes closed stands behind a chain-li
+ 10 img_010.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf with black fur is lying on a rock on the gr
+ 11 img_011.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf walks through a forest carrying its prey in
+ 12 img_012.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf stands in a grassy field with green foliage
+ 13 img_013.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf with brown fur stands alertly, looking forw
+ 14 img_014.jpg  gray wolf              tagged   gray_wolf    0.95  A close-up shot of a gray wolf with dark fur and brown 
+ 15 img_015.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf with brown and gray fur is captured in an a
+ 16 img_016.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf with brown eyes is looking to the right, wi
+ 17 img_017.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf with black markings on its fur is walking t
+ 18 img_018.jpg  gray wolf              tagged   gray_wolf    0.95  A gray wolf with dark, brown, and gray fur looks direct
+ 19 img_019.jpg  dog                    tagged   dog          0.95  A white dog with its mouth wide open, showing its teeth
+ 20 img_020.jpg  dog                    tagged   dog          0.90  A black and white dog with its tongue out is captured i
+ 21 img_021.jpg  dog                    tagged   dog          1.00  A dark-coated dog and a light-coated dog are resting to
+ 22 img_022.jpg  dog                    tagged   dog          1.00  A small brown puppy sits on a concrete surface with a p
+ 23 img_023.jpg  dog                    tagged   dog          1.00  A white dog and a brindle dog are playing together on t
+ 24 img_024.jpg  dog                    tagged   dog          1.00  A small, light-colored dog is shown in profile with ano
+ 25 img_025.jpg  dog                    tagged   dog          1.00  A small puppy sits on the ground in a black and white p
+ 26 img_026.jpg  dog                    tagged   dog          1.00  Three small puppies are standing on a concrete surface 
+ 27 img_027.jpg  dog                    tagged   dog          1.00  Two light brown puppies are sitting outdoors in natural
+ 28 img_028.jpg  brown bear             tagged   brown_bear   1.00  A brown bear is partially submerged in water with its h
+ 29 img_029.jpg  brown bear             tagged   brown_bear   1.00  A brown bear stands in a forest clearing next to a tree
+ 30 img_030.jpg  brown bear             tagged   brown_bear   1.00  A brown bear walks across a dirt path in an outdoor env
+ 31 img_031.jpg  brown bear             tagged   brown_bear   1.00  Two brown bears are navigating a rocky, uneven landscap
+ 32 img_032.jpg  brown bear             tagged   brown_bear   1.00  A brown bear walks across a rocky enclosure in daylight
+ 33 img_033.jpg  brown bear             tagged   brown_bear   1.00  Two brown bears interact near the edge of a riverbank.
+ 34 img_034.jpg  brown bear             tagged   brown_bear   1.00  A brown bear rests on the ground in a shaded, rocky for
+ 35 img_035.jpg  brown bear             tagged   brown_bear   1.00  Three brown bears are playing and swimming together in 
+ 36 img_036.jpg  brown bear             tagged   brown_bear   1.00  A brown bear stands in a forest covered with fallen aut
+ 37 img_037.jpg  deer                   tagged   deer         0.95  Two blackbucks stand together on a forest floor covered
+ 38 img_038.jpg  deer                   tagged   deer         0.80  A nyala antelope stands in a dark, grassy field looking
+ 39 img_039.jpg  deer                   tagged   deer         1.00  A close-up portrait of a deer showing its eye and velve
+ 40 img_040.jpg  deer                   tagged   other        1.00  A tall giraffe stands in a forest clearing while severa
+ 41 img_041.jpg  deer                   tagged   deer         0.80  Four gazelles stand in a grassy field in front of a lin
+ 42 img_042.jpg  deer                   tagged   deer         1.00  A small herd of spotted fallow deer stands in a field d
+ 43 img_043.jpg  deer                   tagged   deer         1.00  A group of red deer stands in a forest clearing with he
+ 44 img_044.jpg  deer                   tagged   deer         1.00  A group of spotted deer graze in a grassy field near a 
+ 45 img_045.jpg  deer                   tagged   deer         1.00  Two deer are resting together in a natural outdoor envi
+ 46 img_046.jpg  animal silhouette fog  tagged   deer         0.95  A group of deer are silhouetted against a thick morning
+ 47 img_047.jpg  animal silhouette fog  tagged   other        1.00  A group of horses stands in a foggy, backlit pasture du
+ 48 img_048.jpg  animal silhouette fog  tagged   other        1.00  Two horses are running through a misty, foggy field in 
+ 49 img_049.jpg  animal silhouette fog  flagged  other        0.50  A silhouette of a sheep stands on a small hill against   [low vision confidence 0.50 < 0.60]
+ 50 img_050.jpg  animal silhouette fog  flagged  other        0.50  A group of waterfowl swims across a calm, misty lake in  [low vision confidence 0.50 < 0.60]
+status counts: {'flagged': 2, 'tagged': 48}

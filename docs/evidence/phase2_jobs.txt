@@ -1,0 +1,3 @@
+job 1 tag_images completed total=0 done=0 flagged=0 failed=0
+job 2 tag_images aborted total=50 done=20 flagged=0 failed=3
+job 3 tag_images completed total=30 done=30 flagged=2 failed=0

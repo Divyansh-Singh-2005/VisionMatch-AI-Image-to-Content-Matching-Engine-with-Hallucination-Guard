@@ -28,3 +28,9 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
 - Hidden terminal input (Read-Host -AsSecureString) did not accept pasted keys in the VS Code terminal;
   keys are now edited directly in the git-ignored .env. Verified no key ever reached git history.
 - Downloaded the Pexels corpus with neutral filenames and ran the first full tagging job.
+- First full run hit the gemini-2.5-flash free-tier daily cap after 20 images. Retries/backoff and the
+  circuit breaker behaved correctly, but retrying a DAILY quota wastes calls, so the job now classifies
+  errors (quota_daily / rate_limit / transient / other), pauses on daily quota, and fails fast on 4xx.
+- Added scripts/probe_vision.py (one logged call per candidate model); switched vision to gemini-3.1-flash-lite.
+  Images 1-20 remain tagged by gemini-2.5-flash; image_metadata.model records which model tagged each image.
+- Disabled automatic function calling (SDK warning); thinking_config is only sent to 2.5 models.

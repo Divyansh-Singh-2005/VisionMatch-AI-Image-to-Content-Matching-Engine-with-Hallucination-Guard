@@ -1,5 +1,6 @@
-"""Vision tagging batch job: retries, pacing, per-call cost log, circuit breaker, failure alerts."""
+"""Vision tagging batch job: retries, pacing, per-call cost log, quota pause, circuit breaker, alerts."""
 import logging
+import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +20,25 @@ log = logging.getLogger("jobs.tagging")
 
 MIME = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}
 CIRCUIT_BREAKER = 3  # consecutive failed images -> abort job
+_QUOTA_ID = re.compile(r"quotaId['\"]?\s*:\s*['\"]([A-Za-z0-9_\-]+)")
+
+
+class QuotaExhausted(RuntimeError):
+    """Daily provider quota reached: retrying today is pointless, pause the job instead."""
+
+
+def classify_api_error(exc: Exception) -> tuple[str, str]:
+    """Return (kind, short detail). kind: quota_daily | rate_limit | transient | other."""
+    text = str(exc)
+    low = text.lower()
+    if "429" in text or "resource_exhausted" in low:
+        match = _QUOTA_ID.search(text)
+        quota_id = match.group(1) if match else "unknown"
+        daily = "perday" in quota_id.lower() or "perday" in low.replace(" ", "")
+        return ("quota_daily" if daily else "rate_limit"), f"429 quota={quota_id}"
+    if any(code in text for code in ("500", "502", "503", "504")) or "unavailable" in low:
+        return "transient", f"{type(exc).__name__}: {text[:120]}"
+    return "other", f"{type(exc).__name__}: {text[:160]}"
 
 
 def _now() -> datetime:
@@ -49,11 +69,6 @@ def create_tagging_job(
     return job
 
 
-def _is_rate_limit(exc: Exception) -> bool:
-    text = str(exc).lower()
-    return "429" in text or "resource_exhausted" in text or "quota" in text
-
-
 def _process_image(
     s: Session, job: Job, item: JobItem, img: Image, vision: VisionClient, settings: Settings
 ) -> str:
@@ -69,14 +84,20 @@ def _process_image(
         item.attempts = attempt
         try:
             call = vision.describe(data, mime)
-        except Exception as exc:  # network / 429 / 5xx
-            last_error = f"api_error: {type(exc).__name__}: {str(exc)[:200]}"
+        except Exception as exc:
+            kind, detail = classify_api_error(exc)
+            last_error = f"api_error[{kind}]: {detail}"
             record_call(
                 s, tenant_id=img.tenant_id, job_id=job.id, kind="vision",
                 model=vision.model, target_ref=ref, ok=False, error=last_error,
             )
             s.commit()
-            wait = interval * (2 ** attempt) if _is_rate_limit(exc) else interval * attempt
+            if kind == "quota_daily":
+                raise QuotaExhausted(detail) from exc
+            if kind == "other":
+                log.warning("image %s non-retryable error: %s", img.id, last_error)
+                break
+            wait = interval * (2 ** attempt) if kind == "rate_limit" else interval * attempt
             log.warning("image %s attempt %s failed (%s); retry in %.0fs", img.id, attempt, last_error, wait)
             time.sleep(wait)
             continue
@@ -174,6 +195,9 @@ def run_tagging_job(job_id: int, vision: VisionClient | None = None) -> Job:
         except BudgetExceeded as exc:
             job.status = "paused_budget"
             log.error("ALERT job %s paused: %s", job.id, exc)
+        except QuotaExhausted as exc:
+            job.status = "paused_quota"
+            log.error("ALERT job %s paused: provider daily quota reached (%s); rerun later", job.id, exc)
 
         if job.status == "running":
             job.status = "completed_with_errors" if job.failed else "completed"

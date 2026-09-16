@@ -12,6 +12,7 @@ from app.db.models import AICall
 
 PRICES_PER_MILLION: dict[str, tuple[float, float]] = {
     "gemini-2.5-flash": (0.30, 2.50),
+    "gemini-2.5-flash-lite": (0.10, 0.40),
     "gemini-embedding-001": (0.15, 0.0),
 }
 

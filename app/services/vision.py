@@ -37,18 +37,21 @@ class VisionClient(Protocol):
 
 
 class GeminiVision:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, model: str | None = None) -> None:
         key = settings.gemini_api_key.get_secret_value()
         if not key or key.startswith("your-"):
             raise RuntimeError("GEMINI_API_KEY is not configured")
         self._client = genai.Client(api_key=key)
-        self.model = settings.vision_model
-        self._config = types.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=ImageTagsLLM,
-            temperature=0.0,
-            thinking_config=types.ThinkingConfig(thinking_budget=0),
-        )
+        self.model = model or settings.vision_model
+        cfg: dict = {
+            "response_mime_type": "application/json",
+            "response_schema": ImageTagsLLM,
+            "temperature": 0.0,
+            "automatic_function_calling": types.AutomaticFunctionCallingConfig(disable=True),
+        }
+        if self.model.startswith("gemini-2.5"):
+            cfg["thinking_config"] = types.ThinkingConfig(thinking_budget=0)
+        self._config = types.GenerateContentConfig(**cfg)
 
     def describe(self, image_bytes: bytes, mime_type: str) -> VisionCall:
         started = time.perf_counter()
