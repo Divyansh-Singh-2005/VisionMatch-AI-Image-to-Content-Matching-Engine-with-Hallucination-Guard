@@ -24,6 +24,7 @@ class Subject(str, Enum):
     brown_bear = "brown_bear"
     black_bear = "black_bear"
     deer = "deer"
+    antelope = "antelope"
     other = "other"
 
 
@@ -35,6 +36,7 @@ SUBJECT_FAMILY: dict[Subject, str] = {
     Subject.brown_bear: "ursid",
     Subject.black_bear: "ursid",
     Subject.deer: "cervid",
+    Subject.antelope: "bovid",
     Subject.other: "other",
 }
 

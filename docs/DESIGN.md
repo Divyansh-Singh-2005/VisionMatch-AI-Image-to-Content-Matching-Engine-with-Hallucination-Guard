@@ -1,4 +1,4 @@
-﻿# Design - AI Image Understanding & Content Matching Engine
+# Design - AI Image Understanding & Content Matching Engine
 
 ## Problem
 Given ~50 licensed-free images and a set of blog posts, suggest the right image per post based on
@@ -16,8 +16,8 @@ passes a mismatch guard that can refuse with a human-readable reason.
     }
 - Invalid JSON / schema failure -> retried (max 3); still invalid -> image status `failed`, never stored as tags.
 - confidence < MIN_VISION_CONFIDENCE -> status `flagged` (tags kept for review, excluded from suggestions).
-- Taxonomy (canonical subjects): red_fox, arctic_fox, gray_wolf, dog, brown_bear, black_bear, deer, other.
-  Each maps to a family (canid, ursid, cervid) so reasons can say "same family, different species".
+- Taxonomy (canonical subjects): red_fox, arctic_fox, gray_wolf, dog, brown_bear, black_bear, deer, antelope, other.
+  Each maps to a family (canid, ursid, cervid, bovid) so reasons can say "same family, different species".
 
 ## Matching strategy
 1. Embed `caption + attributes` per image and `title + body` per post (same embedding model, 768 dims).

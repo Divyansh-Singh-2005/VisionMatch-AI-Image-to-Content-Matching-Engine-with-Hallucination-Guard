@@ -14,6 +14,9 @@ Return JSON with:
 - subject_canonical: exactly one allowed value. Use "other" when none fits.
   Be precise between look-alikes: a wolf is gray_wolf (not dog), a domestic dog is dog,
   an orange fox is red_fox, a white fox is arctic_fox.
+  deer means true deer only (Cervidae: red deer, fallow deer, roe deer, white-tailed deer).
+  Antelope, gazelle, blackbuck, nyala and impala are antelope - NOT deer.
+  Giraffes, horses, sheep and birds are other.
 - category: one allowed value.
 - attributes: 3 to 8 short visual attributes (colour, setting, pose, lighting).
 - caption: one factual sentence describing the image.

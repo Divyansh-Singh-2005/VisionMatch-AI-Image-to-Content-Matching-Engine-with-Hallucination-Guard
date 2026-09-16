@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     gemini_api_key: SecretStr = SecretStr("")
-    vision_model: str = "gemini-2.5-flash"
+    vision_model: str = "gemini-3.1-flash-lite"
     embedding_model: str = "gemini-embedding-001"
     embedding_dim: int = 768
 
@@ -16,9 +16,11 @@ class Settings(BaseSettings):
 
     similarity_threshold: float = 0.70
     min_vision_confidence: float = 0.60
+    top_k: int = 5
 
     daily_call_budget: int = 500
     vision_rpm_limit: int = 8
+    embed_rpm_limit: int = 60
     max_attempts: int = 3
 
     images_dir: str = "data/images"
