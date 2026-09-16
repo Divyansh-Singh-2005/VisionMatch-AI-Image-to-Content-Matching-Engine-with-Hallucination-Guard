@@ -1,16 +1,29 @@
+>>> python -m scripts.retag --ids 1
+reset to pending: [1]
+
+>>> python -m scripts.api_probes --run-jobs --no-probes
 
 ===== HEALTH http://localhost:8010 =====
 GET /health -> 200
 
 ===== JOBS - queued via the API, executed by the background worker =====
 POST /jobs/tag-images -> 202
-POST /jobs/tag-images -> 202
-  first job id=10 status=completed; repeat request returned job id=11
-  job 10 tag_images: completed 0/0 flagged=0 failed=0
-  job 11 tag_images: completed 0/0 flagged=0 failed=0
+POST /jobs/tag-images -> 200
+  first request: job 14 (queued, HTTP 202); repeat request: job 14 (HTTP 200) -> same job, no duplicate created
+  job 14 tag_images: queued 0/1 flagged=0 failed=0
+  job 14 tag_images: running 0/1 flagged=0 failed=0
+  job 14 tag_images: completed 1/1 flagged=0 failed=0
 POST /jobs/embed -> 202
-  job 12 embed_images: queued 0/52 flagged=0 failed=0
-  job 13 embed_posts: queued 0/15 flagged=0 failed=0
-  job 12 embed_images: running 51/52 flagged=0 failed=0
-  job 12 embed_images: completed 52/52 flagged=0 failed=0
-  job 13 embed_posts: completed 15/15 flagged=0 failed=0
+  job 15 embed_images: queued 0/52 flagged=0 failed=0
+  job 16 embed_posts: queued 0/15 flagged=0 failed=0
+  job 15 embed_images: completed 52/52 flagged=0 failed=0
+  job 16 embed_posts: completed 15/15 flagged=0 failed=0
+
+>>> same command again, nothing pending
+===== JOBS - queued via the API, executed by the background worker =====
+POST /jobs/tag-images -> 200
+POST /jobs/tag-images -> 200
+  first request: job 14 (completed, HTTP 200); repeat request: job 14 (HTTP 200) -> same job, no duplicate created
+POST /jobs/embed -> 202
+  job 18 embed_posts: queued 0/15 flagged=0 failed=0
+  job 18 embed_posts: completed 15/15 flagged=0 failed=0

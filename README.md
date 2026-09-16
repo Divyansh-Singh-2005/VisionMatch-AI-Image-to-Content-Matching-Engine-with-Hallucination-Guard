@@ -60,7 +60,7 @@ docker compose run --rm --no-deps api python -m pytest -q      # tests (no DB ne
 ```
 
 `seed --snapshot` loads the committed vision tags, post subjects and embeddings, so everything above
-runs **without an API key and without any AI calls**. Interactive docs: http://localhost:8010/docs
+runs **without an API key and without any AI calls**. The snapshot also carries the build's AI cost log (imported rows have no job id), so `GET /costs` shows every call. Interactive docs: http://localhost:8010/docs
 
 ### Live AI pipeline (optional, free key)
 
@@ -113,7 +113,7 @@ Caveats, stated plainly:
 Every vision, post-subject and embedding attempt, successful or not, writes one `ai_calls` row with its
 job, target, tokens, latency and estimated USD (`GET /costs`). A daily call budget (`DAILY_CALL_BUDGET`)
 pauses jobs when it is reached. Estimates use paid-tier list prices; on the free tier the billed amount is $0.
-The whole build, including failed attempts, came to about $0.02 in estimated cost.
+The whole build, including failed attempts, came to about $0.033 in estimated cost.
 
 ## Acceptance probes
 
@@ -133,7 +133,7 @@ All proofs are collected in [`EVIDENCE.md`](EVIDENCE.md); the AI-usage log is [`
 - **Closed-world taxonomy.** The guard compares enum subjects (fox, wolf, dog, bears, deer, antelope, other). Posts about anything else only get an `other` image above a stricter bar, and currently none clears it.
 - **Unstable vision confidence.** It varies between runs: two fog images went from 0.50 to 0.95+ on a re-tag. Flagging relies on the model's self-reported confidence; the two deliberately degraded images (`img_051`, `img_052`) exercise it reliably.
 - **Small, optimistic eval** (see above).
-- **Cost figures are estimates.** `gemini-3.1-flash-lite` uses an assumed flash-lite rate, and embedding tokens are estimated (~4 characters per token) because the API does not report them.
+- **Cost figures are estimates.** Vision prices were checked against Google's Gemini API pricing page on 2026-09-17 (standard paid tier); embedding tokens are estimated (~4 characters per token) because the API does not report them.
 - **Suggestions are stored on every read.** `GET /posts/{slug}/images` persists a new set of suggestion rows each call, so there is a reviewable id, but no deduplication.
 - **Demo-level operations.** There is no authentication, failure alerts are ERROR log lines (`ALERT ...`), and there is one worker process.
 

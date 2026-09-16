@@ -71,4 +71,4 @@ tests/test_vision_schema.py::test_attributes_normalised_and_deduped PASSED [100%
     _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-======================= 55 passed, 2 warnings in 1.48s ========================
+======================= 55 passed, 2 warnings in 1.38s ========================

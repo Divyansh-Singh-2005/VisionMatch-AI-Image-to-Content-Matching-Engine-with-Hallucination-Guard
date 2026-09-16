@@ -1,7 +1,13 @@
-worker-1  | 2026-09-16 20:45:32,450 INFO jobs.worker: worker started; job kinds: tag_images, embed_images, embed_posts
-worker-1  | 2026-09-16 20:45:36,493 INFO jobs.worker: claimed job 12 (embed_images)
-worker-1  | 2026-09-16 20:45:38,656 INFO jobs.embedding: job 12 embed_images progress 51/52 image:51 -> done
-worker-1  | 2026-09-16 20:45:40,167 INFO jobs.embedding: job 12 embed_images progress 52/52 image:52 -> done
-worker-1  | 2026-09-16 20:45:40,175 INFO jobs.worker: job 12 finished: completed done=52 failed=0
-worker-1  | 2026-09-16 20:45:40,182 INFO jobs.worker: claimed job 13 (embed_posts)
-worker-1  | 2026-09-16 20:45:40,277 INFO jobs.worker: job 13 finished: completed done=15 failed=0
+worker-1  | 2026-09-16 20:51:05,577 INFO jobs.worker: worker started; job kinds: tag_images, embed_images, embed_posts
+worker-1  | 2026-09-16 20:51:07,611 INFO jobs.worker: claimed job 14 (tag_images)
+worker-1  | 2026-09-16 20:51:17,649 INFO jobs.tagging: job 14 progress 1/1 image=1 -> tagged
+worker-1  | 2026-09-16 20:51:17,655 INFO jobs.worker: job 14 finished: completed done=1 failed=0
+worker-1  | 2026-09-16 20:51:23,679 INFO jobs.worker: claimed job 15 (embed_images)
+worker-1  | 2026-09-16 20:51:25,307 INFO jobs.embedding: job 15 embed_images progress 1/52 image:1 -> done
+worker-1  | 2026-09-16 20:51:25,542 INFO jobs.worker: job 15 finished: completed done=52 failed=0
+worker-1  | 2026-09-16 20:51:25,545 INFO jobs.worker: claimed job 16 (embed_posts)
+worker-1  | 2026-09-16 20:51:25,637 INFO jobs.worker: job 16 finished: completed done=15 failed=0
+worker-1  | 2026-09-16 20:51:29,650 INFO jobs.worker: claimed job 17 (embed_images)
+worker-1  | 2026-09-16 20:51:29,936 INFO jobs.worker: job 17 finished: completed done=52 failed=0
+worker-1  | 2026-09-16 20:51:29,939 INFO jobs.worker: claimed job 18 (embed_posts)
+worker-1  | 2026-09-16 20:51:30,026 INFO jobs.worker: job 18 finished: completed done=15 failed=0

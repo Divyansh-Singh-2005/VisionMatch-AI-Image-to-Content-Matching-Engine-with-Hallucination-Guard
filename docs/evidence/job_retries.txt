@@ -13,7 +13,12 @@
  11 | tag_images   | completed |     0 |    0 |       0 |      0
  12 | embed_images | completed |    52 |   52 |       0 |      0
  13 | embed_posts  | completed |    15 |   15 |       0 |      0
-(13 rows)
+ 14 | tag_images   | completed |     1 |    1 |       0 |      0
+ 15 | embed_images | completed |    52 |   52 |       0 |      0
+ 16 | embed_posts  | completed |    15 |   15 |       0 |      0
+ 17 | embed_images | completed |    52 |   52 |       0 |      0
+ 18 | embed_posts  | completed |    15 |   15 |       0 |      0
+(18 rows)
 
  job | image | status | attempts |                               last_error                               
 -----+-------+--------+----------+------------------------------------------------------------------------

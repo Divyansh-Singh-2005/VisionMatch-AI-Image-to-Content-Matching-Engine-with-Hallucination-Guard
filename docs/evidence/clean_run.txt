@@ -1,110 +1,15 @@
 >>> docker compose -p imgrel-clean up -d --build   (empty DB volume)
- Image flyrank-image-relevance:local Building 
- Image flyrank-image-relevance:local Building 
- Image flyrank-image-relevance:local Building 
-#1 [internal] load local bake definitions
-#1 reading from stdin 1.87kB done
-#1 DONE 0.0s
-
-#2 [worker internal] load build definition from Dockerfile
-#2 transferring dockerfile: 475B done
-#2 DONE 0.0s
-
-#3 [worker internal] load metadata for docker.io/library/python:3.12-slim
-#3 DONE 0.0s
-
-#4 [api internal] load .dockerignore
-#4 transferring context: 107B done
-#4 DONE 0.0s
-
-#5 [worker 1/6] FROM docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea
-#5 resolve docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea 0.0s done
-#5 DONE 0.0s
-
-#6 [migrate internal] load build context
-#6 transferring context: 539.29kB 0.1s done
-#6 transferring context: 539.29kB 0.1s done
-#6 DONE 0.1s
-
-#7 [api 3/6] COPY requirements.lock.txt .
-#7 CACHED
-
-#8 [api 2/6] WORKDIR /app
-#8 CACHED
-
-#9 [api 4/6] RUN pip install -r requirements.lock.txt
-#9 CACHED
-
-#10 [migrate 5/6] COPY . .
-#10 DONE 0.1s
-
-#11 [migrate 6/6] RUN useradd --create-home appuser && chown -R appuser /app
-#11 DONE 0.9s
-
-#12 [api] exporting to image
-#12 exporting layers
-#12 exporting layers 0.3s done
-#12 exporting manifest sha256:53a7a579fd3d3b16001ac38890d763e91278ace7a16f36b264ed7ef7a1b7b8de 0.1s done
-#12 exporting config sha256:0b87a273e45c3432d3778759a0a7dced4e4e7cd0c57558e0f4131d7414f20cce
-#12 exporting config sha256:0b87a273e45c3432d3778759a0a7dced4e4e7cd0c57558e0f4131d7414f20cce 0.1s done
-#12 exporting attestation manifest sha256:4f356a8357448bf37c40f77162fa6a29ac02b1a0f11f10bba143f8e2442d97df
-#12 exporting attestation manifest sha256:4f356a8357448bf37c40f77162fa6a29ac02b1a0f11f10bba143f8e2442d97df 0.1s done
-#12 exporting manifest list sha256:a6879d9251bfcd6c69a777968385bb5847a931edff1432bf5bcb56c80b6652e6 0.1s done
-#12 naming to docker.io/library/flyrank-image-relevance:local 0.0s done
-#12 unpacking to docker.io/library/flyrank-image-relevance:local
-#12 unpacking to docker.io/library/flyrank-image-relevance:local 0.2s done
-#12 DONE 1.0s
-
-#13 [migrate] exporting to image
-#13 exporting layers 0.3s done
-#13 exporting manifest sha256:fa5dfd649cc528af0a6a0a6e37b9dcd9912bff2e4ca636d7b1ccd7037a37e433 0.1s done
-#13 exporting config sha256:aec753d05c9cded9db45559b622cf005258e6f0e2af961d412354b708fab21e9 0.1s done
-#13 exporting attestation manifest sha256:7f89f603393e529e0d1bb51569492142bb678a63c31169146c0abb3722f159bd 0.1s done
-#13 exporting manifest list sha256:f191402155965ee1b1f77f7261a480bf0c8c24c8fb0f3f2699b57aecfcfe8bfd 0.1s done
-#13 naming to docker.io/library/flyrank-image-relevance:local 0.0s done
-#13 unpacking to docker.io/library/flyrank-image-relevance:local 0.2s done
-#13 DONE 1.0s
-
-#14 [worker] exporting to image
-#14 exporting layers 0.3s done
-#14 exporting manifest sha256:a9bf8acbeb98741f3a27fa7096df45314051a1d731386240a8d4c838e8d3f695 0.1s done
-#14 exporting config sha256:bc973230281bd78b61dd30fe3500e3d165f53d4a1c27ccda3a06fe4b77c80732 0.1s done
-#14 exporting attestation manifest sha256:940d6905f44afaf9ebe92c5f04951c81e8deb4897ff6122a6b570a8eb8b20c33 0.1s done
-#14 exporting manifest list sha256:a9572c70c2b8a3cfe549be6fa075cf5635c9594f33a2d0d66407c0ad367d760e 0.1s done
-#14 naming to docker.io/library/flyrank-image-relevance:local 0.0s done
-#14 unpacking to docker.io/library/flyrank-image-relevance:local 0.2s done
-#14 DONE 1.0s
-
-#15 [migrate] resolving provenance for metadata file
-#15 ...
-
-#16 [api] resolving provenance for metadata file
-#16 DONE 0.1s
-
-#15 [migrate] resolving provenance for metadata file
-#15 DONE 0.1s
-
-#17 [worker] resolving provenance for metadata file
-#17 DONE 0.0s
  Image flyrank-image-relevance:local Built 
  Image flyrank-image-relevance:local Built 
  Image flyrank-image-relevance:local Built 
- Network imgrel-clean_default Creating 
- Volume imgrel-clean_pgdata Creating 
- Network imgrel-clean_default Creating 
- Volume imgrel-clean_pgdata Creating 
- Volume imgrel-clean_pgdata Created 
- Volume imgrel-clean_pgdata Created 
- Network imgrel-clean_default Created 
- Network imgrel-clean_default Created 
  Container imgrel-clean-db-1 Creating 
  Container imgrel-clean-db-1 Created 
  Container imgrel-clean-migrate-1 Creating 
  Container imgrel-clean-migrate-1 Created 
- Container imgrel-clean-api-1 Creating 
  Container imgrel-clean-worker-1 Creating 
- Container imgrel-clean-worker-1 Created 
+ Container imgrel-clean-api-1 Creating 
  Container imgrel-clean-api-1 Created 
+ Container imgrel-clean-worker-1 Created 
  Container imgrel-clean-db-1 Starting 
  Container imgrel-clean-db-1 Started 
  Container imgrel-clean-db-1 Waiting 
@@ -114,15 +19,15 @@
  Container imgrel-clean-migrate-1 Waiting 
  Container imgrel-clean-migrate-1 Waiting 
  Container imgrel-clean-migrate-1 Exited 
- Container imgrel-clean-api-1 Starting 
- Container imgrel-clean-migrate-1 Exited 
  Container imgrel-clean-worker-1 Starting 
- Container imgrel-clean-api-1 Started 
+ Container imgrel-clean-migrate-1 Exited 
+ Container imgrel-clean-api-1 Starting 
  Container imgrel-clean-worker-1 Started 
+ Container imgrel-clean-api-1 Started 
 
 >>> docker compose -p imgrel-clean exec -T api python -m scripts.seed --snapshot
 images: 52 new / 52 files | posts: 15 new / 15 in file
-snapshot applied: {'images': 52, 'posts': 15, 'embeddings': 67}
+snapshot applied: {'images': 52, 'posts': 15, 'embeddings': 67, 'ai_calls_imported': 172}
 
 >>> docker compose -p imgrel-clean exec -T api python -m scripts.eval
 == eval @ threshold 0.73 / unverified 0.80 ==
@@ -195,11 +100,19 @@ GET /posts/arctic-fox-winter/images -> 200
 
 ===== PROBE 6 - cost log: every AI call attributed =====
 GET /costs?limit=3 -> 200
-  calls_today=0/500 unattributed_calls=0 total_est_cost_usd=0.0
+  calls_today=172/500 unattributed_calls=0 total_est_cost_usd=0.033462
+  embed         gemini-embedding-001     calls= 78 ok= 78 in=  3351 out=    0 usd=0.000503
+  post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.001463
+  vision        gemini-2.5-flash         calls= 30 ok= 20 in=  9040 out= 2034 usd=0.007797
+  vision        gemini-2.5-flash-lite    calls=  1 ok=  0 in=     0 out=    0 usd=0.000000
+  vision        gemini-3.1-flash-lite    calls= 48 ok= 48 in= 62728 out= 5345 usd=0.023699
+  recent #172 embed image:1 job=None ok=True
+  recent #171 vision image:1 job=None ok=True
+  recent #170 embed concept:sourdough bread job=None ok=True
 
 ===== REVIEW - approve / reject / inspect, idempotent =====
 POST /suggestions/1/review -> 201
-  {'id': 1, 'suggestion_id': 1, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:46:16.359581Z', 'replayed': False}
+  {'id': 1, 'suggestion_id': 1, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:51:55.967963Z', 'replayed': False}
 POST /suggestions/1/review -> 200
   same key + same request -> replayed=True id=1
 POST /suggestions/1/review -> 409
@@ -235,8 +148,8 @@ POST /posts/red-fox-behavior/images/999999/check -> 404
     "image 999999 not found or not embedded for this tenant"
 
 >>> docker compose -p imgrel-clean run --rm --no-deps api python -m pytest -q
- Container imgrel-clean-api-run-96e1e491c8c6 Creating 
- Container imgrel-clean-api-run-96e1e491c8c6 Created 
+ Container imgrel-clean-api-run-48c7f021a440 Creating 
+ Container imgrel-clean-api-run-48c7f021a440 Created 
 .......................................................                  [100%]
 =============================== warnings summary ===============================
 ../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1
@@ -248,17 +161,17 @@ POST /posts/red-fox-behavior/images/999999/check -> 404
     _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-55 passed, 2 warnings in 1.10s
+55 passed, 2 warnings in 1.25s
 
 >>> docker compose -p imgrel-clean down -v
- Container imgrel-clean-api-1 Stopping 
  Container imgrel-clean-worker-1 Stopping 
- Container imgrel-clean-api-1 Stopped 
- Container imgrel-clean-api-1 Removing 
- Container imgrel-clean-api-1 Removed 
+ Container imgrel-clean-api-1 Stopping 
  Container imgrel-clean-worker-1 Stopped 
  Container imgrel-clean-worker-1 Removing 
  Container imgrel-clean-worker-1 Removed 
+ Container imgrel-clean-api-1 Stopped 
+ Container imgrel-clean-api-1 Removing 
+ Container imgrel-clean-api-1 Removed 
  Container imgrel-clean-migrate-1 Stopping 
  Container imgrel-clean-migrate-1 Stopped 
  Container imgrel-clean-migrate-1 Removing 

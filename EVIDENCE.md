@@ -60,22 +60,35 @@ The API inserts a job row, and the worker (`app/jobs/worker.py`) claims it. A re
 Source: `docs/evidence/api_jobs.txt`
 
 ```text
+>>> python -m scripts.retag --ids 1
+reset to pending: [1]
+
+>>> python -m scripts.api_probes --run-jobs --no-probes
 
 ===== HEALTH http://localhost:8010 =====
 GET /health -> 200
 
 ===== JOBS - queued via the API, executed by the background worker =====
 POST /jobs/tag-images -> 202
-POST /jobs/tag-images -> 202
-  first job id=10 status=completed; repeat request returned job id=11
-  job 10 tag_images: completed 0/0 flagged=0 failed=0
-  job 11 tag_images: completed 0/0 flagged=0 failed=0
+POST /jobs/tag-images -> 200
+  first request: job 14 (queued, HTTP 202); repeat request: job 14 (HTTP 200) -> same job, no duplicate created
+  job 14 tag_images: queued 0/1 flagged=0 failed=0
+  job 14 tag_images: running 0/1 flagged=0 failed=0
+  job 14 tag_images: completed 1/1 flagged=0 failed=0
 POST /jobs/embed -> 202
-  job 12 embed_images: queued 0/52 flagged=0 failed=0
-  job 13 embed_posts: queued 0/15 flagged=0 failed=0
-  job 12 embed_images: running 51/52 flagged=0 failed=0
-  job 12 embed_images: completed 52/52 flagged=0 failed=0
-  job 13 embed_posts: completed 15/15 flagged=0 failed=0
+  job 15 embed_images: queued 0/52 flagged=0 failed=0
+  job 16 embed_posts: queued 0/15 flagged=0 failed=0
+  job 15 embed_images: completed 52/52 flagged=0 failed=0
+  job 16 embed_posts: completed 15/15 flagged=0 failed=0
+
+>>> same command again, nothing pending
+===== JOBS - queued via the API, executed by the background worker =====
+POST /jobs/tag-images -> 200
+POST /jobs/tag-images -> 200
+  first request: job 14 (completed, HTTP 200); repeat request: job 14 (HTTP 200) -> same job, no duplicate created
+POST /jobs/embed -> 202
+  job 18 embed_posts: queued 0/15 flagged=0 failed=0
+  job 18 embed_posts: completed 15/15 flagged=0 failed=0
 ```
 
 Source: `docs/evidence/job_retries.txt`
@@ -96,7 +109,12 @@ Source: `docs/evidence/job_retries.txt`
  11 | tag_images   | completed |     0 |    0 |       0 |      0
  12 | embed_images | completed |    52 |   52 |       0 |      0
  13 | embed_posts  | completed |    15 |   15 |       0 |      0
-(13 rows)
+ 14 | tag_images   | completed |     1 |    1 |       0 |      0
+ 15 | embed_images | completed |    52 |   52 |       0 |      0
+ 16 | embed_posts  | completed |    15 |   15 |       0 |      0
+ 17 | embed_images | completed |    52 |   52 |       0 |      0
+ 18 | embed_posts  | completed |    15 |   15 |       0 |      0
+(18 rows)
 
  job | image | status | attempts |                               last_error                               
 -----+-------+--------+----------+------------------------------------------------------------------------
@@ -142,39 +160,47 @@ Source: `docs/evidence/api_probes.txt`
 ```text
 ===== PROBE 6 - cost log: every AI call attributed =====
 GET /costs?limit=3 -> 200
-  calls_today=170/500 unattributed_calls=0 total_est_cost_usd=0.016993
-  embed         gemini-embedding-001     calls= 77 ok= 77 in=  3310 out=    0 usd=0.000496
-  post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.000465
+  calls_today=172/500 unattributed_calls=0 total_est_cost_usd=0.033462
+  embed         gemini-embedding-001     calls= 78 ok= 78 in=  3351 out=    0 usd=0.000503
+  post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.001463
   vision        gemini-2.5-flash         calls= 30 ok= 20 in=  9040 out= 2034 usd=0.007797
   vision        gemini-2.5-flash-lite    calls=  1 ok=  0 in=     0 out=    0 usd=0.000000
-  vision        gemini-3.1-flash-lite    calls= 47 ok= 47 in= 61407 out= 5236 usd=0.008235
+  vision        gemini-3.1-flash-lite    calls= 48 ok= 48 in= 62728 out= 5345 usd=0.023699
+  recent #172 embed image:1 job=15 ok=True
+  recent #171 vision image:1 job=14 ok=True
   recent #170 embed concept:sourdough bread job=None ok=True
-  recent #169 embed concept:gray wolf job=None ok=True
-  recent #168 embed concept:wild fox species job=None ok=True
 ```
 
 Source: `docs/evidence/cost_calls.txt`
 
 ```text
- id  |     kind     |         model         |        target_ref        | job_id | in_tok | out_tok |    usd    | latency_ms | ok | error 
------+--------------+-----------------------+--------------------------+--------+--------+---------+-----------+------------+----+-------
- 170 | embed        | gemini-embedding-001  | concept:sourdough bread  |        |      4 |       0 | 0.0000006 |        452 | t  | 
- 169 | embed        | gemini-embedding-001  | concept:gray wolf        |        |      3 |       0 | 0.0000005 |        443 | t  | 
- 168 | embed        | gemini-embedding-001  | concept:wild fox species |        |      4 |       0 | 0.0000006 |        450 | t  | 
- 167 | embed        | gemini-embedding-001  | concept:Vulpes vulpes    |        |      4 |       0 | 0.0000006 |        457 | t  | 
- 166 | embed        | gemini-embedding-001  | concept:red fox          |        |      2 |       0 | 0.0000003 |        664 | t  | 
- 165 | embed        | gemini-embedding-001  | image:52                 |     12 |     38 |       0 | 0.0000057 |        477 | t  | 
- 164 | embed        | gemini-embedding-001  | image:51                 |     12 |     36 |       0 | 0.0000054 |        788 | t  | 
- 163 | vision       | gemini-3.1-flash-lite | image:52                 |      9 |   1321 |      97 | 0.0001709 |       2198 | t  | 
- 162 | vision       | gemini-3.1-flash-lite | image:51                 |      9 |   1359 |      97 | 0.0001747 |       2178 | t  | 
- 161 | embed        | gemini-embedding-001  | post:15                  |      8 |     42 |       0 | 0.0000063 |        562 | t  | 
- 160 | post_subject | gemini-3.1-flash-lite | post:15                  |      8 |    181 |      42 | 0.0000349 |       2869 | t  | 
- 159 | embed        | gemini-embedding-001  | post:14                  |      8 |     48 |       0 | 0.0000072 |        569 | t  | 
+ id  |  kind  |         model         |        target_ref        | job_id | in_tok | out_tok |    usd    | latency_ms | ok | error 
+-----+--------+-----------------------+--------------------------+--------+--------+---------+-----------+------------+----+-------
+ 172 | embed  | gemini-embedding-001  | image:1                  |     15 |     41 |       0 | 0.0000062 |        574 | t  | 
+ 171 | vision | gemini-3.1-flash-lite | image:1                  |     14 |   1321 |     109 | 0.0004938 |       2389 | t  | 
+ 170 | embed  | gemini-embedding-001  | concept:sourdough bread  |        |      4 |       0 | 0.0000006 |        452 | t  | 
+ 169 | embed  | gemini-embedding-001  | concept:gray wolf        |        |      3 |       0 | 0.0000005 |        443 | t  | 
+ 168 | embed  | gemini-embedding-001  | concept:wild fox species |        |      4 |       0 | 0.0000006 |        450 | t  | 
+ 167 | embed  | gemini-embedding-001  | concept:Vulpes vulpes    |        |      4 |       0 | 0.0000006 |        457 | t  | 
+ 166 | embed  | gemini-embedding-001  | concept:red fox          |        |      2 |       0 | 0.0000003 |        664 | t  | 
+ 165 | embed  | gemini-embedding-001  | image:52                 |     12 |     38 |       0 | 0.0000057 |        477 | t  | 
+ 164 | embed  | gemini-embedding-001  | image:51                 |     12 |     36 |       0 | 0.0000054 |        788 | t  | 
+ 163 | vision | gemini-3.1-flash-lite | image:52                 |      9 |   1321 |      97 | 0.0004758 |       2198 | t  | 
+ 162 | vision | gemini-3.1-flash-lite | image:51                 |      9 |   1359 |      97 | 0.0004853 |       2178 | t  | 
+ 161 | embed  | gemini-embedding-001  | post:15                  |      8 |     42 |       0 | 0.0000063 |        562 | t  | 
 (12 rows)
+
+         model         | calls | est_usd  
+-----------------------+-------+----------
+ gemini-2.5-flash      |    30 | 0.007797
+ gemini-2.5-flash-lite |     1 | 0.000000
+ gemini-3.1-flash-lite |    63 | 0.025162
+ gemini-embedding-001  |    78 | 0.000503
+(4 rows)
 
  calls | failed_calls | unattributed | est_usd  
 -------+--------------+--------------+----------
-   170 |           11 |            0 | 0.016994
+   172 |           11 |            0 | 0.033462
 (1 row)
 ```
 
@@ -214,7 +240,7 @@ Source: `docs/evidence/api_probes.txt`
 ```text
 ===== PROBE 2 - red fox article: fox first, wolf and dog clearly lower =====
 GET /posts/red-fox-behavior/images?ranking=60 -> 200
-  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=25
+  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=49
   rank 1: img 4 red_fox 0.868
   rank 2: img 5 red_fox 0.857
   rank 3: img 3 red_fox 0.854
@@ -390,17 +416,17 @@ Source: `docs/evidence/api_probes.txt`
 
 ```text
 ===== REVIEW - approve / reject / inspect, idempotent =====
-POST /suggestions/25/review -> 201
-  {'id': 2, 'suggestion_id': 25, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:45:55.114484Z', 'replayed': False}
-POST /suggestions/25/review -> 200
-  same key + same request -> replayed=True id=2
-POST /suggestions/25/review -> 409
+POST /suggestions/49/review -> 201
+  {'id': 3, 'suggestion_id': 49, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:51:36.869645Z', 'replayed': False}
+POST /suggestions/49/review -> 200
+  same key + same request -> replayed=True id=3
+POST /suggestions/49/review -> 409
   same key, different request -> "Idempotency-Key was already used for a different request"
-POST /suggestions/25/review -> 409
-  new key, already reviewed -> "suggestion 25 was already reviewed (approve)"
-POST /suggestions/30/review -> 409
-  approve a guard-rejected pairing -> "suggestion 30 is REJECTED; only guard-approved suggestions can be reviewed"
-GET /suggestions/30 -> 200
+POST /suggestions/49/review -> 409
+  new key, already reviewed -> "suggestion 49 was already reviewed (approve)"
+POST /suggestions/54/review -> 409
+  approve a guard-rejected pairing -> "suggestion 54 is REJECTED; only guard-approved suggestions can be reviewed"
+GET /suggestions/54 -> 200
   inspect why: post=red-fox-behavior image=10 (gray wolf) decision=REJECTED
     [PASS] G1_vision_quality: vision confidence 0.95
     [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
@@ -512,7 +538,7 @@ BEST_THRESHOLD=0.73
 Source: `README.md`
 
 ```text
-(no matching lines)
+(no matching lines for ('top-1 precision',))
 ```
 
 
@@ -541,7 +567,7 @@ Source: `docs/evidence/clean_run.txt`
 ```text
 >>> docker compose -p imgrel-clean up -d --build   (empty DB volume)
 >>> docker compose -p imgrel-clean exec -T api python -m scripts.seed --snapshot
-snapshot applied: {'images': 52, 'posts': 15, 'embeddings': 67}
+snapshot applied: {'images': 52, 'posts': 15, 'embeddings': 67, 'ai_calls_imported': 172}
 >>> docker compose -p imgrel-clean exec -T api python -m scripts.eval
 TOP1_PRECISION=1.000
 >>> python -m scripts.api_probes   (host -> clean stack on :8010)
@@ -555,10 +581,10 @@ TOP1_PRECISION=1.000
   sourdough-starter: NO_CONFIDENT_MATCH (target=other)
   arctic-fox-winter: NO_CONFIDENT_MATCH (target=arctic_fox)
 ===== PROBE 6 - cost log: every AI call attributed =====
-  calls_today=0/500 unattributed_calls=0 total_est_cost_usd=0.0
+  calls_today=172/500 unattributed_calls=0 total_est_cost_usd=0.033462
   inspect why: post=red-fox-behavior image=10 (gray wolf) decision=REJECTED
 >>> docker compose -p imgrel-clean run --rm --no-deps api python -m pytest -q
-55 passed, 2 warnings in 1.10s
+55 passed, 2 warnings in 1.25s
 >>> docker compose -p imgrel-clean down -v
 ```
 

@@ -12,7 +12,7 @@ GET /images?status=flagged -> 200
 
 ===== PROBE 2 - red fox article: fox first, wolf and dog clearly lower =====
 GET /posts/red-fox-behavior/images?ranking=60 -> 200
-  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=25
+  decision=SUGGESTED suggested img 4 (red_fox, score 0.868) suggestion_id=49
   rank 1: img 4 red_fox 0.868
   rank 2: img 5 red_fox 0.857
   rank 3: img 3 red_fox 0.854
@@ -47,28 +47,28 @@ GET /posts/arctic-fox-winter/images -> 200
 
 ===== PROBE 6 - cost log: every AI call attributed =====
 GET /costs?limit=3 -> 200
-  calls_today=170/500 unattributed_calls=0 total_est_cost_usd=0.016993
-  embed         gemini-embedding-001     calls= 77 ok= 77 in=  3310 out=    0 usd=0.000496
-  post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.000465
+  calls_today=172/500 unattributed_calls=0 total_est_cost_usd=0.033462
+  embed         gemini-embedding-001     calls= 78 ok= 78 in=  3351 out=    0 usd=0.000503
+  post_subject  gemini-3.1-flash-lite    calls= 15 ok= 15 in=  2245 out=  601 usd=0.001463
   vision        gemini-2.5-flash         calls= 30 ok= 20 in=  9040 out= 2034 usd=0.007797
   vision        gemini-2.5-flash-lite    calls=  1 ok=  0 in=     0 out=    0 usd=0.000000
-  vision        gemini-3.1-flash-lite    calls= 47 ok= 47 in= 61407 out= 5236 usd=0.008235
+  vision        gemini-3.1-flash-lite    calls= 48 ok= 48 in= 62728 out= 5345 usd=0.023699
+  recent #172 embed image:1 job=15 ok=True
+  recent #171 vision image:1 job=14 ok=True
   recent #170 embed concept:sourdough bread job=None ok=True
-  recent #169 embed concept:gray wolf job=None ok=True
-  recent #168 embed concept:wild fox species job=None ok=True
 
 ===== REVIEW - approve / reject / inspect, idempotent =====
-POST /suggestions/25/review -> 201
-  {'id': 2, 'suggestion_id': 25, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:45:55.114484Z', 'replayed': False}
-POST /suggestions/25/review -> 200
-  same key + same request -> replayed=True id=2
-POST /suggestions/25/review -> 409
+POST /suggestions/49/review -> 201
+  {'id': 3, 'suggestion_id': 49, 'action': 'approve', 'note': 'fox photo fits the article', 'created_at': '2026-09-16T20:51:36.869645Z', 'replayed': False}
+POST /suggestions/49/review -> 200
+  same key + same request -> replayed=True id=3
+POST /suggestions/49/review -> 409
   same key, different request -> "Idempotency-Key was already used for a different request"
-POST /suggestions/25/review -> 409
-  new key, already reviewed -> "suggestion 25 was already reviewed (approve)"
-POST /suggestions/30/review -> 409
-  approve a guard-rejected pairing -> "suggestion 30 is REJECTED; only guard-approved suggestions can be reviewed"
-GET /suggestions/30 -> 200
+POST /suggestions/49/review -> 409
+  new key, already reviewed -> "suggestion 49 was already reviewed (approve)"
+POST /suggestions/54/review -> 409
+  approve a guard-rejected pairing -> "suggestion 54 is REJECTED; only guard-approved suggestions can be reviewed"
+GET /suggestions/54 -> 200
   inspect why: post=red-fox-behavior image=10 (gray wolf) decision=REJECTED
     [PASS] G1_vision_quality: vision confidence 0.95
     [FAIL] G2_subject_match: Animal category mismatch: expected red fox, detected gray wolf (both canids - look-alike rejected)
