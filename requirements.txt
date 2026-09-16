@@ -1,0 +1,14 @@
+﻿fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+sqlalchemy
+alembic
+psycopg[binary]
+pgvector
+google-genai
+httpx
+pillow
+python-dotenv
+tenacity
+pytest
