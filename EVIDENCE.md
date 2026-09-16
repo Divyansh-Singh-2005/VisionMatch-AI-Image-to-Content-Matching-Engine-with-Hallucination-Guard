@@ -538,7 +538,8 @@ BEST_THRESHOLD=0.73
 Source: `README.md`
 
 ```text
-(no matching lines for ('top-1 precision',))
+**Headline result: top-1 precision 1.000 on a 15-post hand-labelled set** (10 posts with a correct
+docker compose exec -T api python -m scripts.eval              # top-1 precision (probe 5)
 ```
 
 

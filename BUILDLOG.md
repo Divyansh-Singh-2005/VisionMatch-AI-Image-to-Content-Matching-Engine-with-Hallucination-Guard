@@ -89,3 +89,5 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   repeat request arrives while a job is really running.
 - The clean-machine run showed an empty cost log (Probe 6), because the snapshot had no ai_calls. The snapshot
   now carries the cost log; imported rows have no job id.
+- Evidence generator bug: read("README.md") resolved to docs/evidence/README.md, so the README proof showed
+  as a gap. Fixed the path; EVIDENCE.md now has no gaps.

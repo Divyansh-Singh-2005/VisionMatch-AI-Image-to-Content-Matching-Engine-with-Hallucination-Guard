@@ -130,7 +130,7 @@ parts = [
         "`eval/labels.json` (15 posts) and `scripts/eval.py` (offline, no API calls).",
         block(read("phase4_eval.txt"), "docs/evidence/phase4_eval.txt"),
         block(read("phase4_sweep.txt"), "docs/evidence/phase4_sweep.txt"),
-        block(grep(read("README.md"), "top-1 precision"), "README.md"),
+        block(grep(read("./README.md"), "top-1 precision"), "README.md"),
     ),
     item(
         "README with architecture explanation and diagram; the required files are present",
