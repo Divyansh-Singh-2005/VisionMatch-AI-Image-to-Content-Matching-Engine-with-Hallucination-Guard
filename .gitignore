@@ -24,3 +24,8 @@ pgdata/
 # v2 corpus (rebuilt from data/v2/manifest.jsonl.gz)
 data/v2/images/
 *.part
+
+# v2 CLIP outputs (regenerable); only predictions + summaries are committed
+data/v2/clip/smoke/
+data/v2/clip/**/parts/
+data/v2/clip/**/*.npz
