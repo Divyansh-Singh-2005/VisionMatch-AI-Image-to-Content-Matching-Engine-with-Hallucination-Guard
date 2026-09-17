@@ -20,3 +20,7 @@ Thumbs.db
 logs/
 *.log
 pgdata/
+
+# v2 corpus (rebuilt from data/v2/manifest.jsonl.gz)
+data/v2/images/
+*.part
