@@ -91,3 +91,15 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   now carries the cost log; imported rows have no job id.
 - Evidence generator bug: read("README.md") resolved to docs/evidence/README.md, so the README proof showed
   as a gap. Fixed the path; EVIDENCE.md now has no gaps.
+
+## v2 Session 1 - Scale-mode corpus (15,000 images)
+- Branch v2-scale; main keeps the submitted 52-image capstone.
+- Source: iNaturalist research-grade observations (species confirmed by the community), CC0/CC-BY/CC-BY-NC
+  photos only, one photo per observation, max 25 per observer per species, about 1 API request per second.
+- Three species failed an exact scientific-name lookup (fallow deer, American bison, Eurasian lynx) because
+  iNaturalist files some species under newer names. The lookup now also accepts synonyms and common names,
+  and records the iNaturalist name when it differs.
+- I ran the full download before the lookup was fixed, which committed only 12 species under a "15k" message.
+  The commit was unpushed, so I amended the message before pushing.
+- Most photos are CC-BY-NC: fine for a portfolio project, not for commercial reuse.
+- Images live outside git; the manifest is gzipped deterministically (mtime=0, sorted) so diffs stay real.

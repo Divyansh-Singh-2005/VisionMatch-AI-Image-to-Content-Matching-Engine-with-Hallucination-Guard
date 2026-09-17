@@ -1,0 +1,33 @@
+class              family     manifest  on disk
+red_fox            canid           500      500
+arctic_fox         canid           500      500
+gray_fox           canid           500      500
+gray_wolf          canid           500      500
+coyote             canid           500      500
+golden_jackal      canid           500      500
+brown_bear         ursid           500      500
+black_bear         ursid           500      500
+polar_bear         ursid           500      500
+red_deer           cervid          500      500
+white_tailed_deer  cervid          500      500
+mule_deer          cervid          500      500
+fallow_deer        cervid          500      500
+moose              cervid          500      500
+reindeer           cervid          500      500
+impala             bovid           500      500
+blackbuck          bovid           500      500
+american_bison     bovid           500      500
+mountain_goat      bovid           500      500
+bobcat             felid           500      500
+eurasian_lynx      felid           500      500
+cougar             felid           500      500
+leopard            felid           500      500
+cheetah            felid           500      500
+tiger              felid           500      500
+raccoon            procyonid       500      500
+red_squirrel       sciurid         500      500
+gray_squirrel      sciurid         500      500
+european_badger    mustelid        500      500
+beaver             castorid        500      500
+TOTAL manifest=15000 on_disk=15000 size=442 MB  observers=4604
+licenses: {'cc-by-nc': 12840, 'cc-by': 1760, 'cc0': 400}

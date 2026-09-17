@@ -1,7 +1,11 @@
 {
   "version": 2,
   "source": "iNaturalist research-grade observations (community-verified species)",
-  "licenses": ["cc0", "cc-by", "cc-by-nc"],
+  "licenses": [
+    "cc0",
+    "cc-by",
+    "cc-by-nc"
+  ],
   "per_class_target": 500,
   "max_per_observer": 25,
   "families": {
@@ -16,35 +20,247 @@
     "castorid": "beavers"
   },
   "classes": [
-    {"slug": "red_fox", "common_name": "Red fox", "scientific_name": "Vulpes vulpes", "family": "canid"},
-    {"slug": "arctic_fox", "common_name": "Arctic fox", "scientific_name": "Vulpes lagopus", "family": "canid"},
-    {"slug": "gray_fox", "common_name": "Gray fox", "scientific_name": "Urocyon cinereoargenteus", "family": "canid"},
-    {"slug": "gray_wolf", "common_name": "Gray wolf", "scientific_name": "Canis lupus", "family": "canid"},
-    {"slug": "coyote", "common_name": "Coyote", "scientific_name": "Canis latrans", "family": "canid"},
-    {"slug": "golden_jackal", "common_name": "Golden jackal", "scientific_name": "Canis aureus", "family": "canid"},
-    {"slug": "brown_bear", "common_name": "Brown bear", "scientific_name": "Ursus arctos", "family": "ursid"},
-    {"slug": "black_bear", "common_name": "American black bear", "scientific_name": "Ursus americanus", "family": "ursid"},
-    {"slug": "polar_bear", "common_name": "Polar bear", "scientific_name": "Ursus maritimus", "family": "ursid"},
-    {"slug": "red_deer", "common_name": "Red deer", "scientific_name": "Cervus elaphus", "family": "cervid"},
-    {"slug": "white_tailed_deer", "common_name": "White-tailed deer", "scientific_name": "Odocoileus virginianus", "family": "cervid"},
-    {"slug": "mule_deer", "common_name": "Mule deer", "scientific_name": "Odocoileus hemionus", "family": "cervid"},
-    {"slug": "fallow_deer", "common_name": "Fallow deer", "scientific_name": "Dama dama", "family": "cervid"},
-    {"slug": "moose", "common_name": "Moose", "scientific_name": "Alces alces", "family": "cervid"},
-    {"slug": "reindeer", "common_name": "Reindeer", "scientific_name": "Rangifer tarandus", "family": "cervid"},
-    {"slug": "impala", "common_name": "Impala", "scientific_name": "Aepyceros melampus", "family": "bovid"},
-    {"slug": "blackbuck", "common_name": "Blackbuck", "scientific_name": "Antilope cervicapra", "family": "bovid"},
-    {"slug": "american_bison", "common_name": "American bison", "scientific_name": "Bison bison", "family": "bovid"},
-    {"slug": "mountain_goat", "common_name": "Mountain goat", "scientific_name": "Oreamnos americanus", "family": "bovid"},
-    {"slug": "bobcat", "common_name": "Bobcat", "scientific_name": "Lynx rufus", "family": "felid"},
-    {"slug": "eurasian_lynx", "common_name": "Eurasian lynx", "scientific_name": "Lynx lynx", "family": "felid"},
-    {"slug": "cougar", "common_name": "Cougar", "scientific_name": "Puma concolor", "family": "felid"},
-    {"slug": "leopard", "common_name": "Leopard", "scientific_name": "Panthera pardus", "family": "felid"},
-    {"slug": "cheetah", "common_name": "Cheetah", "scientific_name": "Acinonyx jubatus", "family": "felid"},
-    {"slug": "tiger", "common_name": "Tiger", "scientific_name": "Panthera tigris", "family": "felid"},
-    {"slug": "raccoon", "common_name": "Raccoon", "scientific_name": "Procyon lotor", "family": "procyonid"},
-    {"slug": "red_squirrel", "common_name": "Eurasian red squirrel", "scientific_name": "Sciurus vulgaris", "family": "sciurid"},
-    {"slug": "gray_squirrel", "common_name": "Eastern gray squirrel", "scientific_name": "Sciurus carolinensis", "family": "sciurid"},
-    {"slug": "european_badger", "common_name": "European badger", "scientific_name": "Meles meles", "family": "mustelid"},
-    {"slug": "beaver", "common_name": "North American beaver", "scientific_name": "Castor canadensis", "family": "castorid"}
-  ]
+    {
+      "slug": "red_fox",
+      "common_name": "Red fox",
+      "scientific_name": "Vulpes vulpes",
+      "family": "canid",
+      "taxon_id": 42069,
+      "available": 97686
+    },
+    {
+      "slug": "arctic_fox",
+      "common_name": "Arctic fox",
+      "scientific_name": "Vulpes lagopus",
+      "family": "canid",
+      "taxon_id": 233598,
+      "available": 1790
+    },
+    {
+      "slug": "gray_fox",
+      "common_name": "Gray fox",
+      "scientific_name": "Urocyon cinereoargenteus",
+      "family": "canid",
+      "taxon_id": 42076,
+      "available": 26792
+    },
+    {
+      "slug": "gray_wolf",
+      "common_name": "Gray wolf",
+      "scientific_name": "Canis lupus",
+      "family": "canid",
+      "taxon_id": 42048,
+      "available": 7608
+    },
+    {
+      "slug": "coyote",
+      "common_name": "Coyote",
+      "scientific_name": "Canis latrans",
+      "family": "canid",
+      "taxon_id": 42051,
+      "available": 90400
+    },
+    {
+      "slug": "golden_jackal",
+      "common_name": "Golden jackal",
+      "scientific_name": "Canis aureus",
+      "family": "canid",
+      "taxon_id": 851014,
+      "available": 3957
+    },
+    {
+      "slug": "brown_bear",
+      "common_name": "Brown bear",
+      "scientific_name": "Ursus arctos",
+      "family": "ursid",
+      "taxon_id": 41641,
+      "available": 11915
+    },
+    {
+      "slug": "black_bear",
+      "common_name": "American black bear",
+      "scientific_name": "Ursus americanus",
+      "family": "ursid",
+      "taxon_id": 41638,
+      "available": 51895
+    },
+    {
+      "slug": "polar_bear",
+      "common_name": "Polar bear",
+      "scientific_name": "Ursus maritimus",
+      "family": "ursid",
+      "taxon_id": 41644,
+      "available": 2088
+    },
+    {
+      "slug": "red_deer",
+      "common_name": "Red deer",
+      "scientific_name": "Cervus elaphus",
+      "family": "cervid",
+      "taxon_id": 204113,
+      "available": 14333
+    },
+    {
+      "slug": "white_tailed_deer",
+      "common_name": "White-tailed deer",
+      "scientific_name": "Odocoileus virginianus",
+      "family": "cervid",
+      "taxon_id": 42223,
+      "available": 295075
+    },
+    {
+      "slug": "mule_deer",
+      "common_name": "Mule deer",
+      "scientific_name": "Odocoileus hemionus",
+      "family": "cervid",
+      "taxon_id": 42220,
+      "available": 137165
+    },
+    {
+      "slug": "fallow_deer",
+      "common_name": "Fallow deer",
+      "scientific_name": "Dama dama",
+      "family": "cervid",
+      "taxon_id": 42161,
+      "available": 9824
+    },
+    {
+      "slug": "moose",
+      "common_name": "Moose",
+      "scientific_name": "Alces alces",
+      "family": "cervid",
+      "taxon_id": 522193,
+      "available": 43663
+    },
+    {
+      "slug": "reindeer",
+      "common_name": "Reindeer",
+      "scientific_name": "Rangifer tarandus",
+      "family": "cervid",
+      "taxon_id": 42199,
+      "available": 7734
+    },
+    {
+      "slug": "impala",
+      "common_name": "Impala",
+      "scientific_name": "Aepyceros melampus",
+      "family": "bovid",
+      "taxon_id": 42278,
+      "available": 12646
+    },
+    {
+      "slug": "blackbuck",
+      "common_name": "Blackbuck",
+      "scientific_name": "Antilope cervicapra",
+      "family": "bovid",
+      "taxon_id": 42416,
+      "available": 1514
+    },
+    {
+      "slug": "american_bison",
+      "common_name": "American bison",
+      "scientific_name": "Bison bison",
+      "family": "bovid",
+      "taxon_id": 208700,
+      "inat_name": "Bos bison",
+      "available": 19023
+    },
+    {
+      "slug": "mountain_goat",
+      "common_name": "Mountain goat",
+      "scientific_name": "Oreamnos americanus",
+      "family": "bovid",
+      "taxon_id": 42414,
+      "available": 6769
+    },
+    {
+      "slug": "bobcat",
+      "common_name": "Bobcat",
+      "scientific_name": "Lynx rufus",
+      "family": "felid",
+      "taxon_id": 41976,
+      "available": 32774
+    },
+    {
+      "slug": "eurasian_lynx",
+      "common_name": "Eurasian lynx",
+      "scientific_name": "Lynx lynx",
+      "family": "felid",
+      "taxon_id": 41979,
+      "available": 752
+    },
+    {
+      "slug": "cougar",
+      "common_name": "Cougar",
+      "scientific_name": "Puma concolor",
+      "family": "felid",
+      "taxon_id": 42007,
+      "available": 9984
+    },
+    {
+      "slug": "leopard",
+      "common_name": "Leopard",
+      "scientific_name": "Panthera pardus",
+      "family": "felid",
+      "taxon_id": 41963,
+      "available": 6739
+    },
+    {
+      "slug": "cheetah",
+      "common_name": "Cheetah",
+      "scientific_name": "Acinonyx jubatus",
+      "family": "felid",
+      "taxon_id": 41955,
+      "available": 3883
+    },
+    {
+      "slug": "tiger",
+      "common_name": "Tiger",
+      "scientific_name": "Panthera tigris",
+      "family": "felid",
+      "taxon_id": 41967,
+      "available": 2340
+    },
+    {
+      "slug": "raccoon",
+      "common_name": "Raccoon",
+      "scientific_name": "Procyon lotor",
+      "family": "procyonid",
+      "taxon_id": 41663,
+      "available": 129934
+    },
+    {
+      "slug": "red_squirrel",
+      "common_name": "Eurasian red squirrel",
+      "scientific_name": "Sciurus vulgaris",
+      "family": "sciurid",
+      "taxon_id": 46001,
+      "available": 66867
+    },
+    {
+      "slug": "gray_squirrel",
+      "common_name": "Eastern gray squirrel",
+      "scientific_name": "Sciurus carolinensis",
+      "family": "sciurid",
+      "taxon_id": 46017,
+      "available": 292324
+    },
+    {
+      "slug": "european_badger",
+      "common_name": "European badger",
+      "scientific_name": "Meles meles",
+      "family": "mustelid",
+      "taxon_id": 855297,
+      "available": 12770
+    },
+    {
+      "slug": "beaver",
+      "common_name": "North American beaver",
+      "scientific_name": "Castor canadensis",
+      "family": "castorid",
+      "taxon_id": 43794,
+      "available": 57474
+    }
+  ],
+  "checked_on": "2026-09-17"
 }
