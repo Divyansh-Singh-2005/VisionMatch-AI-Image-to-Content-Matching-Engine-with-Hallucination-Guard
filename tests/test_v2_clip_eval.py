@@ -125,3 +125,48 @@ def test_reject_probability_is_reported_even_when_not_rejected():
 def test_no_reject_prompts_means_never_rejected():
     d = decide_two_stage({"red_fox": 0.3, "dog": 0.1}, {}, reject_threshold=0.5)
     assert d["pred"] == "red_fox" and d["reject_prob"] == 0.0
+
+
+from scripts.v2.audit_plan import BUCKETS, plan_summary, select_audit
+
+
+def _bio(pid, cls, fam, pred, pred_fam, conf):
+    return {"photo_id": pid, "class": cls, "family": fam, "pred": pred, "pred_family": pred_fam,
+            "pred_animal": pred, "confidence": conf, "top3": [[pred, conf]]}
+
+
+BIO = [
+    _bio(1, "red_fox", "canid", "brown_bear", "ursid", 0.9),    # family disagreement
+    _bio(2, "red_fox", "canid", "gray_wolf", "canid", 0.9),     # species disagreement
+    _bio(3, "red_fox", "canid", "red_fox", "canid", 0.2),       # low confidence
+    _bio(4, "red_fox", "canid", "red_fox", "canid", 0.9),       # cross-model non-animal
+    _bio(5, "red_fox", "canid", "red_fox", "canid", 0.9),       # control
+]
+VIT = [{"photo_id": 4, "pred": "other", "reject_reason": "tracks"},
+       {"photo_id": 5, "pred": "red_fox", "reject_reason": None}]
+
+
+def test_each_image_lands_in_exactly_one_bucket():
+    plan = select_audit(BIO, VIT, flag_threshold=0.5, per_bucket=10)
+    assert [i["bucket"] for i in plan] == list(BUCKETS)
+    assert len({i["photo_id"] for i in plan}) == 5
+
+
+def test_sampling_is_deterministic_and_capped():
+    big = [_bio(i, "red_fox", "canid", "gray_wolf", "canid", 0.9) for i in range(100, 200)]
+    a = select_audit(big, [], flag_threshold=0.5, per_bucket=10, seed=7)
+    b = select_audit(big, [], flag_threshold=0.5, per_bucket=10, seed=7)
+    assert len(a) == 10 and [i["photo_id"] for i in a] == [i["photo_id"] for i in b]
+    assert a[0]["pool_size"] == 100
+
+
+def test_rejected_images_are_not_called_family_disagreements():
+    plan = select_audit([{**_bio(9, "red_fox", "canid", "other", "other", 0.9)}], [],
+                        flag_threshold=0.5, per_bucket=5)
+    assert plan[0]["bucket"] == "cross_model_non_animal" or plan[0]["bucket"] == "control_random"
+
+
+def test_plan_summary_counts():
+    plan = select_audit(BIO, VIT, flag_threshold=0.5, per_bucket=10)
+    s = plan_summary(plan, bio_total=5)
+    assert s["audit_calls"] == 5 and s["buckets"]["low_confidence"]["sampled"] == 1
