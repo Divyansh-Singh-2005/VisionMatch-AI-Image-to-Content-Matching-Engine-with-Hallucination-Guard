@@ -109,3 +109,99 @@ def format_report(s: dict, meta: dict) -> str:
         lines.append(f"  {c['threshold']:.2f}    {c['coverage']:.3f}   {acc}")
     lines.append(f"FLAG_THRESHOLD={s['flag_threshold']}  KEPT_AT_THRESHOLD={s['coverage_at_flag_threshold']}")
     return "\n".join(lines)
+
+# ---------------------------------------------------------------- prompt strategies (v2-3)
+FAMILY_HINTS = {
+    "canid": "a wild dog-like animal",
+    "ursid": "a bear",
+    "cervid": "a deer with antlers",
+    "bovid": "a hoofed animal with horns",
+    "felid": "a wild cat",
+    "procyonid": "a raccoon",
+    "sciurid": "a tree squirrel",
+    "mustelid": "a badger",
+    "castorid": "a beaver",
+}
+
+
+def _common(cls: dict) -> list[str]:
+    return [t.format(cls["common_name"].lower()) for t in TEMPLATES]
+
+
+def _latin(cls: dict) -> list[str]:
+    return [t.format(cls["scientific_name"]) for t in TEMPLATES]
+
+
+def _descriptive(cls: dict) -> list[str]:
+    name = cls["common_name"].lower()
+    hint = FAMILY_HINTS.get(cls["family"], "an animal")
+    return [
+        f"a photo of a {name}, {hint}.",
+        f"a wildlife photo of a {name}, {hint}.",
+        f"a {name} in its natural habitat.",
+        f"a close-up photo of a {name}.",
+        f"a camera trap photo of a {name}.",
+    ]
+
+
+def prompt_groups(cls: dict, strategy: str) -> list[list[str]]:
+    """Prompt groups for one class. Each group is averaged into one label row;
+    rows of the same class are summed after the softmax."""
+    if strategy == "both_mean":      # v2-2 baseline: one row mixing both name styles
+        return [_common(cls) + _latin(cls)]
+    if strategy == "common":
+        return [_common(cls)]
+    if strategy == "latin":
+        return [_latin(cls)]
+    if strategy == "both_split":     # common and Latin compete as separate rows
+        return [_common(cls), _latin(cls)]
+    if strategy == "descriptive":
+        return [_descriptive(cls)]
+    if strategy == "descriptive_split":
+        return [_descriptive(cls), _common(cls), _latin(cls)]
+    raise ValueError(f"unknown strategy: {strategy}")
+
+
+STRATEGIES = ["both_mean", "common", "latin", "both_split", "descriptive", "descriptive_split"]
+
+
+def aggregate(prob_row, names: list[str]) -> tuple[dict[str, float], dict[str, float]]:
+    """Softmax row over label rows -> per-class probability and per-reject-reason probability."""
+    classes: dict[str, float] = {}
+    rejects: dict[str, float] = {}
+    for name, p in zip(names, prob_row):
+        target = rejects if name.startswith("reject:") else classes
+        key = name.split(":", 1)[1] if name.startswith("reject:") else name
+        target[key] = target.get(key, 0.0) + float(p)
+    return classes, rejects
+
+
+def decide(classes: dict[str, float], rejects: dict[str, float], reject_margin: float) -> dict:
+    """Reject only when the not-an-animal mass clearly beats the best species.
+
+    reject_margin is how much bigger the reject mass must be; 1.0 means 'strictly bigger',
+    2.0 means 'at least twice as big'. Higher values trust the dataset label more.
+    """
+    ranked = sorted(classes.items(), key=lambda kv: -kv[1])
+    best, best_p = ranked[0]
+    runner_up = ranked[1][1] if len(ranked) > 1 else 0.0
+    reject_mass = sum(rejects.values())
+    reason = max(rejects, key=rejects.get) if rejects else None
+    rejected = reject_mass > best_p * reject_margin
+    return {
+        "pred": "other" if rejected else best,
+        "pred_animal": best,
+        "confidence": round(best_p, 4),
+        "animal_margin": round(best_p - runner_up, 4),
+        "reject_mass": round(reject_mass, 4),
+        "reject_reason": reason if rejected else None,
+        "top3": [[k, round(v, 4)] for k, v in ranked[:3]],
+    }
+
+
+def compare_row(name: str, s: dict, extra: dict | None = None) -> str:
+    e = extra or {}
+    return (f"  {name:<20} top1={s['top1']:.3f}  family={s['family_top1']:.3f}  "
+            f"rejected={s['predicted_non_animal']:>5}  "
+            f"flag_threshold={s['flag_threshold']}  kept={s['coverage_at_flag_threshold']}"
+            + ("".join(f"  {k}={v}" for k, v in e.items())))

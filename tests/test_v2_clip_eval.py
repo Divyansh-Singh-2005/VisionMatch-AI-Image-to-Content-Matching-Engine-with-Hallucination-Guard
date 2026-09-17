@@ -51,3 +51,42 @@ def test_flag_threshold_is_lowest_cutoff_meeting_target():
 def test_empty_predictions_rejected():
     with pytest.raises(ValueError):
         summarize([], TAX)
+
+from scripts.v2.clip_eval import aggregate, decide, prompt_groups
+
+FOX = {"slug": "red_fox", "common_name": "Red fox", "scientific_name": "Vulpes vulpes", "family": "canid"}
+
+
+def test_strategies_differ_in_shape():
+    assert len(prompt_groups(FOX, "both_mean")) == 1 and len(prompt_groups(FOX, "both_mean")[0]) == 10
+    assert len(prompt_groups(FOX, "common")) == 1 and len(prompt_groups(FOX, "common")[0]) == 5
+    assert len(prompt_groups(FOX, "both_split")) == 2
+    assert len(prompt_groups(FOX, "descriptive_split")) == 3
+
+
+def test_descriptive_prompts_include_family_hint():
+    assert any("wild dog-like animal" in p for p in prompt_groups(FOX, "descriptive")[0])
+
+
+def test_unknown_strategy_rejected():
+    with pytest.raises(ValueError):
+        prompt_groups(FOX, "nope")
+
+
+def test_aggregate_sums_rows_of_the_same_class():
+    classes, rejects = aggregate([0.3, 0.25, 0.2, 0.25], ["red_fox", "red_fox", "gray_wolf", "reject:tracks"])
+    assert classes["red_fox"] == pytest.approx(0.55)
+    assert rejects == {"tracks": pytest.approx(0.25)}
+
+
+def test_reject_needs_to_beat_the_margin():
+    classes, rejects = {"red_fox": 0.30, "gray_wolf": 0.10}, {"tracks": 0.40}
+    assert decide(classes, rejects, 1.0)["pred"] == "other"       # 0.40 > 0.30
+    assert decide(classes, rejects, 2.0)["pred"] == "red_fox"     # 0.40 < 0.60
+    assert decide(classes, rejects, 2.0)["reject_reason"] is None
+
+
+def test_decide_reports_margin_and_top3():
+    d = decide({"red_fox": 0.5, "gray_wolf": 0.2, "dog": 0.1}, {"tracks": 0.05}, 2.0)
+    assert d["pred"] == "red_fox" and d["animal_margin"] == pytest.approx(0.3)
+    assert [k for k, _ in d["top3"]] == ["red_fox", "gray_wolf", "dog"]
