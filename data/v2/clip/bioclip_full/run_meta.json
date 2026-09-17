@@ -1,10 +1,10 @@
 {
-  "model": "ViT-B-32",
+  "model": "hf-hub:imageomics/bioclip",
   "pretrained": "laion2b_s34b_b79k",
   "device": "cpu",
   "images": 15000,
-  "seconds": 2748.9,
-  "images_per_second": 5.46,
+  "seconds": 6219.3,
+  "images_per_second": 2.41,
   "labels": [
     "red_fox",
     "arctic_fox",
@@ -42,9 +42,7 @@
     "reject:no_animal"
   ],
   "chunk_size": 1024,
-  "strategy": "descriptive",
-  "reject_margin": 5.0,
-  "rescored": true,
-  "reject_threshold": 0.99,
+  "strategy": "both_split",
+  "reject_threshold": 0.9,
   "decision": "two_stage"
 }

@@ -123,3 +123,14 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
 - Because image embeddings were saved, testing fixes needed no image passes: re-encoding ~30 text prompts
   plus one matmul re-scores all 15,000 images in seconds. Swept 6 prompt strategies x 5 reject margins.
 - Chose strategy=descriptive reject_margin=5.0 from that sweep.
+
+## v2 Session 4 - Two-stage decision and a domain model
+- Mixing "which species" and "is this an animal photo" into one softmax was a design error: generic
+  background prompts beat species in a 34-way softmax, so 20% of the corpus was called tracks/scat/remains.
+  Scoring the two questions separately cut that to 476 of 3,001 at the same accuracy.
+- Prompt work took generic CLIP from 0.461 to 0.535 species top-1. Swapping to BioCLIP (trained on biology
+  data) reached 0.659 with no prompt tuning - domain training beat prompt engineering by a wide margin.
+- Latin names went from the worst strategy on generic CLIP (0.270) to the best on BioCLIP (0.659), which is
+  what training on taxonomic names does.
+- BioCLIP rejects almost nothing (5 of 3,001): it has no real "not an animal" concept. That is why generic
+  CLIP stays in the pipeline as a second opinion and why the LLM audit samples the disagreements.

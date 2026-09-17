@@ -18,3 +18,16 @@ open_clip ViT-B-32 (laion2b_s34b_b79k), run locally. Each species is described b
 common + scientific name), averaged into one text embedding. Four "not an animal photo" options (tracks,
 droppings, remains, empty scene) catch observations that don't show the animal. The flag threshold is the
 lowest confidence cutoff whose kept predictions reach 95% species accuracy against the dataset labels.
+
+## Model comparison (v2-4/5)
+| | ViT-B-32 (generic) | BioCLIP (TreeOfLife-10M) |
+|---|---|---|
+| species top-1 | 0.535 | 0.659 |
+| family top-1 | 0.675 | 0.806 |
+| best prompt strategy | descriptive (common names) | both_split / latin |
+| latin-only strategy | 0.270 | 0.659 |
+| photos called "not an animal" (of 3,001) | 476 | 5 |
+
+BioCLIP is the v2 tagger. Generic CLIP is kept as a second opinion on "is this an animal photo at all",
+since BioCLIP maps almost everything onto a species. The stored subject is the iNaturalist community
+label (verified data); the model is a verifier, and disagreements are what the LLM audit samples.

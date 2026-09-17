@@ -1,0 +1,77 @@
+model=hf-hub:imageomics/bioclip strategy=both_split reject_threshold=0.9
+model hf-hub:imageomics/bioclip/laion2b_s34b_b79k  device cpu  images 15000  speed 2.4 img/s  runtime 103.7 min
+species top-1 accuracy        : 0.632
+family top-1 accuracy         : 0.786
+wrong-species predictions     : 5514 (41.9% of them inside the true family)
+predicted not-an-animal photo : 7 {'tracks': 1, 'no_animal': 6}
+
+per species (lowest first):  n  top-1
+  eurasian_lynx       500  0.134
+  gray_wolf           500  0.344
+  bobcat              500  0.380
+  white_tailed_deer   500  0.398
+  black_bear          500  0.438
+  mule_deer           500  0.448
+  reindeer            500  0.506
+  cougar              500  0.536
+  coyote              500  0.546
+  red_deer            500  0.546
+  golden_jackal       500  0.562
+  blackbuck           500  0.574
+  polar_bear          500  0.578
+  raccoon             500  0.578
+  arctic_fox          500  0.594
+  brown_bear          500  0.632
+  moose               500  0.654
+  red_fox             500  0.692
+  gray_fox            500  0.722
+  fallow_deer         500  0.728
+  tiger               500  0.750
+  beaver              500  0.766
+  european_badger     500  0.780
+  leopard             501  0.784
+  red_squirrel        500  0.808
+  gray_squirrel       500  0.824
+  cheetah             499  0.906
+  mountain_goat       500  0.910
+  american_bison      500  0.912
+  impala              500  0.928
+
+top confusions (true -> predicted: count):
+  golden_jackal      -> coyote             120
+  mule_deer          -> red_deer           105
+  reindeer           -> red_deer           105
+  red_deer           -> fallow_deer        96
+  eurasian_lynx      -> cougar             94
+  blackbuck          -> impala             89
+  gray_wolf          -> coyote             80
+  bobcat             -> cougar             74
+  white_tailed_deer  -> red_deer           73
+  eurasian_lynx      -> bobcat             72
+  raccoon            -> european_badger    72
+  brown_bear         -> black_bear         67
+
+confidence cutoff vs accuracy (target 0.95):
+  cutoff  kept    accuracy
+  0.00    1.000   0.632
+  0.05    1.000   0.632
+  0.10    1.000   0.632
+  0.15    0.999   0.632
+  0.20    0.997   0.634
+  0.25    0.987   0.639
+  0.30    0.968   0.649
+  0.35    0.937   0.665
+  0.40    0.901   0.683
+  0.45    0.857   0.705
+  0.50    0.804   0.730
+  0.55    0.754   0.754
+  0.60    0.705   0.778
+  0.65    0.659   0.801
+  0.70    0.616   0.825
+  0.75    0.571   0.851
+  0.80    0.528   0.875
+  0.85    0.480   0.899
+  0.90    0.429   0.923
+  0.95    0.354   0.958
+FLAG_THRESHOLD=0.95  KEPT_AT_THRESHOLD=0.3537
+LABEL_FAMILY_AGREEMENT=0.7859
