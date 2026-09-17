@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from scripts.v2.audit_plan import plan_summary, select_audit
-from scripts.v2.fetch_inat import load_manifest, save_manifest
+from scripts.v2.fetch_inat import load_manifest, save_rows
 
 OUT = Path("data/v2/audit")
 CLIP = Path("data/v2/clip")
@@ -29,7 +29,7 @@ def main() -> None:
 
     plan = select_audit(bio, vit, flag_threshold=threshold, per_bucket=args.per_bucket, seed=args.seed)
     OUT.mkdir(parents=True, exist_ok=True)
-    save_manifest(plan, OUT / "plan.jsonl.gz")
+    save_rows(plan, OUT / "plan.jsonl.gz", key=lambda r: (r["bucket"], r["photo_id"]))
     s = plan_summary(plan, len(bio))
     s.update({"flag_threshold": threshold, "bio_run": args.bio, "vit_run": args.vit, "seed": args.seed})
     (OUT / "plan_summary.json").write_text(json.dumps(s, indent=2) + "\n", encoding="utf-8")

@@ -1,0 +1,31 @@
+{
+  "images_total": 15000,
+  "audit_calls": 250,
+  "buckets": {
+    "family_disagreement": {
+      "sampled": 50,
+      "pool": 3206
+    },
+    "species_disagreement": {
+      "sampled": 50,
+      "pool": 2308
+    },
+    "low_confidence": {
+      "sampled": 50,
+      "pool": 4405
+    },
+    "cross_model_non_animal": {
+      "sampled": 50,
+      "pool": 59
+    },
+    "control_random": {
+      "sampled": 50,
+      "pool": 5022
+    }
+  },
+  "pool_coverage": 1.0,
+  "flag_threshold": 0.95,
+  "bio_run": "bioclip_full",
+  "vit_run": "full",
+  "seed": 7
+}

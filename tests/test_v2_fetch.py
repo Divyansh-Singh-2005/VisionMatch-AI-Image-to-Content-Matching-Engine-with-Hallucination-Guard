@@ -59,3 +59,19 @@ def test_taxon_match_by_synonym_and_common_name():
 def test_taxon_match_rejects_genus_and_inactive():
     assert not f.taxon_matches({"name": "Bison bison", "rank": "genus"}, BISON)
     assert not f.taxon_matches({"name": "Bison bison", "rank": "species", "is_active": False}, BISON)
+
+
+def test_save_rows_accepts_any_schema_and_sorts_by_key(tmp_path):
+    path = tmp_path / "plan.jsonl.gz"
+    rows = [{"bucket": "b", "photo_id": 2}, {"bucket": "a", "photo_id": 9}, {"bucket": "a", "photo_id": 3}]
+    f.save_rows(rows, path, key=lambda r: (r["bucket"], r["photo_id"]))
+    assert [r["photo_id"] for r in f.load_manifest(path)] == [3, 9, 2]
+    first = path.read_bytes()
+    f.save_rows(list(reversed(rows)), path, key=lambda r: (r["bucket"], r["photo_id"]))
+    assert path.read_bytes() == first
+
+
+def test_save_rows_without_key_keeps_order(tmp_path):
+    path = tmp_path / "raw.jsonl.gz"
+    f.save_rows([{"z": 1}, {"a": 2}], path)
+    assert f.load_manifest(path) == [{"z": 1}, {"a": 2}]

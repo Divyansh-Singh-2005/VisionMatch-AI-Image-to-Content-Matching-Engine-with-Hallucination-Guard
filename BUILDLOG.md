@@ -134,3 +134,13 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   what training on taxonomic names does.
 - BioCLIP rejects almost nothing (5 of 3,001): it has no real "not an animal" concept. That is why generic
   CLIP stays in the pipeline as a second opinion and why the LLM audit samples the disagreements.
+
+## v2 Session 5 - Audit plan
+- Bug I introduced: the audit plan reused save_manifest, which sorts by r["class"]; audit rows use
+  "label_class", so it raised KeyError after the 104-minute BioCLIP run. Split out a generic save_rows(key=...)
+  and gave each row type its own sort key. The previous commit message claimed an audit plan that never
+  got written; this commit adds it.
+- Sample vs full corpus: BioCLIP scored 0.659 species / 0.806 family on the 3,000-image sample but
+  0.632 / 0.786 on all 15,000. Both numbers are recorded; the full-corpus one is the one to quote.
+- Hardest species are the ones a generic model cannot separate either: Eurasian lynx 0.134 (confused with
+  cougar and bobcat), gray wolf 0.344 (coyote), golden jackal 0.562 (coyote), white-tailed deer 0.398.

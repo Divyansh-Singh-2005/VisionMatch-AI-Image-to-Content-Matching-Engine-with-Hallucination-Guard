@@ -22,8 +22,10 @@ lowest confidence cutoff whose kept predictions reach 95% species accuracy again
 ## Model comparison (v2-4/5)
 | | ViT-B-32 (generic) | BioCLIP (TreeOfLife-10M) |
 |---|---|---|
-| species top-1 | 0.535 | 0.659 |
-| family top-1 | 0.675 | 0.806 |
+| species top-1 (3,000-image sample) | 0.535 | 0.659 |
+| family top-1 (3,000-image sample) | 0.675 | 0.806 |
+| species top-1 (all 15,000) | 0.518 | 0.632 |
+| family top-1 (all 15,000) | 0.652 | 0.786 |
 | best prompt strategy | descriptive (common names) | both_split / latin |
 | latin-only strategy | 0.270 | 0.659 |
 | photos called "not an animal" (of 3,001) | 476 | 5 |

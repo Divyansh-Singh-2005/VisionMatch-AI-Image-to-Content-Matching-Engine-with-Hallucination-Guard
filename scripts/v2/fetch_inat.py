@@ -99,11 +99,10 @@ def load_manifest(path: Path | None = None) -> list[dict]:
         return [json.loads(line) for line in f if line.strip()]
 
 
-def save_manifest(rows: list[dict], path: Path | None = None) -> None:
+def save_rows(rows: list[dict], path: Path, key=None) -> None:
     """Deterministic gzip (mtime=0, sorted rows) so git only sees real changes."""
-    path = path or MANIFEST
     path.parent.mkdir(parents=True, exist_ok=True)
-    rows = sorted(rows, key=lambda r: (r["class"], r["photo_id"]))
+    rows = sorted(rows, key=key) if key else list(rows)
     raw = io.BytesIO()
     with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as gz:
         for r in rows:
@@ -111,6 +110,11 @@ def save_manifest(rows: list[dict], path: Path | None = None) -> None:
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_bytes(raw.getvalue())
     tmp.replace(path)
+
+
+def save_manifest(rows: list[dict], path: Path | None = None) -> None:
+    """Manifest / prediction rows: sorted by (class, photo_id)."""
+    save_rows(rows, path or MANIFEST, key=lambda r: (r["class"], r["photo_id"]))
 
 
 # ---------------------------------------------------------------- API
