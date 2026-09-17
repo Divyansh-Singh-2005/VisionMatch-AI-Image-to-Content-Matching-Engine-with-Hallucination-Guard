@@ -90,3 +90,38 @@ def test_decide_reports_margin_and_top3():
     d = decide({"red_fox": 0.5, "gray_wolf": 0.2, "dog": 0.1}, {"tracks": 0.05}, 2.0)
     assert d["pred"] == "red_fox" and d["animal_margin"] == pytest.approx(0.3)
     assert [k for k, _ in d["top3"]] == ["red_fox", "gray_wolf", "dog"]
+
+
+from scripts.v2.clip_eval import decide_two_stage, softmax
+
+
+def test_softmax_sums_to_one_and_ranks():
+    p = softmax([0.1, 0.3, 0.2], scale=10)
+    assert sum(p) == pytest.approx(1.0)
+    assert p[1] > p[2] > p[0]
+
+
+def test_species_stage_ignores_reject_prompts():
+    """Background scoring high must not change which species wins."""
+    cls = {"red_fox": 0.30, "gray_wolf": 0.22}
+    quiet = decide_two_stage(cls, {"no_animal": 0.05}, reject_threshold=0.9)
+    loud = decide_two_stage(cls, {"no_animal": 0.29}, reject_threshold=0.9)
+    assert quiet["pred_animal"] == loud["pred_animal"] == "red_fox"
+    assert quiet["confidence"] == loud["confidence"]
+
+
+def test_reject_needs_clear_dominance():
+    cls = {"red_fox": 0.30}
+    assert decide_two_stage(cls, {"tracks": 0.31}, reject_threshold=0.9)["pred"] == "red_fox"
+    hard = decide_two_stage(cls, {"tracks": 0.45}, reject_threshold=0.9)
+    assert hard["pred"] == "other" and hard["reject_reason"] == "tracks"
+
+
+def test_reject_probability_is_reported_even_when_not_rejected():
+    d = decide_two_stage({"red_fox": 0.30}, {"tracks": 0.25}, reject_threshold=0.99)
+    assert d["pred"] == "red_fox" and 0.0 < d["reject_prob"] < 0.99
+
+
+def test_no_reject_prompts_means_never_rejected():
+    d = decide_two_stage({"red_fox": 0.3, "dog": 0.1}, {}, reject_threshold=0.5)
+    assert d["pred"] == "red_fox" and d["reject_prob"] == 0.0

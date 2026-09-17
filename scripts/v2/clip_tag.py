@@ -57,8 +57,9 @@ def cmd_run(args) -> int:
     parts.mkdir(parents=True, exist_ok=True)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    pretrained = None if args.model.startswith("hf-hub:") else args.pretrained
     model, _, preprocess = open_clip.create_model_and_transforms(
-        args.model, pretrained=args.pretrained, device=device
+        args.model, pretrained=pretrained, device=device
     )
     model.eval()
     tokenizer = open_clip.get_tokenizer(args.model)
@@ -74,7 +75,7 @@ def cmd_run(args) -> int:
             m = f.mean(dim=0)
             feats.append(m / m.norm())
         text = torch.stack(feats)
-        scale = float(model.logit_scale.exp())
+        scale = float(model.logit_scale.detach().exp())
     np.savez(d / "class_embeddings.npz", labels=np.array(names), emb=text.cpu().numpy().astype("float32"))
 
     chunks = [rows[i:i + CHUNK] for i in range(0, len(rows), CHUNK)]

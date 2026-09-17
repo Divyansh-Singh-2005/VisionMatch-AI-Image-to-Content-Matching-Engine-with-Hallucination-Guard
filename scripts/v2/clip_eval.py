@@ -205,3 +205,58 @@ def compare_row(name: str, s: dict, extra: dict | None = None) -> str:
             f"rejected={s['predicted_non_animal']:>5}  "
             f"flag_threshold={s['flag_threshold']}  kept={s['coverage_at_flag_threshold']}"
             + ("".join(f"  {k}={v}" for k, v in e.items())))
+
+
+# ---------------------------------------------------------------- two-stage decision (v2-4)
+import math  # noqa: E402
+
+ANIMAL_ANCHORS = [
+    "a photo of a wild animal.",
+    "a wildlife photograph of an animal.",
+]
+
+
+def softmax(values: list[float], scale: float = 1.0) -> list[float]:
+    top = max(values)
+    exps = [math.exp(scale * (v - top)) for v in values]
+    total = sum(exps)
+    return [e / total for e in exps]
+
+
+def decide_two_stage(
+    class_sims: dict[str, float],
+    reject_sims: dict[str, float],
+    *,
+    scale: float = 100.0,
+    reject_threshold: float = 0.9,
+) -> dict:
+    """Species and 'is this an animal photo' are separate questions, so score them separately.
+
+    Stage 1 (species): softmax over species only - background never competes with a species.
+    Stage 2 (reject):  softmax between the best species similarity and the not-an-animal prompts.
+                       Rejection needs reject_threshold of that two-way mass, not a bare win.
+    """
+    names = list(class_sims)
+    sims = [class_sims[n] for n in names]
+    probs = softmax(sims, scale)
+    ranked = sorted(zip(names, probs), key=lambda kv: -kv[1])
+    best, best_p = ranked[0]
+    runner_up = ranked[1][1] if len(ranked) > 1 else 0.0
+
+    reason, p_reject = None, 0.0
+    if reject_sims:
+        r_names = list(reject_sims)
+        stage = softmax([max(sims)] + [reject_sims[n] for n in r_names], scale)
+        p_reject = sum(stage[1:])
+        reason = max(zip(r_names, stage[1:]), key=lambda kv: kv[1])[0]
+    rejected = p_reject >= reject_threshold
+
+    return {
+        "pred": "other" if rejected else best,
+        "pred_animal": best,
+        "confidence": round(best_p, 4),
+        "animal_margin": round(best_p - runner_up, 4),
+        "reject_prob": round(p_reject, 4),
+        "reject_reason": reason if rejected else None,
+        "top3": [[k, round(v, 4)] for k, v in ranked[:3]],
+    }
