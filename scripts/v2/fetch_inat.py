@@ -151,22 +151,50 @@ def obs_params(taxon_id: int) -> dict:
 
 
 # ---------------------------------------------------------------- commands
+def taxon_matches(taxon: dict, cls: dict) -> bool:
+    """Accept an active species whose name, common name or matched synonym equals ours."""
+    if taxon.get("rank") != "species" or taxon.get("is_active") is False:
+        return False
+    wanted = {cls["scientific_name"].lower(), cls["common_name"].lower()}
+    seen = {
+        (taxon.get("name") or "").lower(),
+        (taxon.get("preferred_common_name") or "").lower(),
+        (taxon.get("matched_term") or "").lower(),
+    }
+    return bool(wanted & seen)
+
+
+def find_taxon(c: httpx.Client, cls: dict) -> tuple[dict | None, list[str]]:
+    candidates: list[str] = []
+    searches = (
+        ("/taxa", cls["scientific_name"]),
+        ("/taxa/autocomplete", cls["scientific_name"]),
+        ("/taxa/autocomplete", cls["common_name"]),
+    )
+    for path, query in searches:
+        data = get_json(c, path, {"q": query, "per_page": 30})
+        for taxon in data.get("results", []):
+            if taxon_matches(taxon, cls):
+                return taxon, []
+            candidates.append(f"{taxon.get('name')} [{taxon.get('rank')}]")
+    return None, candidates[:6]
+
+
 def cmd_resolve(_args) -> int:
     tax = load_taxonomy()
     missing = []
     with client() as c:
         for cls in tax["classes"]:
             if not cls.get("taxon_id"):
-                data = get_json(c, "/taxa", {"q": cls["scientific_name"], "rank": "species", "per_page": 10})
-                match = next(
-                    (t for t in data.get("results", []) if t["name"].lower() == cls["scientific_name"].lower()),
-                    None,
-                )
+                match, candidates = find_taxon(c, cls)
                 if match is None:
                     missing.append(cls["slug"])
-                    print(f"{cls['slug']:<18} NOT FOUND ({cls['scientific_name']})")
+                    print(f"{cls['slug']:<18} NOT FOUND ({cls['scientific_name']}); saw: {candidates}")
                     continue
                 cls["taxon_id"] = match["id"]
+                if match["name"].lower() != cls["scientific_name"].lower():
+                    cls["inat_name"] = match["name"]
+                    print(f"{cls['slug']:<18} note: iNaturalist files this species as {match['name']}")
             total = get_json(c, "/observations", {**obs_params(cls["taxon_id"]), "per_page": 0})["total_results"]
             cls["available"] = total
             flag = "" if total >= tax["per_class_target"] * 2 else "  <- LOW"

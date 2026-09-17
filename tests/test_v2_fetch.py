@@ -45,3 +45,17 @@ def test_manifest_roundtrip_is_deterministic(tmp_path):
     f.save_manifest(list(reversed(rows)), path)
     assert path.read_bytes() == first
     assert [r["photo_id"] for r in f.load_manifest(path)] == [1, 5, 2]
+
+BISON = {"slug": "american_bison", "scientific_name": "Bison bison", "common_name": "American bison"}
+
+
+def test_taxon_match_by_synonym_and_common_name():
+    renamed = {"name": "Bos bison", "rank": "species", "is_active": True, "matched_term": "Bison bison"}
+    by_common = {"name": "Bos bison", "rank": "species", "preferred_common_name": "American Bison"}
+    assert f.taxon_matches(renamed, BISON)
+    assert f.taxon_matches(by_common, BISON)
+
+
+def test_taxon_match_rejects_genus_and_inactive():
+    assert not f.taxon_matches({"name": "Bison bison", "rank": "genus"}, BISON)
+    assert not f.taxon_matches({"name": "Bison bison", "rank": "species", "is_active": False}, BISON)
