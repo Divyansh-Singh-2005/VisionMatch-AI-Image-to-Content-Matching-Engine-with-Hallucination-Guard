@@ -13,3 +13,8 @@
 
 Known label noise: research-grade observations can show tracks, scat or distant animals.
 The audit step measures how often that happens instead of assuming the labels are perfect.
+## Tagging model (v2-2)
+open_clip ViT-B-32 (laion2b_s34b_b79k), run locally. Each species is described by 10 prompts (5 templates x
+common + scientific name), averaged into one text embedding. Four "not an animal photo" options (tracks,
+droppings, remains, empty scene) catch observations that don't show the animal. The flag threshold is the
+lowest confidence cutoff whose kept predictions reach 95% species accuracy against the dataset labels.

@@ -103,3 +103,12 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   The commit was unpushed, so I amended the message before pushing.
 - Most photos are CC-BY-NC: fine for a portfolio project, not for commercial reuse.
 - Images live outside git; the manifest is gzipped deterministically (mtime=0, sorted) so diffs stay real.
+
+## v2 Session 2 - Local CLIP tagging
+- Tagged all 15,000 images with a local CLIP model (no API calls); results are saved every 1,024 images,
+  so an interrupted run resumes.
+- Evaluation uses the iNaturalist species labels: species and family accuracy, per-species accuracy, the most
+  common mix-ups, and accuracy vs confidence cutoff. The flag threshold comes from that curve, not a guess.
+- torch/open_clip live in requirements-v2.txt and the new tests avoid importing them, so the Docker image and
+  its test run are unchanged.
+- Embeddings are regenerable and stay out of git; predictions (gzipped) and summaries are committed.

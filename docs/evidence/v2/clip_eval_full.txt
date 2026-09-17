@@ -1,0 +1,75 @@
+model ViT-B-32/laion2b_s34b_b79k  device cpu  images 15000  speed 5.5 img/s  runtime 45.8 min
+species top-1 accuracy        : 0.461
+family top-1 accuracy         : 0.606
+wrong-species predictions     : 5013 (43.4% of them inside the true family)
+predicted not-an-animal photo : 3069 {'tracks': 1561, 'no_animal': 199, 'scat': 811, 'remains': 498}
+
+per species (lowest first):  n  top-1
+  eurasian_lynx       500  0.036
+  mule_deer           500  0.054
+  gray_wolf           500  0.060
+  white_tailed_deer   500  0.112
+  reindeer            500  0.160
+  cougar              500  0.182
+  red_deer            500  0.200
+  impala              500  0.262
+  coyote              500  0.318
+  bobcat              500  0.322
+  raccoon             500  0.334
+  black_bear          500  0.346
+  european_badger     500  0.380
+  gray_fox            500  0.398
+  brown_bear          500  0.426
+  red_fox             500  0.478
+  golden_jackal       500  0.478
+  fallow_deer         500  0.608
+  moose               500  0.608
+  red_squirrel        500  0.620
+  arctic_fox          500  0.622
+  leopard             501  0.625
+  beaver              500  0.694
+  polar_bear          500  0.696
+  gray_squirrel       500  0.698
+  tiger               500  0.706
+  cheetah             499  0.794
+  blackbuck           500  0.862
+  mountain_goat       500  0.866
+  american_bison      500  0.892
+
+top confusions (true -> predicted: count):
+  impala             -> blackbuck          332
+  white_tailed_deer  -> fallow_deer        171
+  mule_deer          -> fallow_deer        163
+  red_deer           -> fallow_deer        155
+  reindeer           -> moose              117
+  mule_deer          -> blackbuck          112
+  coyote             -> golden_jackal      91
+  fallow_deer        -> blackbuck          80
+  red_squirrel       -> gray_squirrel      80
+  gray_wolf          -> coyote             79
+  reindeer           -> fallow_deer        73
+  red_deer           -> blackbuck          65
+
+confidence cutoff vs accuracy (target 0.95):
+  cutoff  kept    accuracy
+  0.00    0.795   0.580
+  0.05    0.795   0.580
+  0.10    0.795   0.580
+  0.15    0.794   0.581
+  0.20    0.784   0.586
+  0.25    0.757   0.602
+  0.30    0.724   0.621
+  0.35    0.682   0.644
+  0.40    0.640   0.672
+  0.45    0.595   0.699
+  0.50    0.551   0.724
+  0.55    0.503   0.753
+  0.60    0.459   0.783
+  0.65    0.419   0.814
+  0.70    0.380   0.841
+  0.75    0.340   0.871
+  0.80    0.300   0.895
+  0.85    0.258   0.926
+  0.90    0.211   0.955
+  0.95    0.150   0.980
+FLAG_THRESHOLD=0.9  KEPT_AT_THRESHOLD=0.2113

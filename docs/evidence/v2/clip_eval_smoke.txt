@@ -1,0 +1,75 @@
+model ViT-B-32/laion2b_s34b_b79k  device cpu  images 600  speed 10.3 img/s  runtime 1.0 min
+species top-1 accuracy        : 0.510
+family top-1 accuracy         : 0.673
+wrong-species predictions     : 196 (50.0% of them inside the true family)
+predicted not-an-animal photo : 98 {'scat': 22, 'no_animal': 8, 'tracks': 53, 'remains': 15}
+
+per species (lowest first):  n  top-1
+  eurasian_lynx        20  0.000
+  gray_wolf            20  0.150
+  white_tailed_deer    20  0.150
+  mule_deer            20  0.150
+  cougar               20  0.150
+  reindeer             20  0.200
+  european_badger      20  0.200
+  coyote               20  0.250
+  red_deer             20  0.250
+  impala               20  0.300
+  gray_fox             20  0.350
+  brown_bear           20  0.400
+  red_fox              20  0.450
+  golden_jackal        20  0.500
+  black_bear           20  0.500
+  moose                20  0.600
+  bobcat               20  0.600
+  raccoon              20  0.600
+  gray_squirrel        20  0.600
+  cheetah              20  0.650
+  red_squirrel         20  0.650
+  arctic_fox           20  0.700
+  fallow_deer          20  0.700
+  leopard              20  0.700
+  tiger                20  0.850
+  american_bison       20  0.900
+  mountain_goat        20  0.900
+  polar_bear           20  0.950
+  blackbuck            20  0.950
+  beaver               20  0.950
+
+top confusions (true -> predicted: count):
+  impala             -> blackbuck          12
+  white_tailed_deer  -> fallow_deer        12
+  coyote             -> golden_jackal      8
+  mule_deer          -> fallow_deer        7
+  reindeer           -> moose              7
+  red_deer           -> fallow_deer        6
+  mule_deer          -> blackbuck          5
+  reindeer           -> blackbuck          5
+  red_deer           -> moose              4
+  cheetah            -> golden_jackal      3
+  cougar             -> gray_fox           3
+  gray_fox           -> red_fox            3
+
+confidence cutoff vs accuracy (target 0.95):
+  cutoff  kept    accuracy
+  0.00    0.837   0.610
+  0.05    0.837   0.610
+  0.10    0.837   0.610
+  0.15    0.835   0.611
+  0.20    0.827   0.615
+  0.25    0.800   0.631
+  0.30    0.775   0.645
+  0.35    0.733   0.668
+  0.40    0.702   0.689
+  0.45    0.652   0.719
+  0.50    0.605   0.730
+  0.55    0.580   0.747
+  0.60    0.530   0.783
+  0.65    0.492   0.793
+  0.70    0.450   0.833
+  0.75    0.402   0.871
+  0.80    0.355   0.897
+  0.85    0.303   0.929
+  0.90    0.250   0.953
+  0.95    0.197   0.983
+FLAG_THRESHOLD=0.9  KEPT_AT_THRESHOLD=0.25
