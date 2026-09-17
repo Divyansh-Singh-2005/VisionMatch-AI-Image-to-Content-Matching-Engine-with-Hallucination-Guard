@@ -1,0 +1,82 @@
+import pytest
+from pydantic import ValidationError
+
+from scripts.v2.audit_score import build_prompt, format_audit, score_audit, verdict_model
+
+TAX = {"classes": [
+    {"slug": "red_fox", "common_name": "Red fox", "scientific_name": "Vulpes vulpes", "family": "canid"},
+    {"slug": "gray_wolf", "common_name": "Gray wolf", "scientific_name": "Canis lupus", "family": "canid"},
+    {"slug": "brown_bear", "common_name": "Brown bear", "scientific_name": "Ursus arctos", "family": "ursid"},
+]}
+V = verdict_model(TAX)
+
+
+def j(**kw):
+    base = {"content": "live_animal", "species": "red_fox", "confidence": 0.9, "reason": "orange fox"}
+    return __import__("json").dumps({**base, **kw})
+
+
+def test_prompt_lists_every_species_with_both_names():
+    p = build_prompt(TAX)
+    assert "red_fox (Red fox, Vulpes vulpes)" in p
+    assert "{subjects}" not in p
+
+
+def test_valid_verdict():
+    v = V.model_validate_json(j())
+    assert v.species == "red_fox" and v.content.value == "live_animal"
+
+
+@pytest.mark.parametrize("bad", [
+    j(species="wolf"),                       # not in the taxonomy
+    j(confidence=1.5),
+    j(content="maybe"),
+    j(reason=""),
+    '{"content": "live_animal", "species": "red_fox", "confidence": 0.9}',   # missing reason
+    j(extra="x"),
+])
+def test_invalid_verdicts_rejected(bad):
+    with pytest.raises(ValidationError):
+        V.model_validate_json(bad)
+
+
+def test_non_animal_content_must_use_other():
+    with pytest.raises(ValidationError):
+        V.model_validate_json(j(content="tracks", species="red_fox"))
+    assert V.model_validate_json(j(content="tracks", species="other")).species == "other"
+
+
+def test_remains_may_name_a_species():
+    assert V.model_validate_json(j(content="remains", species="red_fox")).content.value == "remains"
+
+
+RESULTS = [
+    {"bucket": "family_disagreement", "label_class": "red_fox", "label_family": "canid",
+     "bio_pred": "brown_bear", "vit_pred": "red_fox", "content": "live_animal", "species": "red_fox",
+     "confidence": 0.9},
+    {"bucket": "family_disagreement", "label_class": "red_fox", "label_family": "canid",
+     "bio_pred": "brown_bear", "vit_pred": "red_fox", "content": "live_animal", "species": "brown_bear",
+     "confidence": 0.8},
+    {"bucket": "cross_model_non_animal", "label_class": "red_fox", "label_family": "canid",
+     "bio_pred": "red_fox", "vit_pred": "other", "content": "tracks", "species": "other", "confidence": 0.3},
+]
+
+
+def test_scoring_splits_label_and_model_agreement():
+    b = score_audit(RESULTS, TAX)["family_disagreement"]
+    assert b["n"] == 2 and b["rates"]["live_animal"] == 1.0
+    assert b["rates"]["label_species"] == 0.5     # one verdict backs the label
+    assert b["rates"]["bio_species"] == 0.5       # the other backs BioCLIP
+    assert b["rates"]["label_family"] == 0.5
+
+
+def test_non_animal_bucket_credits_generic_clip():
+    b = score_audit(RESULTS, TAX)["cross_model_non_animal"]
+    assert b["llm_vs_vit_non_animal"] == 1
+    assert b["rates"]["live_animal"] == 0.0
+    assert b["content"] == {"tracks": 1}
+
+
+def test_format_audit_has_a_row_per_bucket():
+    out = format_audit(score_audit(RESULTS, TAX), {"calls": 3, "ok": 3, "failed": 0, "est_cost_usd": 0.001})
+    assert "family_disagreement" in out and "cross_model_non_animal" in out
