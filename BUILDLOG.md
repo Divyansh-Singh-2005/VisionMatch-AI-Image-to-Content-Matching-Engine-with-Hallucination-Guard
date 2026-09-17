@@ -112,3 +112,14 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
 - torch/open_clip live in requirements-v2.txt and the new tests avoid importing them, so the Docker image and
   its test run are unchanged.
 - Embeddings are regenerable and stay out of git; predictions (gzipped) and summaries are committed.
+
+## v2 Session 3 - Fixing a bad baseline
+- The first CLIP run scored only 0.461 species top-1 and called 3,069 photos (20%) tracks/scat/remains,
+  which is not plausible for research-grade observations. Two causes were mine, one is real:
+  (a) I averaged 5 common-name prompts with 5 scientific-name prompts into one vector; CLIP barely knows
+      Latin binomials, so the class vectors were dragged off target (impala -> blackbuck 332 times);
+  (b) the not-an-animal prompts competed as equals with no margin, so ordinary ground won;
+  (c) fine-grained species really is hard for ViT-B-32 - 43% of errors stayed inside the right family.
+- Because image embeddings were saved, testing fixes needed no image passes: re-encoding ~30 text prompts
+  plus one matmul re-scores all 15,000 images in seconds. Swept 6 prompt strategies x 5 reject margins.
+- Chose strategy=descriptive reject_margin=5.0 from that sweep.

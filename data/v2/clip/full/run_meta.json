@@ -41,5 +41,8 @@
     "reject:remains",
     "reject:no_animal"
   ],
-  "chunk_size": 1024
+  "chunk_size": 1024,
+  "strategy": "descriptive",
+  "reject_margin": 5.0,
+  "rescored": true
 }

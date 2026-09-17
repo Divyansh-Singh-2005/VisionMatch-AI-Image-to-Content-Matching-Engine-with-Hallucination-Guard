@@ -1,0 +1,45 @@
+rescoring 15000 saved embeddings on cpu - no image re-encoded
+
+strategy both_mean (34 label rows, 43.2s)
+  margin 1.0           top1=0.461  family=0.605  rejected= 3112  flag_threshold=0.9  kept=0.2113  family_agrees=0.650
+  margin 1.5           top1=0.462  family=0.608  rejected= 3004  flag_threshold=0.9  kept=0.2113  family_agrees=0.650
+  margin 2.0           top1=0.464  family=0.610  rejected= 2915  flag_threshold=0.9  kept=0.2113  family_agrees=0.650
+  margin 3.0           top1=0.465  family=0.613  rejected= 2813  flag_threshold=0.9  kept=0.2113  family_agrees=0.650
+  margin 5.0           top1=0.467  family=0.615  rejected= 2673  flag_threshold=0.9  kept=0.2113  family_agrees=0.650
+
+strategy common (34 label rows, 25.5s)
+  margin 1.0           top1=0.502  family=0.625  rejected= 3516  flag_threshold=0.95  kept=0.2412  family_agrees=0.695
+  margin 1.5           top1=0.504  family=0.628  rejected= 3419  flag_threshold=0.95  kept=0.2412  family_agrees=0.695
+  margin 2.0           top1=0.506  family=0.631  rejected= 3334  flag_threshold=0.95  kept=0.2412  family_agrees=0.695
+  margin 3.0           top1=0.508  family=0.633  rejected= 3227  flag_threshold=0.95  kept=0.2412  family_agrees=0.695
+  margin 5.0           top1=0.509  family=0.636  rejected= 3119  flag_threshold=0.95  kept=0.2412  family_agrees=0.695
+
+strategy latin (34 label rows, 25.5s)
+  margin 1.0           top1=0.253  family=0.469  rejected= 3622  flag_threshold=None  kept=None  family_agrees=0.515
+  margin 1.5           top1=0.254  family=0.471  rejected= 3490  flag_threshold=None  kept=None  family_agrees=0.515
+  margin 2.0           top1=0.255  family=0.472  rejected= 3386  flag_threshold=None  kept=None  family_agrees=0.515
+  margin 3.0           top1=0.255  family=0.474  rejected= 3243  flag_threshold=None  kept=None  family_agrees=0.515
+  margin 5.0           top1=0.257  family=0.477  rejected= 3058  flag_threshold=None  kept=None  family_agrees=0.515
+
+strategy both_split (64 label rows, 27.9s)
+  margin 1.0           top1=0.487  family=0.614  rejected= 3183  flag_threshold=0.9  kept=0.2304  family_agrees=0.662
+  margin 1.5           top1=0.489  family=0.617  rejected= 3084  flag_threshold=0.9  kept=0.2304  family_agrees=0.662
+  margin 2.0           top1=0.490  family=0.618  rejected= 2994  flag_threshold=0.9  kept=0.2304  family_agrees=0.662
+  margin 3.0           top1=0.491  family=0.621  rejected= 2866  flag_threshold=0.9  kept=0.2304  family_agrees=0.662
+  margin 5.0           top1=0.493  family=0.623  rejected= 2719  flag_threshold=0.9  kept=0.2304  family_agrees=0.662
+
+strategy descriptive (34 label rows, 28.0s)
+  margin 1.0           top1=0.500  family=0.624  rejected= 3677  flag_threshold=0.9  kept=0.2961  family_agrees=0.696
+  margin 1.5           top1=0.503  family=0.628  rejected= 3562  flag_threshold=0.9  kept=0.2961  family_agrees=0.696
+  margin 2.0           top1=0.505  family=0.630  rejected= 3481  flag_threshold=0.9  kept=0.2961  family_agrees=0.696
+  margin 3.0           top1=0.507  family=0.632  rejected= 3382  flag_threshold=0.9  kept=0.2961  family_agrees=0.696
+  margin 5.0           top1=0.509  family=0.636  rejected= 3247  flag_threshold=0.9  kept=0.2961  family_agrees=0.696
+
+strategy descriptive_split (94 label rows, 51.7s)
+  margin 1.0           top1=0.498  family=0.621  rejected= 3122  flag_threshold=0.9  kept=0.2476  family_agrees=0.667
+  margin 1.5           top1=0.500  family=0.624  rejected= 3008  flag_threshold=0.9  kept=0.2476  family_agrees=0.667
+  margin 2.0           top1=0.501  family=0.625  rejected= 2919  flag_threshold=0.9  kept=0.2476  family_agrees=0.667
+  margin 3.0           top1=0.502  family=0.627  rejected= 2810  flag_threshold=0.9  kept=0.2476  family_agrees=0.667
+  margin 5.0           top1=0.504  family=0.629  rejected= 2682  flag_threshold=0.9  kept=0.2476  family_agrees=0.667
+
+BEST strategy=descriptive reject_margin=5.0 top1=0.509 family=0.636 (baseline v2-2 top1=0.461)
