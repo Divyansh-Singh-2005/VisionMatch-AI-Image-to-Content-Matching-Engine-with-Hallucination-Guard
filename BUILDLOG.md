@@ -180,3 +180,13 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   would have discarded thousands of usable images.
 - Generic CLIP earned a permanent role as the content gate (96% right on its non-animal calls) - the same
   model I nearly dropped after it lost the species comparison to BioCLIP.
+
+## v2 Session 8 - Matching at scale
+- 100 posts x 15,000 images: 0 wrong suggestions and 0 look-alike suggestions. The guard rejected a bobcat
+  for a lynx post and a coyote for a wolf post, by name, which is the behaviour the whole project is for.
+- 10 subject posts initially found no match. The sweep showed the threshold was not binding (precision flat
+  from 0.10 to 0.22), so the cause was top_k=5 - a value carried over from a 52-image library. With 15,000
+  images and near-identical species the correct image can sit below rank 5 behind look-alikes the guard
+  correctly rejects. Candidate depth is now swept alongside the threshold: top_k=50, threshold=0.10.
+- A test pins the important half of that change: deeper candidate lists change what is CONSIDERED, never
+  what is ALLOWED - a look-alike is still rejected at any depth.

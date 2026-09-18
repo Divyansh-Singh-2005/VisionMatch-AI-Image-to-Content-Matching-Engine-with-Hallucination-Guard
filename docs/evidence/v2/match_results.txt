@@ -2,12 +2,13 @@ corpus: 14998 images, 10587 usable (70.6%)
 threshold: 0.10
 
 posts evaluated            : 100 (90 with a subject, 10 refusal cases)
-top-1 precision            : 0.760
-correct image found        : 0.733 of subject posts
+top-1 precision            : 0.940
+correct image found        : 0.933 of subject posts
 wrong suggestions          : 0 (of which look-alikes: 0)
 refusals correct           : 10/10
-subject posts with no match: 10 ['red-fox-3', 'gray-fox-2', 'gray-fox-3', 'gray-wolf-2', 'gray-wolf-3', 'coyote-3', 'golden-jackal-3', 'brown-bear-3', 'black-bear-1', 'polar-bear-3']
+subject posts with no match: 6 ['brown-bear-3', 'white-tailed-deer-3', 'moose-3', 'reindeer-3', 'american-bison-3', 'cheetah-3']
 wrong suggestions detail   : []
+top_k: 50
 examples:
   eurasian-lynx-1: SUGGESTED
     image 158617994 (eurasian_lynx, score 0.318)
