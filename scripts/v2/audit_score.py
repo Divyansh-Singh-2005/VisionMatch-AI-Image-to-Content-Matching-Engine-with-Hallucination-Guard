@@ -4,6 +4,8 @@ The auditor answers two separate questions, mirroring the two-stage CLIP decisio
   1. is this a photo of a live animal at all?
   2. if so, which species from the taxonomy?
 """
+import json
+import re
 from collections import Counter
 from enum import Enum
 
@@ -131,3 +133,44 @@ def format_audit(buckets: dict, cost: dict) -> str:
     for name, b in buckets.items():
         lines.append(f"  {name:<24} {b['content']}")
     return "\n".join(lines)
+
+class AuditVerdictLLM(BaseModel):
+    """Loose shape sent to the API as response_schema - the API enforces this one.
+
+    Validation still happens against the strict model from verdict_model().
+    """
+
+    content: Content
+    species: str
+    confidence: float
+    reason: str
+
+
+_FENCE = re.compile(r"```(?:json)?\s*(.*?)\s*```", re.DOTALL)
+
+
+def extract_json(text: str) -> str:
+    """Pull the JSON object out of a reply that may carry fences or prose around it."""
+    if not text:
+        return ""
+    fenced = _FENCE.search(text)
+    if fenced:
+        text = fenced.group(1)
+    text = text.strip()
+    if text.startswith("{"):
+        return text
+    start, end = text.find("{"), text.rfind("}")
+    return text[start:end + 1] if 0 <= start < end else text
+
+
+def normalise_verdict(raw: str) -> str:
+    """Repair the shapes the model actually returned: a list-valued reason, a one-item list."""
+    try:
+        data = json.loads(extract_json(raw))
+    except (ValueError, TypeError):
+        return extract_json(raw)
+    if isinstance(data, list) and len(data) == 1 and isinstance(data[0], dict):
+        data = data[0]
+    if isinstance(data, dict) and isinstance(data.get("reason"), list):
+        data["reason"] = " ".join(str(x) for x in data["reason"])
+    return json.dumps(data)

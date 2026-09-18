@@ -98,3 +98,33 @@ def test_classify_audit_errors(message, expected):
 def test_transient_errors_are_retryable_not_fatal():
     """A busy service must not be treated like a broken pipeline."""
     assert classify(Exception("503 UNAVAILABLE"))[0] not in ("other", "quota_daily")
+
+
+from scripts.v2.audit_score import AuditVerdictLLM, extract_json, normalise_verdict
+
+
+def test_llm_schema_is_loose_enough_for_the_api():
+    """The API enforces this shape; the strict model does the real checking afterwards."""
+    fields = set(AuditVerdictLLM.model_fields)
+    assert fields == {"content", "species", "confidence", "reason"}
+
+
+def test_extract_json_handles_fences_and_prose():
+    assert extract_json('```json\n{"a": 1}\n```') == '{"a": 1}'
+    assert extract_json('Here is the answer:\n{"a": 1}\nHope that helps.') == '{"a": 1}'
+    assert extract_json('{"a": 1}') == '{"a": 1}'
+    assert extract_json("") == ""
+
+
+def test_normalise_repairs_the_shapes_the_model_returned():
+    once = normalise_verdict('[{"content": "live_animal", "species": "red_fox", '
+                             '"confidence": 0.9, "reason": "a fox"}]')
+    assert V.model_validate_json(once).species == "red_fox"
+    joined = normalise_verdict('{"content": "live_animal", "species": "red_fox", '
+                               '"confidence": 0.9, "reason": ["orange fur", "bushy tail"]}')
+    assert V.model_validate_json(joined).reason == "orange fur bushy tail"
+
+
+def test_normalise_passes_unparseable_text_through_for_a_clean_error():
+    with pytest.raises(ValidationError):
+        V.model_validate_json(normalise_verdict("I cannot identify this image."))

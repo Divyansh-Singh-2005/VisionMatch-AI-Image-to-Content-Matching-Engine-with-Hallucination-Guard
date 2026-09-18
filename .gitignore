@@ -1,4 +1,4 @@
-﻿# Secrets
+# Secrets
 .env
 *.key
 
@@ -32,4 +32,3 @@ data/v2/clip/**/*.npz
 
 # audit working files (the gzipped results + summary are committed)
 data/v2/audit/results.jsonl
-data/v2/audit/ai_calls.jsonl

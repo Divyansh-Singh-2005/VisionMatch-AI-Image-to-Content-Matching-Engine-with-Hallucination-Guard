@@ -13,7 +13,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-from scripts.v2.audit_score import build_prompt, format_audit, score_audit, verdict_model
+from scripts.v2.audit_score import (
+    AuditVerdictLLM, build_prompt, format_audit, normalise_verdict, score_audit, verdict_model,
+)
 from scripts.v2.fetch_inat import load_manifest, load_taxonomy, save_rows
 
 AUDIT = Path("data/v2/audit")
@@ -82,8 +84,11 @@ def cmd_run(args) -> int:
         return 0
 
     client = genai.Client(api_key=key)
+    # The API must ENFORCE the shape; asking for JSON in the prompt is not enough.
     config = types.GenerateContentConfig(
-        response_mime_type="application/json", temperature=0.0,
+        response_mime_type="application/json",
+        response_schema=AuditVerdictLLM,
+        temperature=0.0,
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
     )
     interval = 60.0 / RPM
@@ -97,6 +102,7 @@ def cmd_run(args) -> int:
         ref = f"photo:{item['photo_id']}"
         ok = False
         gave_up_retryable = False
+        last_error = ""
         for attempt in range(1, MAX_ATTEMPTS + 1):
             attempts_used += 1
             try:
@@ -110,6 +116,7 @@ def cmd_run(args) -> int:
             except Exception as exc:
                 kind, detail = classify(exc)
                 append(COSTS, {"ref": ref, "attempt": attempt, "ok": False, "error": f"{kind}: {detail}"})
+                last_error = f"{kind}: {detail}"
                 if kind == "quota_daily":
                     print(f"PAUSED on daily quota after {n - 1} images: {detail}")
                     print("rerun the same command later to continue")
@@ -130,11 +137,13 @@ def cmd_run(args) -> int:
             inp = int(getattr(u, "prompt_token_count", 0) or 0)
             out = int(getattr(u, "candidates_token_count", 0) or 0)
             try:
-                v = Verdict.model_validate_json(resp.text or "")
+                v = Verdict.model_validate_json(normalise_verdict(resp.text or ""))
             except ValidationError as exc:
                 append(COSTS, {"ref": ref, "attempt": attempt, "ok": False, "input_tokens": inp,
                                "output_tokens": out, "latency_ms": ms,
-                               "error": f"schema_invalid: {exc.errors()[0]['msg']}"})
+                               "error": f"schema_invalid: {exc.errors()[0]['msg']}",
+                               "raw_head": (resp.text or "")[:200]})
+                last_error = f"schema_invalid: {exc.errors()[0]['msg']}"
                 time.sleep(interval)
                 continue
             append(COSTS, {"ref": ref, "attempt": attempt, "ok": True, "input_tokens": inp,
@@ -152,7 +161,9 @@ def cmd_run(args) -> int:
             print(f"  {n}/{len(todo)} processed | {saved} verdicts saved | "
                   f"{attempts_used} api attempts ({retried} retried)")
         if failures >= CIRCUIT_BREAKER:
-            print(f"ABORTED after {failures} consecutive failures - see {COSTS}")
+            print(f"ABORTED after {failures} consecutive non-retryable failures.")
+            print(f"  last error: {last_error}")
+            print(f"  full log: {COSTS}")
             return 1
         time.sleep(interval)
     print(f"AUDIT complete: {len(read_jsonl(RESULTS))} verdicts")
