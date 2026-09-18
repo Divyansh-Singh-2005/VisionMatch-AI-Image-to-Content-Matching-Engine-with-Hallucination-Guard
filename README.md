@@ -9,6 +9,13 @@ space, ranks images for each post, and sends every candidate through a **mismatc
 - a gray wolf forced onto that post is **rejected with a reason**,
 - a post nothing fits (penguins, sourdough, an arctic fox we have no photo of) gets **`NO_CONFIDENT_MATCH`**, with the reason each candidate failed.
 
+> **Also in this repo:** the [`v2-scale`](../../tree/v2-scale) branch runs the same design over a
+> **14,998-image, 30-species** library, with local vision models doing the bulk tagging (BioCLIP + OpenCLIP,
+> zero API calls) and a 250-call LLM audit measuring quality. Results, findings and limitations:
+> [`docs/V2_RESULTS.md`](../../blob/v2-scale/docs/V2_RESULTS.md).
+> Headline: top-1 precision **0.940**, with **0 wrong suggestions and 0 look-alike errors** across
+> 100 posts and 56 tuning configurations. This branch (`main`) is the submitted capstone and is unchanged.
+
 **Headline result: top-1 precision 1.000 on a 15-post hand-labelled set** (10 posts with a correct
 image, 5 where the correct answer is a refusal) at similarity threshold 0.73.
 Read [Evaluation](#evaluation) for why this number is optimistic.
