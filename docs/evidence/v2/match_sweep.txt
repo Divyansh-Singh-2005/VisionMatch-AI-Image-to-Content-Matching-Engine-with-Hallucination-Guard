@@ -1,4 +1,4 @@
-sweep over 100 posts x 15000 images
+sweep over 100 posts x 14998 catalogued images
 
   top_k   thr    top1  recall  wrong  lookalike  refusals
       5  0.10   0.760   0.733      0          0   10/10

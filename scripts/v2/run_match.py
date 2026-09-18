@@ -64,7 +64,7 @@ def corpus_stats(catalog: dict) -> dict:
 
 def cmd_sweep(args) -> int:
     posts, catalog, ids, sims = load_all()
-    lines = [f"sweep over {len(posts)} posts x {len(ids)} images", "",
+    lines = [f"sweep over {len(posts)} posts x {len(catalog)} catalogued images", "",
              f"  {'top_k':>5} {'thr':>5} {'top1':>7} {'recall':>7} {'wrong':>6} {'lookalike':>10} {'refusals':>9}"]
     best = None
     for k in TOP_KS:
