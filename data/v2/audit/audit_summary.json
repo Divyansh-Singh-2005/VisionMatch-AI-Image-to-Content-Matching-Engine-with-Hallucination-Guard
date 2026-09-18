@@ -1,33 +1,140 @@
 {
   "cost": {
-    "calls": 97,
-    "ok": 21,
-    "failed": 76,
-    "est_cost_usd": 0.011081
+    "calls": 340,
+    "ok": 246,
+    "failed": 94,
+    "est_cost_usd": 0.130041
   },
   "buckets": {
     "control_random": {
-      "n": 21,
-      "llm_live_animal": 18,
-      "llm_vs_label_species": 18,
-      "llm_vs_label_family": 18,
-      "llm_vs_bio_species": 18,
-      "llm_vs_bio_family": 18,
+      "n": 50,
+      "llm_live_animal": 44,
+      "llm_vs_label_species": 43,
+      "llm_vs_label_family": 44,
+      "llm_vs_bio_species": 43,
+      "llm_vs_bio_family": 44,
       "llm_vs_vit_non_animal": 0,
-      "llm_says_other": 0,
+      "llm_says_other": 2,
       "llm_low_confidence": 0,
       "content": {
-        "live_animal": 18,
-        "remains": 3
+        "live_animal": 44,
+        "remains": 4,
+        "none": 2
       },
       "rates": {
-        "live_animal": 0.857,
+        "live_animal": 0.88,
+        "label_species": 0.977,
+        "label_family": 1.0,
+        "bio_species": 0.977,
+        "bio_family": 1.0,
+        "says_other": 0.04,
+        "low_confidence": 0.0
+      }
+    },
+    "cross_model_non_animal": {
+      "n": 49,
+      "llm_live_animal": 2,
+      "llm_vs_label_species": 2,
+      "llm_vs_label_family": 2,
+      "llm_vs_bio_species": 2,
+      "llm_vs_bio_family": 2,
+      "llm_vs_vit_non_animal": 47,
+      "llm_says_other": 38,
+      "llm_low_confidence": 2,
+      "content": {
+        "tracks": 20,
+        "live_animal": 2,
+        "none": 5,
+        "scat": 9,
+        "remains": 13
+      },
+      "rates": {
+        "live_animal": 0.041,
         "label_species": 1.0,
         "label_family": 1.0,
         "bio_species": 1.0,
         "bio_family": 1.0,
-        "says_other": 0.0,
+        "says_other": 0.776,
+        "low_confidence": 0.041
+      }
+    },
+    "family_disagreement": {
+      "n": 50,
+      "llm_live_animal": 14,
+      "llm_vs_label_species": 10,
+      "llm_vs_label_family": 11,
+      "llm_vs_bio_species": 0,
+      "llm_vs_bio_family": 1,
+      "llm_vs_vit_non_animal": 27,
+      "llm_says_other": 35,
+      "llm_low_confidence": 3,
+      "content": {
+        "none": 6,
+        "live_animal": 14,
+        "tracks": 18,
+        "remains": 5,
+        "scat": 7
+      },
+      "rates": {
+        "live_animal": 0.28,
+        "label_species": 0.714,
+        "label_family": 0.786,
+        "bio_species": 0.0,
+        "bio_family": 0.071,
+        "says_other": 0.7,
+        "low_confidence": 0.06
+      }
+    },
+    "low_confidence": {
+      "n": 48,
+      "llm_live_animal": 41,
+      "llm_vs_label_species": 38,
+      "llm_vs_label_family": 39,
+      "llm_vs_bio_species": 38,
+      "llm_vs_bio_family": 39,
+      "llm_vs_vit_non_animal": 4,
+      "llm_says_other": 6,
+      "llm_low_confidence": 0,
+      "content": {
+        "live_animal": 41,
+        "remains": 3,
+        "tracks": 3,
+        "scat": 1
+      },
+      "rates": {
+        "live_animal": 0.854,
+        "label_species": 0.927,
+        "label_family": 0.951,
+        "bio_species": 0.927,
+        "bio_family": 0.951,
+        "says_other": 0.125,
         "low_confidence": 0.0
+      }
+    },
+    "species_disagreement": {
+      "n": 49,
+      "llm_live_animal": 33,
+      "llm_vs_label_species": 26,
+      "llm_vs_label_family": 30,
+      "llm_vs_bio_species": 4,
+      "llm_vs_bio_family": 30,
+      "llm_vs_vit_non_animal": 9,
+      "llm_says_other": 18,
+      "llm_low_confidence": 3,
+      "content": {
+        "tracks": 11,
+        "live_animal": 33,
+        "remains": 4,
+        "scat": 1
+      },
+      "rates": {
+        "live_animal": 0.673,
+        "label_species": 0.788,
+        "label_family": 0.909,
+        "bio_species": 0.121,
+        "bio_family": 0.909,
+        "says_other": 0.367,
+        "low_confidence": 0.061
       }
     }
   }

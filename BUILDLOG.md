@@ -154,3 +154,18 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   community label and BioCLIP 100% of the time, so the labels and the auditor are both trustworthy.
 - 3 of those 20 "live animal" photos were actually remains (roadkill or bones) - real label noise in
   research-grade observations, which is why the audit asks about content separately from species.
+
+## v2 Session 6 - LLM audit, and two self-inflicted bugs
+- The audit burned ~74 calls on schema failures before producing much. Root cause: in v1 I passed
+  response_schema so the API ENFORCED the shape, but in the audit I only set response_mime_type and
+  described the shape in the prompt. Asking is not enforcing. Fixed by passing response_schema, plus a
+  tolerant extractor for fenced or prose-wrapped JSON.
+- Second bug, more interesting: my validator rejected a correct verdict. For a landscape photo the model
+  answered content="none", species="none"; my rule demanded species="other". Same meaning, different
+  wording - and at temperature 0 the retry loop then sent the identical request five times for the identical
+  failure. A deterministic validation failure is a code bug, not a transient error, so it now retries once
+  and moves on, and "none"/"unknown"/"n/a" normalise to "other" before validation.
+- Also fixed earlier in the session: transient 503s were tripping the circuit breaker, and the failure log
+  (ai_calls.jsonl) was git-ignored, so the abort message pointed at a file nobody could see. Both are
+  evidence now; the abort message prints the actual last error.
+- Probe after the fixes: 10 images, 10 API attempts, 0 retries.
