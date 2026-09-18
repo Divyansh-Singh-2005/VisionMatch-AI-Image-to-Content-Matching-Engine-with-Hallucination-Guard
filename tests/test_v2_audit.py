@@ -128,3 +128,27 @@ def test_normalise_repairs_the_shapes_the_model_returned():
 def test_normalise_passes_unparseable_text_through_for_a_clean_error():
     with pytest.raises(ValidationError):
         V.model_validate_json(normalise_verdict("I cannot identify this image."))
+
+
+def test_species_none_is_accepted_as_other():
+    """The model mirrored content ("none") instead of writing "other" - same meaning."""
+    raw = ('{"content": "none", "species": "none", "confidence": 1.0, '
+           '"reason": "A landscape with no animals visible."}')
+    v = V.model_validate_json(normalise_verdict(raw))
+    assert v.species == "other" and v.content.value == "none"
+
+
+@pytest.mark.parametrize("word", ["none", "None", "unknown", "N/A", "null"])
+def test_no_species_synonyms(word):
+    raw = ('{"content": "tracks", "species": "%s", "confidence": 0.8, "reason": "Footprints in mud."}' % word)
+    assert V.model_validate_json(normalise_verdict(raw)).species == "other"
+
+
+def test_a_real_species_is_never_rewritten():
+    raw = ('{"content": "live_animal", "species": "red_fox", "confidence": 0.9, "reason": "An orange fox."}')
+    assert V.model_validate_json(normalise_verdict(raw)).species == "red_fox"
+
+
+def test_prompt_states_the_species_rule_for_non_animal_content():
+    from scripts.v2.audit_score import build_prompt
+    assert 'species MUST be exactly "other"' in build_prompt(TAX)

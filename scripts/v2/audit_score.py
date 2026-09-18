@@ -28,6 +28,8 @@ Use "other" when the animal is not in the list (including domestic animals and b
 Do not guess a listed species because it sounds close - "other" is the correct answer for anything
 not on the list.
 
+When content is tracks, scat or none, species MUST be exactly "other" (never "none", never "unknown").
+
 Return JSON with: content (one of the five values above), species (a listed value or "other"),
 confidence (0.0-1.0, how sure you are about the species), and reason (one short sentence).
 Use a confidence below 0.5 when the animal is too small, blurry or obscured to identify.
@@ -147,6 +149,7 @@ class AuditVerdictLLM(BaseModel):
 
 
 _FENCE = re.compile(r"```(?:json)?\s*(.*?)\s*```", re.DOTALL)
+NO_SPECIES_SYNONYMS = {"none", "null", "unknown", "n/a", "na", "no animal", ""}
 
 
 def extract_json(text: str) -> str:
@@ -173,4 +176,8 @@ def normalise_verdict(raw: str) -> str:
         data = data[0]
     if isinstance(data, dict) and isinstance(data.get("reason"), list):
         data["reason"] = " ".join(str(x) for x in data["reason"])
+    if isinstance(data, dict) and str(data.get("species", "")).lower() in NO_SPECIES_SYNONYMS:
+        # The model mirrored the content value ("none") instead of writing "other".
+        # The meaning is identical, so accept it rather than burning retries on wording.
+        data["species"] = "other"
     return json.dumps(data)

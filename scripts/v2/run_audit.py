@@ -102,6 +102,7 @@ def cmd_run(args) -> int:
         ref = f"photo:{item['photo_id']}"
         ok = False
         gave_up_retryable = False
+        gave_up_schema = False
         last_error = ""
         for attempt in range(1, MAX_ATTEMPTS + 1):
             attempts_used += 1
@@ -143,7 +144,15 @@ def cmd_run(args) -> int:
                                "output_tokens": out, "latency_ms": ms,
                                "error": f"schema_invalid: {exc.errors()[0]['msg']}",
                                "raw_head": (resp.text or "")[:200]})
-                last_error = f"schema_invalid: {exc.errors()[0]['msg']}"
+                message = f"schema_invalid: {exc.errors()[0]['msg']}"
+                # Temperature is 0: a repeated identical reply will fail identically, so one retry
+                # is the most that can help. Retrying further only burns quota.
+                if message == last_error:
+                    last_error = message
+                    gave_up_schema = True
+                    print(f"  {ref}: {message}; identical on retry, skipping this image")
+                    break
+                last_error = message
                 time.sleep(interval)
                 continue
             append(COSTS, {"ref": ref, "attempt": attempt, "ok": True, "input_tokens": inp,
@@ -156,6 +165,8 @@ def cmd_run(args) -> int:
         # A transient failure (503 / rate limit) is the service having a bad minute, not a broken
         # pipeline: it must not trip the breaker. Only schema or 4xx give-ups count.
         failures = 0 if (ok or gave_up_retryable) else failures + 1
+        if gave_up_schema:
+            failures += 0  # counted above; kept explicit for readability
         if n % 25 == 0 or n == len(todo):
             saved = len(read_jsonl(RESULTS))
             print(f"  {n}/{len(todo)} processed | {saved} verdicts saved | "
