@@ -57,3 +57,8 @@ Resulting design:
   hard (0.12 agreement on the species_disagreement bucket).
 - **Low confidence does not flag**: 93% of low-confidence predictions were correct, so a 0.95 threshold
   would have discarded thousands of good images.
+
+
+## Results
+See [V2_RESULTS.md](V2_RESULTS.md) for the corpus, model comparison, audit table,
+matching results and limitations.

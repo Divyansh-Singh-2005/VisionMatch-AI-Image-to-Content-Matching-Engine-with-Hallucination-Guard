@@ -190,3 +190,15 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   correctly rejects. Candidate depth is now swept alongside the threshold: top_k=50, threshold=0.10.
 - A test pins the important half of that change: deeper candidate lists change what is CONSIDERED, never
   what is ALLOWED - a look-alike is still rejected at any depth.
+
+## v2 Session 9 - Query construction, and what actually drove accuracy
+- All six remaining misses shared one post template: the seasonal one. Its scene and weather language
+  crowded out the species, so a brown-bear post retrieved arctic foxes and a cheetah post a gray squirrel.
+  BioCLIP is trained on short taxonomic captions; a 40-word narrative is out of distribution for its text
+  encoder. Adding a short taxonomic anchor to the query fixed all six.
+- Ranked by impact: query shape > candidate depth > similarity threshold. The threshold barely mattered -
+  correct suggestions score 0.212-0.369 while rejected candidates reach 0.287, so gate G2 does the safety
+  work. Same conclusion as v1, now at 288x the corpus size.
+- Recorded that 1.000 is the tuned number and 0.940 the honest headline: the hybrid query injects the
+  post subject, which the guard already uses, but retrieval now depends on that extractor being right.
+- Zero wrong suggestions and zero look-alikes across all 56 sweep configurations.
