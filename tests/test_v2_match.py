@@ -65,3 +65,19 @@ def test_score_run_counts_lookalikes_separately():
     refuse = decide_post(OTHER_POST, [(img(1, "red_fox", "canid"), 0.4)], threshold=0.2)
     s = score_run([good, refuse])
     assert s["top1_precision"] == 1.0 and s["refusals_correct"] == 1 and s["wrong_suggestions"] == 0
+
+def test_top_k_controls_how_deep_the_guard_looks():
+    """With many look-alikes ahead of it, the right image needs a deeper candidate list."""
+    ranked = [(img(i, "gray_wolf", "canid"), 0.4) for i in range(10)]
+    ranked.append((img(99, "red_fox", "canid"), 0.35))
+    assert decide_post(FOX_POST, ranked, threshold=0.2, top_k=5)["decision"] == "NO_CONFIDENT_MATCH"
+    deep = decide_post(FOX_POST, ranked, threshold=0.2, top_k=20)
+    assert deep["decision"] == "SUGGESTED" and deep["suggested"]["image_id"] == 99
+
+
+def test_deeper_top_k_never_admits_a_lookalike():
+    """Depth changes what is considered, never what is allowed."""
+    ranked = [(img(i, "gray_wolf", "canid"), 0.4) for i in range(30)]
+    d = decide_post(FOX_POST, ranked, threshold=0.2, top_k=30)
+    assert d["decision"] == "NO_CONFIDENT_MATCH"
+    assert all("Look-alike rejected" in v["reasons"][0] for v in d["candidates"])

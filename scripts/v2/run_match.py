@@ -16,6 +16,9 @@ CATALOG = Path("data/v2/catalog")
 OUT = Path("data/v2/match")
 EVIDENCE = Path("docs/evidence/v2")
 THRESHOLDS = [0.10, 0.15, 0.18, 0.20, 0.22, 0.25, 0.30]
+# v1 used top_k=5 for a 52-image library. With 15,000 images and near-identical species,
+# the correct image can sit below rank 5 behind look-alikes the guard correctly rejects.
+TOP_KS = [5, 10, 20, 50]
 
 
 def load_all():
@@ -48,8 +51,8 @@ def rank_for(post_index: int, ids, sims, catalog: dict, top_n: int = 50):
     return [(catalog[int(ids[i])], float(row[i])) for i in order if int(ids[i]) in catalog]
 
 
-def decisions_at(threshold: float, posts, catalog, ids, sims) -> list[dict]:
-    return [decide_post(p, rank_for(i, ids, sims, catalog), threshold=threshold)
+def decisions_at(threshold: float, posts, catalog, ids, sims, top_k: int = 5) -> list[dict]:
+    return [decide_post(p, rank_for(i, ids, sims, catalog), threshold=threshold, top_k=top_k)
             for i, p in enumerate(posts)]
 
 
@@ -61,17 +64,19 @@ def corpus_stats(catalog: dict) -> dict:
 
 def cmd_sweep(args) -> int:
     posts, catalog, ids, sims = load_all()
-    lines = [f"threshold sweep over {len(posts)} posts x {len(ids)} images", "",
-             f"  {'thr':>5} {'top1':>7} {'recall':>7} {'wrong':>6} {'lookalike':>10} {'refusals':>9}"]
+    lines = [f"sweep over {len(posts)} posts x {len(ids)} images", "",
+             f"  {'top_k':>5} {'thr':>5} {'top1':>7} {'recall':>7} {'wrong':>6} {'lookalike':>10} {'refusals':>9}"]
     best = None
-    for t in THRESHOLDS:
-        s = score_run(decisions_at(t, posts, catalog, ids, sims))
-        lines.append(f"  {t:>5.2f} {s['top1_precision']:>7.3f} {s['subject_recall']:>7.3f} "
-                     f"{s['wrong_suggestions']:>6} {s['lookalike_suggestions']:>10} "
-                     f"{s['refusals_correct']:>4}/{s['refusal_posts']}")
-        if best is None or s["top1_precision"] > best[1]["top1_precision"]:
-            best = (t, s)
-    lines.append(f"BEST_THRESHOLD={best[0]:.2f} top1={best[1]['top1_precision']:.3f}")
+    for k in TOP_KS:
+        for t in THRESHOLDS:
+            s = score_run(decisions_at(t, posts, catalog, ids, sims, top_k=k))
+            lines.append(f"  {k:>5} {t:>5.2f} {s['top1_precision']:>7.3f} {s['subject_recall']:>7.3f} "
+                         f"{s['wrong_suggestions']:>6} {s['lookalike_suggestions']:>10} "
+                         f"{s['refusals_correct']:>4}/{s['refusal_posts']}")
+            if best is None or s["top1_precision"] > best[2]["top1_precision"]:
+                best = (k, t, s)
+        lines.append("")
+    lines.append(f"BEST_TOP_K={best[0]} BEST_THRESHOLD={best[1]:.2f} top1={best[2]['top1_precision']:.3f} lookalikes={best[2]['lookalike_suggestions']}")
     report = "\n".join(lines)
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     (EVIDENCE / "match_sweep.txt").write_text(report + "\n", encoding="utf-8")
@@ -81,13 +86,13 @@ def cmd_sweep(args) -> int:
 
 def cmd_run(args) -> int:
     posts, catalog, ids, sims = load_all()
-    decisions = decisions_at(args.threshold, posts, catalog, ids, sims)
+    decisions = decisions_at(args.threshold, posts, catalog, ids, sims, top_k=args.top_k)
     s = score_run(decisions)
     OUT.mkdir(parents=True, exist_ok=True)
     save_rows(decisions, OUT / "decisions.jsonl.gz", key=lambda r: r["slug"])
     (OUT / "results.json").write_text(
         json.dumps({"threshold": args.threshold, "metrics": s}, indent=2) + "\n", encoding="utf-8")
-    report = format_run(s, args.threshold, corpus_stats(catalog))
+    report = format_run(s, args.threshold, corpus_stats(catalog)) + f"\ntop_k: {args.top_k}"
 
     examples = ["", "examples:"]
     for slug in ("eurasian-lynx-1", "gray-wolf-1", "emperor-penguins"):
@@ -113,6 +118,7 @@ def main() -> None:
     sub.add_parser("sweep")
     r = sub.add_parser("run")
     r.add_argument("--threshold", type=float, default=0.20)
+    r.add_argument("--top-k", type=int, default=20)
     args = parser.parse_args()
     sys.exit({"sweep": cmd_sweep, "run": cmd_run}[args.cmd](args))
 
