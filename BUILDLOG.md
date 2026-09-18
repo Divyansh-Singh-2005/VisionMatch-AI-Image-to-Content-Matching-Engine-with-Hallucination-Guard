@@ -144,3 +144,13 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   0.632 / 0.786 on all 15,000. Both numbers are recorded; the full-corpus one is the one to quote.
 - Hardest species are the ones a generic model cannot separate either: Eurasian lynx 0.134 (confused with
   cougar and bobcat), gray wolf 0.344 (coyote), golden jackal 0.562 (coyote), white-tailed deer 0.398.
+
+## v2 Session 6 - LLM audit
+- The audit aborted after 25 images: my circuit breaker counted transient 503s as pipeline failures.
+  A busy service is exactly what retries exist for, so only non-retryable give-ups (schema, 4xx) now count
+  toward the breaker; transient errors get 5 attempts with backoff capped at 120s, and the progress line
+  reports attempts vs verdicts so a struggling service is visible instead of fatal.
+- Baseline result from the first 20 verdicts: on confident, agreeing images the auditor matched the
+  community label and BioCLIP 100% of the time, so the labels and the auditor are both trustworthy.
+- 3 of those 20 "live animal" photos were actually remains (roadkill or bones) - real label noise in
+  research-grade observations, which is why the audit asks about content separately from species.
