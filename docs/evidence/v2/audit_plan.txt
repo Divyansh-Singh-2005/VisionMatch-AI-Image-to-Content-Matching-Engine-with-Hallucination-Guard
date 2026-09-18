@@ -1,0 +1,8 @@
+audit plan from bioclip_full vs full  (flag threshold 0.95)
+bucket                      pool  sampled
+family_disagreement         3206       50
+species_disagreement        2308       50
+low_confidence              4405       50
+cross_model_non_animal        59       50
+control_random              5022       50
+TOTAL                      15000      250  (pools cover 100.0% of the corpus)

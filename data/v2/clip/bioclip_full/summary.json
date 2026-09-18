@@ -1,0 +1,302 @@
+{
+  "images": 15000,
+  "top1": 0.6319,
+  "family_top1": 0.7858,
+  "wrong_species": 5514,
+  "within_family_error_share": 0.4186,
+  "predicted_non_animal": 7,
+  "non_animal_reasons": {
+    "tracks": 1,
+    "no_animal": 6
+  },
+  "per_class": {
+    "red_fox": {
+      "n": 500,
+      "top1": 0.692
+    },
+    "arctic_fox": {
+      "n": 500,
+      "top1": 0.594
+    },
+    "gray_fox": {
+      "n": 500,
+      "top1": 0.722
+    },
+    "gray_wolf": {
+      "n": 500,
+      "top1": 0.344
+    },
+    "coyote": {
+      "n": 500,
+      "top1": 0.546
+    },
+    "golden_jackal": {
+      "n": 500,
+      "top1": 0.562
+    },
+    "brown_bear": {
+      "n": 500,
+      "top1": 0.632
+    },
+    "black_bear": {
+      "n": 500,
+      "top1": 0.438
+    },
+    "polar_bear": {
+      "n": 500,
+      "top1": 0.578
+    },
+    "red_deer": {
+      "n": 500,
+      "top1": 0.546
+    },
+    "white_tailed_deer": {
+      "n": 500,
+      "top1": 0.398
+    },
+    "mule_deer": {
+      "n": 500,
+      "top1": 0.448
+    },
+    "fallow_deer": {
+      "n": 500,
+      "top1": 0.728
+    },
+    "moose": {
+      "n": 500,
+      "top1": 0.654
+    },
+    "reindeer": {
+      "n": 500,
+      "top1": 0.506
+    },
+    "impala": {
+      "n": 500,
+      "top1": 0.928
+    },
+    "blackbuck": {
+      "n": 500,
+      "top1": 0.574
+    },
+    "american_bison": {
+      "n": 500,
+      "top1": 0.912
+    },
+    "mountain_goat": {
+      "n": 500,
+      "top1": 0.91
+    },
+    "bobcat": {
+      "n": 500,
+      "top1": 0.38
+    },
+    "eurasian_lynx": {
+      "n": 500,
+      "top1": 0.134
+    },
+    "cougar": {
+      "n": 500,
+      "top1": 0.536
+    },
+    "leopard": {
+      "n": 501,
+      "top1": 0.7844
+    },
+    "cheetah": {
+      "n": 499,
+      "top1": 0.9058
+    },
+    "tiger": {
+      "n": 500,
+      "top1": 0.75
+    },
+    "raccoon": {
+      "n": 500,
+      "top1": 0.578
+    },
+    "red_squirrel": {
+      "n": 500,
+      "top1": 0.808
+    },
+    "gray_squirrel": {
+      "n": 500,
+      "top1": 0.824
+    },
+    "european_badger": {
+      "n": 500,
+      "top1": 0.78
+    },
+    "beaver": {
+      "n": 500,
+      "top1": 0.766
+    }
+  },
+  "top_confusions": [
+    [
+      "golden_jackal",
+      "coyote",
+      120
+    ],
+    [
+      "mule_deer",
+      "red_deer",
+      105
+    ],
+    [
+      "reindeer",
+      "red_deer",
+      105
+    ],
+    [
+      "red_deer",
+      "fallow_deer",
+      96
+    ],
+    [
+      "eurasian_lynx",
+      "cougar",
+      94
+    ],
+    [
+      "blackbuck",
+      "impala",
+      89
+    ],
+    [
+      "gray_wolf",
+      "coyote",
+      80
+    ],
+    [
+      "bobcat",
+      "cougar",
+      74
+    ],
+    [
+      "white_tailed_deer",
+      "red_deer",
+      73
+    ],
+    [
+      "eurasian_lynx",
+      "bobcat",
+      72
+    ],
+    [
+      "raccoon",
+      "european_badger",
+      72
+    ],
+    [
+      "brown_bear",
+      "black_bear",
+      67
+    ]
+  ],
+  "target": 0.95,
+  "curve": [
+    {
+      "threshold": 0.0,
+      "coverage": 0.9995,
+      "accuracy": 0.6322
+    },
+    {
+      "threshold": 0.05,
+      "coverage": 0.9995,
+      "accuracy": 0.6322
+    },
+    {
+      "threshold": 0.1,
+      "coverage": 0.9995,
+      "accuracy": 0.6322
+    },
+    {
+      "threshold": 0.15,
+      "coverage": 0.9992,
+      "accuracy": 0.6324
+    },
+    {
+      "threshold": 0.2,
+      "coverage": 0.997,
+      "accuracy": 0.6338
+    },
+    {
+      "threshold": 0.25,
+      "coverage": 0.9869,
+      "accuracy": 0.6392
+    },
+    {
+      "threshold": 0.3,
+      "coverage": 0.9675,
+      "accuracy": 0.6494
+    },
+    {
+      "threshold": 0.35,
+      "coverage": 0.9367,
+      "accuracy": 0.6646
+    },
+    {
+      "threshold": 0.4,
+      "coverage": 0.9007,
+      "accuracy": 0.6826
+    },
+    {
+      "threshold": 0.45,
+      "coverage": 0.8573,
+      "accuracy": 0.7047
+    },
+    {
+      "threshold": 0.5,
+      "coverage": 0.8042,
+      "accuracy": 0.73
+    },
+    {
+      "threshold": 0.55,
+      "coverage": 0.7543,
+      "accuracy": 0.7542
+    },
+    {
+      "threshold": 0.6,
+      "coverage": 0.7053,
+      "accuracy": 0.7781
+    },
+    {
+      "threshold": 0.65,
+      "coverage": 0.6591,
+      "accuracy": 0.8008
+    },
+    {
+      "threshold": 0.7,
+      "coverage": 0.6163,
+      "accuracy": 0.8246
+    },
+    {
+      "threshold": 0.75,
+      "coverage": 0.5709,
+      "accuracy": 0.8512
+    },
+    {
+      "threshold": 0.8,
+      "coverage": 0.5276,
+      "accuracy": 0.8752
+    },
+    {
+      "threshold": 0.85,
+      "coverage": 0.4804,
+      "accuracy": 0.8995
+    },
+    {
+      "threshold": 0.9,
+      "coverage": 0.4293,
+      "accuracy": 0.9228
+    },
+    {
+      "threshold": 0.95,
+      "coverage": 0.3537,
+      "accuracy": 0.9576
+    }
+  ],
+  "flag_threshold": 0.95,
+  "coverage_at_flag_threshold": 0.3537,
+  "label_family_agreement": 0.7859
+}

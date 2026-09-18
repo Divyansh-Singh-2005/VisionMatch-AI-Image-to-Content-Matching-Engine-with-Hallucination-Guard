@@ -5,4 +5,4 @@
 .pytest_cache
 .ruff_cache
 docs
-*.log
+*.logdata/v2/images

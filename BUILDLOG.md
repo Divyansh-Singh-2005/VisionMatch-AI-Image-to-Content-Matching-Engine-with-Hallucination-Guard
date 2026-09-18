@@ -91,3 +91,114 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   now carries the cost log; imported rows have no job id.
 - Evidence generator bug: read("README.md") resolved to docs/evidence/README.md, so the README proof showed
   as a gap. Fixed the path; EVIDENCE.md now has no gaps.
+
+## v2 Session 1 - Scale-mode corpus (15,000 images)
+- Branch v2-scale; main keeps the submitted 52-image capstone.
+- Source: iNaturalist research-grade observations (species confirmed by the community), CC0/CC-BY/CC-BY-NC
+  photos only, one photo per observation, max 25 per observer per species, about 1 API request per second.
+- Three species failed an exact scientific-name lookup (fallow deer, American bison, Eurasian lynx) because
+  iNaturalist files some species under newer names. The lookup now also accepts synonyms and common names,
+  and records the iNaturalist name when it differs.
+- I ran the full download before the lookup was fixed, which committed only 12 species under a "15k" message.
+  The commit was unpushed, so I amended the message before pushing.
+- Most photos are CC-BY-NC: fine for a portfolio project, not for commercial reuse.
+- Images live outside git; the manifest is gzipped deterministically (mtime=0, sorted) so diffs stay real.
+
+## v2 Session 2 - Local CLIP tagging
+- Tagged all 15,000 images with a local CLIP model (no API calls); results are saved every 1,024 images,
+  so an interrupted run resumes.
+- Evaluation uses the iNaturalist species labels: species and family accuracy, per-species accuracy, the most
+  common mix-ups, and accuracy vs confidence cutoff. The flag threshold comes from that curve, not a guess.
+- torch/open_clip live in requirements-v2.txt and the new tests avoid importing them, so the Docker image and
+  its test run are unchanged.
+- Embeddings are regenerable and stay out of git; predictions (gzipped) and summaries are committed.
+
+## v2 Session 3 - Fixing a bad baseline
+- The first CLIP run scored only 0.461 species top-1 and called 3,069 photos (20%) tracks/scat/remains,
+  which is not plausible for research-grade observations. Two causes were mine, one is real:
+  (a) I averaged 5 common-name prompts with 5 scientific-name prompts into one vector; CLIP barely knows
+      Latin binomials, so the class vectors were dragged off target (impala -> blackbuck 332 times);
+  (b) the not-an-animal prompts competed as equals with no margin, so ordinary ground won;
+  (c) fine-grained species really is hard for ViT-B-32 - 43% of errors stayed inside the right family.
+- Because image embeddings were saved, testing fixes needed no image passes: re-encoding ~30 text prompts
+  plus one matmul re-scores all 15,000 images in seconds. Swept 6 prompt strategies x 5 reject margins.
+- Chose strategy=descriptive reject_margin=5.0 from that sweep.
+
+## v2 Session 4 - Two-stage decision and a domain model
+- Mixing "which species" and "is this an animal photo" into one softmax was a design error: generic
+  background prompts beat species in a 34-way softmax, so 20% of the corpus was called tracks/scat/remains.
+  Scoring the two questions separately cut that to 476 of 3,001 at the same accuracy.
+- Prompt work took generic CLIP from 0.461 to 0.535 species top-1. Swapping to BioCLIP (trained on biology
+  data) reached 0.659 with no prompt tuning - domain training beat prompt engineering by a wide margin.
+- Latin names went from the worst strategy on generic CLIP (0.270) to the best on BioCLIP (0.659), which is
+  what training on taxonomic names does.
+- BioCLIP rejects almost nothing (5 of 3,001): it has no real "not an animal" concept. That is why generic
+  CLIP stays in the pipeline as a second opinion and why the LLM audit samples the disagreements.
+
+## v2 Session 5 - Audit plan
+- Bug I introduced: the audit plan reused save_manifest, which sorts by r["class"]; audit rows use
+  "label_class", so it raised KeyError after the 104-minute BioCLIP run. Split out a generic save_rows(key=...)
+  and gave each row type its own sort key. The previous commit message claimed an audit plan that never
+  got written; this commit adds it.
+- Sample vs full corpus: BioCLIP scored 0.659 species / 0.806 family on the 3,000-image sample but
+  0.632 / 0.786 on all 15,000. Both numbers are recorded; the full-corpus one is the one to quote.
+- Hardest species are the ones a generic model cannot separate either: Eurasian lynx 0.134 (confused with
+  cougar and bobcat), gray wolf 0.344 (coyote), golden jackal 0.562 (coyote), white-tailed deer 0.398.
+
+## v2 Session 6 - LLM audit
+- The audit aborted after 25 images: my circuit breaker counted transient 503s as pipeline failures.
+  A busy service is exactly what retries exist for, so only non-retryable give-ups (schema, 4xx) now count
+  toward the breaker; transient errors get 5 attempts with backoff capped at 120s, and the progress line
+  reports attempts vs verdicts so a struggling service is visible instead of fatal.
+- Baseline result from the first 20 verdicts: on confident, agreeing images the auditor matched the
+  community label and BioCLIP 100% of the time, so the labels and the auditor are both trustworthy.
+- 3 of those 20 "live animal" photos were actually remains (roadkill or bones) - real label noise in
+  research-grade observations, which is why the audit asks about content separately from species.
+
+## v2 Session 6 - LLM audit, and two self-inflicted bugs
+- The audit burned ~74 calls on schema failures before producing much. Root cause: in v1 I passed
+  response_schema so the API ENFORCED the shape, but in the audit I only set response_mime_type and
+  described the shape in the prompt. Asking is not enforcing. Fixed by passing response_schema, plus a
+  tolerant extractor for fenced or prose-wrapped JSON.
+- Second bug, more interesting: my validator rejected a correct verdict. For a landscape photo the model
+  answered content="none", species="none"; my rule demanded species="other". Same meaning, different
+  wording - and at temperature 0 the retry loop then sent the identical request five times for the identical
+  failure. A deterministic validation failure is a code bug, not a transient error, so it now retries once
+  and moves on, and "none"/"unknown"/"n/a" normalise to "other" before validation.
+- Also fixed earlier in the session: transient 503s were tripping the circuit breaker, and the failure log
+  (ai_calls.jsonl) was git-ignored, so the abort message pointed at a file nobody could see. Both are
+  evidence now; the abort message prints the actual last error.
+- Probe after the fixes: 10 images, 10 API attempts, 0 retries.
+
+## v2 Session 7 - Guard rebuilt on audit evidence
+- The audit overturned my assumption. I expected "family disagreement" to mean BioCLIP misidentified the
+  species; in fact only 28% of those photos contain a live animal. The rest are tracks, scat, remains or
+  empty scenes - BioCLIP has no "not an animal" option, so it named a mammal anyway. About 20% of this
+  research-grade corpus has no live animal in it.
+- Every catalog rule now cites the audit row that justifies it, including one that stopped me shipping a
+  bad threshold: 93% of low-confidence predictions were correct, so flagging on low confidence alone
+  would have discarded thousands of usable images.
+- Generic CLIP earned a permanent role as the content gate (96% right on its non-animal calls) - the same
+  model I nearly dropped after it lost the species comparison to BioCLIP.
+
+## v2 Session 8 - Matching at scale
+- 100 posts x 15,000 images: 0 wrong suggestions and 0 look-alike suggestions. The guard rejected a bobcat
+  for a lynx post and a coyote for a wolf post, by name, which is the behaviour the whole project is for.
+- 10 subject posts initially found no match. The sweep showed the threshold was not binding (precision flat
+  from 0.10 to 0.22), so the cause was top_k=5 - a value carried over from a 52-image library. With 15,000
+  images and near-identical species the correct image can sit below rank 5 behind look-alikes the guard
+  correctly rejects. Candidate depth is now swept alongside the threshold: top_k=50, threshold=0.10.
+- A test pins the important half of that change: deeper candidate lists change what is CONSIDERED, never
+  what is ALLOWED - a look-alike is still rejected at any depth.
+
+## v2 Session 9 - Query construction, and what actually drove accuracy
+- All six remaining misses shared one post template: the seasonal one. Its scene and weather language
+  crowded out the species, so a brown-bear post retrieved arctic foxes and a cheetah post a gray squirrel.
+  BioCLIP is trained on short taxonomic captions; a 40-word narrative is out of distribution for its text
+  encoder. Adding a short taxonomic anchor to the query fixed all six.
+- Ranked by impact: query shape > candidate depth > similarity threshold. The threshold barely mattered -
+  correct suggestions score 0.212-0.369 while rejected candidates reach 0.287, so gate G2 does the safety
+  work. Same conclusion as v1, now at 288x the corpus size.
+- Recorded that 1.000 is the tuned number and 0.940 the honest headline: the hybrid query injects the
+  post subject, which the guard already uses, but retrieval now depends on that extractor being right.
+- Zero wrong suggestions and zero look-alikes across all 56 sweep configurations.

@@ -1,0 +1,16 @@
+{
+  "threshold": 0.18,
+  "metrics": {
+    "posts": 100,
+    "subject_posts": 90,
+    "refusal_posts": 10,
+    "correct": 100,
+    "top1_precision": 1.0,
+    "subject_recall": 1.0,
+    "wrong_suggestions": 0,
+    "lookalike_suggestions": 0,
+    "refusals_correct": 10,
+    "missed_subject_posts": [],
+    "wrong_detail": []
+  }
+}

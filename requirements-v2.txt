@@ -1,0 +1,6 @@
+# v2 scale mode only (local CLIP). Not part of the Docker image.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
+open_clip_torch
+numpy

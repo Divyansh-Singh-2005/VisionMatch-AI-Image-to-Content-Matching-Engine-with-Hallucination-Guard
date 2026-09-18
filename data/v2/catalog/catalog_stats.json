@@ -1,0 +1,28 @@
+{
+  "images": 15000,
+  "status": {
+    "verified": 10587,
+    "needs_review": 1882,
+    "no_animal": 2531
+  },
+  "usable_share": 0.7058,
+  "species_agreement_on_usable": 0.8343,
+  "usable_per_family": {
+    "bovid": 1756,
+    "canid": 2074,
+    "castorid": 372,
+    "cervid": 2272,
+    "felid": 1839,
+    "mustelid": 305,
+    "procyonid": 212,
+    "sciurid": 876,
+    "ursid": 881
+  },
+  "species_with_fewest_usable": {
+    "eurasian_lynx": 147,
+    "gray_wolf": 190,
+    "cougar": 196,
+    "raccoon": 212,
+    "black_bear": 231
+  }
+}

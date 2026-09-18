@@ -1,0 +1,24 @@
+corpus: 14998 images, 10587 usable (70.6%)
+threshold: 0.18
+
+posts evaluated            : 100 (90 with a subject, 10 refusal cases)
+top-1 precision            : 1.000
+correct image found        : 1.000 of subject posts
+wrong suggestions          : 0 (of which look-alikes: 0)
+refusals correct           : 10/10
+subject posts with no match: 0 []
+wrong suggestions detail   : []
+top_k: 5   query mode: hybrid
+examples:
+  eurasian-lynx-1: SUGGESTED
+    image 158617994 (eurasian_lynx, score 0.397)
+    rejected 433946: Look-alike rejected: expected eurasian lynx, image shows bobcat (both felids)
+  gray-wolf-1: SUGGESTED
+    image 14227679 (gray_wolf, score 0.379)
+    rejected 1359471: Look-alike rejected: expected gray wolf, image shows coyote (both canids)
+    rejected 2028884: Look-alike rejected: expected gray wolf, image shows golden jackal (both canids)
+    rejected 55054824: Look-alike rejected: expected gray wolf, image shows arctic fox (both canids)
+  emperor-penguins: NO_CONFIDENT_MATCH
+    rejected 29868278: Image has no live animal (no live animal detected (remains))
+    rejected 218947557: Post subject is outside the library taxonomy, so no image can be verified for it
+    rejected 23299186: Post subject is outside the library taxonomy, so no image can be verified for it

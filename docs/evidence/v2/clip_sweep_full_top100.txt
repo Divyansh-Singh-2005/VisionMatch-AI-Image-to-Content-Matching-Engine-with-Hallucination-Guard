@@ -1,0 +1,45 @@
+model ViT-B-32 | 3001 images | cpu | two-stage decision
+
+strategy both_mean (36.6s)
+  reject>=0.5          top1=0.468  family=0.628  rejected=  594  flag_threshold=0.9  kept=0.2183  family_agrees=0.678
+  reject>=0.7          top1=0.472  family=0.635  rejected=  546  flag_threshold=0.9  kept=0.2189  family_agrees=0.678
+  reject>=0.9          top1=0.477  family=0.642  rejected=  472  flag_threshold=0.9  kept=0.2196  family_agrees=0.678
+  reject>=0.95         top1=0.478  family=0.644  rejected=  439  flag_threshold=0.9  kept=0.2196  family_agrees=0.678
+  reject>=0.99         top1=0.483  family=0.656  rejected=  307  flag_threshold=0.9  kept=0.2196  family_agrees=0.678
+
+strategy common (26.5s)
+  reject>=0.5          top1=0.519  family=0.652  rejected=  677  flag_threshold=0.95  kept=0.2586  family_agrees=0.730
+  reject>=0.7          top1=0.523  family=0.658  rejected=  638  flag_threshold=0.95  kept=0.2592  family_agrees=0.730
+  reject>=0.9          top1=0.530  family=0.668  rejected=  569  flag_threshold=0.95  kept=0.2596  family_agrees=0.730
+  reject>=0.95         top1=0.532  family=0.672  rejected=  529  flag_threshold=0.95  kept=0.2599  family_agrees=0.730
+  reject>=0.99         top1=0.535  family=0.681  rejected=  443  flag_threshold=0.95  kept=0.2599  family_agrees=0.730
+
+strategy latin (29.7s)
+  reject>=0.5          top1=0.260  family=0.472  rejected=  702  flag_threshold=None  kept=None  family_agrees=0.530
+  reject>=0.7          top1=0.260  family=0.476  rejected=  656  flag_threshold=None  kept=None  family_agrees=0.530
+  reject>=0.9          top1=0.266  family=0.488  rejected=  554  flag_threshold=None  kept=None  family_agrees=0.530
+  reject>=0.95         top1=0.267  family=0.491  rejected=  505  flag_threshold=None  kept=None  family_agrees=0.530
+  reject>=0.99         top1=0.270  family=0.501  rejected=  376  flag_threshold=None  kept=None  family_agrees=0.530
+
+strategy both_split (40.6s)
+  reject>=0.5          top1=0.506  family=0.638  rejected=  626  flag_threshold=0.9  kept=0.2466  family_agrees=0.692
+  reject>=0.7          top1=0.509  family=0.644  rejected=  576  flag_threshold=0.9  kept=0.2473  family_agrees=0.692
+  reject>=0.9          top1=0.514  family=0.654  rejected=  498  flag_threshold=0.9  kept=0.2476  family_agrees=0.692
+  reject>=0.95         top1=0.515  family=0.656  rejected=  457  flag_threshold=0.9  kept=0.2479  family_agrees=0.692
+  reject>=0.99         top1=0.517  family=0.666  rejected=  338  flag_threshold=0.9  kept=0.2479  family_agrees=0.692
+
+strategy descriptive (21.3s)
+  reject>=0.5          top1=0.520  family=0.645  rejected=  705  flag_threshold=0.95  kept=0.2456  family_agrees=0.725
+  reject>=0.7          top1=0.523  family=0.650  rejected=  666  flag_threshold=0.95  kept=0.2463  family_agrees=0.725
+  reject>=0.9          top1=0.529  family=0.658  rejected=  603  flag_threshold=0.95  kept=0.2479  family_agrees=0.725
+  reject>=0.95         top1=0.532  family=0.666  rejected=  558  flag_threshold=0.95  kept=0.2479  family_agrees=0.725
+  reject>=0.99         top1=0.535  family=0.675  rejected=  476  flag_threshold=0.95  kept=0.2483  family_agrees=0.725
+
+strategy descriptive_split (55.5s)
+  reject>=0.5          top1=0.512  family=0.639  rejected=  622  flag_threshold=0.9  kept=0.2502  family_agrees=0.691
+  reject>=0.7          top1=0.514  family=0.644  rejected=  575  flag_threshold=0.9  kept=0.2506  family_agrees=0.691
+  reject>=0.9          top1=0.519  family=0.654  rejected=  495  flag_threshold=0.9  kept=0.2509  family_agrees=0.691
+  reject>=0.95         top1=0.519  family=0.655  rejected=  456  flag_threshold=0.9  kept=0.2512  family_agrees=0.691
+  reject>=0.99         top1=0.522  family=0.665  rejected=  338  flag_threshold=0.9  kept=0.2512  family_agrees=0.691
+
+BEST strategy=descriptive reject_threshold=0.99 top1=0.535 family=0.675 family_agrees=0.725 rejected=476
