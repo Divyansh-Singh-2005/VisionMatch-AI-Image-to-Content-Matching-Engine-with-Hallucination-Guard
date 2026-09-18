@@ -81,3 +81,53 @@ def test_deeper_top_k_never_admits_a_lookalike():
     d = decide_post(FOX_POST, ranked, threshold=0.2, top_k=30)
     assert d["decision"] == "NO_CONFIDENT_MATCH"
     assert all("Look-alike rejected" in v["reasons"][0] for v in d["candidates"])
+
+
+import pytest
+
+from scripts.v2.match_eval import QUERY_MODES, build_queries, subject_phrase
+
+SEASONAL = {"slug": "brown-bear-3", "title": "Tracking the brown bear through the year",
+            "body": "Where it goes as the weather turns and why sightings cluster at dawn and dusk.",
+            "target_subject": "brown_bear", "target_family": "ursid"}
+TAX2 = {"classes": [{"slug": "brown_bear", "common_name": "Brown bear",
+                     "scientific_name": "Ursus arctos", "family": "ursid"}]}
+
+
+def test_subject_phrase_is_short_and_taxonomic():
+    phrase = subject_phrase(SEASONAL, TAX2)
+    assert "brown bear" in phrase and "Ursus arctos" in phrase
+    assert len(phrase.split()) < 12      # BioCLIP was trained on short captions
+
+
+def test_refusal_posts_have_no_subject_phrase():
+    assert subject_phrase(OTHER_POST, TAX2) is None
+
+
+def test_query_modes_differ():
+    full, _ = build_queries(SEASONAL, TAX2, "full_post")
+    title, _ = build_queries(SEASONAL, TAX2, "title_only")
+    subj, _ = build_queries(SEASONAL, TAX2, "subject_query")
+    assert "dawn and dusk" in full and "dawn and dusk" not in title
+    assert "Ursus arctos" in subj
+
+
+def test_hybrid_returns_both_parts():
+    primary, secondary = build_queries(SEASONAL, TAX2, "hybrid")
+    assert "dawn and dusk" in primary and "Ursus arctos" in secondary
+
+
+def test_hybrid_falls_back_for_refusal_posts():
+    primary, secondary = build_queries(OTHER_POST, TAX2, "hybrid")
+    assert secondary is None and primary.startswith(OTHER_POST["title"])
+
+
+def test_unknown_mode_rejected():
+    with pytest.raises(ValueError):
+        build_queries(SEASONAL, TAX2, "vibes")
+
+
+def test_every_mode_is_usable():
+    for mode in QUERY_MODES:
+        primary, _ = build_queries(SEASONAL, TAX2, mode)
+        assert primary

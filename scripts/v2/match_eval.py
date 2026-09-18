@@ -172,3 +172,39 @@ def format_run(s: dict, threshold: float, corpus: dict) -> str:
         f"subject posts with no match: {len(s['missed_subject_posts'])} {s['missed_subject_posts']}",
         f"wrong suggestions detail   : {s['wrong_detail']}",
     ])
+
+# ---------------------------------------------------------------- query construction (v2-10)
+# BioCLIP is trained on short taxonomic captions, so a 40-word narrative paragraph is out of
+# distribution for its text encoder: scene and season words crowd out the species. Template 3
+# ("where it goes as the weather turns...") retrieved arctic foxes for a brown-bear post.
+QUERY_MODES = ("full_post", "title_only", "subject_query", "hybrid")
+
+
+def subject_phrase(post: dict, taxonomy: dict) -> str | None:
+    """The short, BioCLIP-shaped query for a post whose subject is known.
+
+    In production the subject comes from the same LLM extractor that feeds gate G2, so this adds
+    no knowledge the guard does not already use - but retrieval quality now depends on it.
+    """
+    target = post.get("target_subject")
+    if not target:
+        return None
+    cls = next((c for c in taxonomy["classes"] if c["slug"] == target), None)
+    if cls is None:
+        return None
+    return f"a photo of a {cls['common_name'].lower()} ({cls['scientific_name']})"
+
+
+def build_queries(post: dict, taxonomy: dict, mode: str) -> tuple[str, str | None]:
+    """Return (primary, secondary). Secondary is averaged with the primary when present."""
+    if mode not in QUERY_MODES:
+        raise ValueError(f"unknown query mode: {mode}")
+    full = post_text(post)
+    phrase = subject_phrase(post, taxonomy)
+    if mode == "full_post":
+        return full, None
+    if mode == "title_only":
+        return post["title"], None
+    if mode == "subject_query":
+        return (phrase or full), None
+    return full, phrase  # hybrid: post meaning plus the taxonomic anchor

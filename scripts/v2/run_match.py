@@ -9,7 +9,9 @@ import sys
 from pathlib import Path
 
 from scripts.v2.fetch_inat import load_manifest, load_taxonomy, save_rows
-from scripts.v2.match_eval import decide_post, format_run, generate_posts, post_text, score_run
+from scripts.v2.match_eval import (
+    QUERY_MODES, build_queries, decide_post, format_run, generate_posts, score_run,
+)
 
 CLIP = Path("data/v2/clip")
 CATALOG = Path("data/v2/catalog")
@@ -19,9 +21,16 @@ THRESHOLDS = [0.10, 0.15, 0.18, 0.20, 0.22, 0.25, 0.30]
 # v1 used top_k=5 for a 52-image library. With 15,000 images and near-identical species,
 # the correct image can sit below rank 5 behind look-alikes the guard correctly rejects.
 TOP_KS = [5, 10, 20, 50]
+SWEEP_THRESHOLD = 0.10
 
 
-def load_all():
+def encode(model, tokenizer, torch, texts, device):
+    with torch.no_grad():
+        f = model.encode_text(tokenizer(texts).to(device)).float()
+        return f / f.norm(dim=-1, keepdim=True)
+
+
+def load_all(mode: str = "full_post"):
     import numpy as np
     import open_clip
     import torch
@@ -36,9 +45,15 @@ def load_all():
     model, _, _ = open_clip.create_model_and_transforms("hf-hub:imageomics/bioclip", device=device)
     model.eval()
     tokenizer = open_clip.get_tokenizer("hf-hub:imageomics/bioclip")
-    with torch.no_grad():
-        text = model.encode_text(tokenizer([post_text(p) for p in posts]).to(device)).float()
+    pairs = [build_queries(p, tax, mode) for p in posts]
+    text = encode(model, tokenizer, torch, [a for a, _ in pairs], device)
+    if any(b for _, b in pairs):
+        # hybrid: average the post vector with its taxonomic anchor, then renormalise
+        second = encode(model, tokenizer, torch, [b or a for a, b in pairs], device)
+        weight = torch.tensor([[1.0 if b else 0.0] for _, b in pairs], device=device)
+        text = text + weight * second
         text = text / text.norm(dim=-1, keepdim=True)
+    with torch.no_grad():
         sims = (text @ torch.from_numpy(emb).to(device).T).cpu().numpy()
     return posts, catalog, ids, sims
 
@@ -63,8 +78,9 @@ def corpus_stats(catalog: dict) -> dict:
 
 
 def cmd_sweep(args) -> int:
-    posts, catalog, ids, sims = load_all()
-    lines = [f"sweep over {len(posts)} posts x {len(catalog)} catalogued images", "",
+    posts, catalog, ids, sims = load_all(args.query_mode)
+    lines = [f"sweep over {len(posts)} posts x {len(catalog)} catalogued images "
+             f"(query mode: {args.query_mode})", "",
              f"  {'top_k':>5} {'thr':>5} {'top1':>7} {'recall':>7} {'wrong':>6} {'lookalike':>10} {'refusals':>9}"]
     best = None
     for k in TOP_KS:
@@ -85,14 +101,15 @@ def cmd_sweep(args) -> int:
 
 
 def cmd_run(args) -> int:
-    posts, catalog, ids, sims = load_all()
+    posts, catalog, ids, sims = load_all(args.query_mode)
     decisions = decisions_at(args.threshold, posts, catalog, ids, sims, top_k=args.top_k)
     s = score_run(decisions)
     OUT.mkdir(parents=True, exist_ok=True)
     save_rows(decisions, OUT / "decisions.jsonl.gz", key=lambda r: r["slug"])
     (OUT / "results.json").write_text(
         json.dumps({"threshold": args.threshold, "metrics": s}, indent=2) + "\n", encoding="utf-8")
-    report = format_run(s, args.threshold, corpus_stats(catalog)) + f"\ntop_k: {args.top_k}"
+    report = (format_run(s, args.threshold, corpus_stats(catalog))
+              + f"\ntop_k: {args.top_k}   query mode: {args.query_mode}")
 
     examples = ["", "examples:"]
     for slug in ("eurasian-lynx-1", "gray-wolf-1", "emperor-penguins"):
@@ -115,10 +132,12 @@ def cmd_run(args) -> int:
 def main() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("sweep")
+    sw = sub.add_parser("sweep")
+    sw.add_argument("--query-mode", default="full_post", choices=QUERY_MODES)
     r = sub.add_parser("run")
     r.add_argument("--threshold", type=float, default=0.20)
     r.add_argument("--top-k", type=int, default=20)
+    r.add_argument("--query-mode", default="full_post", choices=QUERY_MODES)
     args = parser.parse_args()
     sys.exit({"sweep": cmd_sweep, "run": cmd_run}[args.cmd](args))
 
