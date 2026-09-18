@@ -1,0 +1,9 @@
+audit calls 51 (ok 20, failed 31)  est cost $0.0106
+
+bucket                      n   live  =label  ~label   =bio   ~bio  other  lowconf
+control_random             20   0.85    1.00    1.00   1.00   1.00   0.00     0.00
+
+= exact species agreement, ~ family-level agreement (live-animal photos only)
+
+what the auditor says each photo shows:
+  control_random           {'live_animal': 17, 'remains': 3}

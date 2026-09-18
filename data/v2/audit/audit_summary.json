@@ -1,0 +1,34 @@
+{
+  "cost": {
+    "calls": 51,
+    "ok": 20,
+    "failed": 31,
+    "est_cost_usd": 0.010562
+  },
+  "buckets": {
+    "control_random": {
+      "n": 20,
+      "llm_live_animal": 17,
+      "llm_vs_label_species": 17,
+      "llm_vs_label_family": 17,
+      "llm_vs_bio_species": 17,
+      "llm_vs_bio_family": 17,
+      "llm_vs_vit_non_animal": 0,
+      "llm_says_other": 0,
+      "llm_low_confidence": 0,
+      "content": {
+        "live_animal": 17,
+        "remains": 3
+      },
+      "rates": {
+        "live_animal": 0.85,
+        "label_species": 1.0,
+        "label_family": 1.0,
+        "bio_species": 1.0,
+        "bio_family": 1.0,
+        "says_other": 0.0,
+        "low_confidence": 0.0
+      }
+    }
+  }
+}
