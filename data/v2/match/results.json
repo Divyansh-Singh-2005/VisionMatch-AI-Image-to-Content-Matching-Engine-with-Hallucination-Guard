@@ -1,0 +1,27 @@
+{
+  "threshold": 0.1,
+  "metrics": {
+    "posts": 100,
+    "subject_posts": 90,
+    "refusal_posts": 10,
+    "correct": 76,
+    "top1_precision": 0.76,
+    "subject_recall": 0.7333,
+    "wrong_suggestions": 0,
+    "lookalike_suggestions": 0,
+    "refusals_correct": 10,
+    "missed_subject_posts": [
+      "red-fox-3",
+      "gray-fox-2",
+      "gray-fox-3",
+      "gray-wolf-2",
+      "gray-wolf-3",
+      "coyote-3",
+      "golden-jackal-3",
+      "brown-bear-3",
+      "black-bear-1",
+      "polar-bear-3"
+    ],
+    "wrong_detail": []
+  }
+}
