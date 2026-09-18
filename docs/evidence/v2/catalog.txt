@@ -1,0 +1,28 @@
+catalog: 15000 images
+
+  verified        10587  (70.6%)
+  no_animal        2531  (16.9%)
+  needs_review     1882  (12.5%)
+
+usable (verified) share            : 70.6%
+species agreement within usable    : 83.4%
+
+usable images per family:
+  bovid          1756
+  canid          2074
+  castorid        372
+  cervid         2272
+  felid          1839
+  mustelid        305
+  procyonid       212
+  sciurid         876
+  ursid           881
+
+species with fewest usable images: {'eurasian_lynx': 147, 'gray_wolf': 190, 'cougar': 196, 'raccoon': 212, 'black_bear': 231}
+
+audit evidence behind these rules (250 images):
+  control_random           live=0.88 label_species=0.98 bio_species=0.98 family=1.00
+  cross_model_non_animal   live=0.04 label_species=1.00 bio_species=1.00 family=1.00
+  family_disagreement      live=0.28 label_species=0.71 bio_species=0.00 family=0.79
+  low_confidence           live=0.85 label_species=0.93 bio_species=0.93 family=0.95
+  species_disagreement     live=0.67 label_species=0.79 bio_species=0.12 family=0.91

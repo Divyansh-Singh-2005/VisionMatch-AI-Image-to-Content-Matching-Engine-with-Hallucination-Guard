@@ -169,3 +169,14 @@ AI-usage log: where AI helped, where it was wrong, what I changed.
   (ai_calls.jsonl) was git-ignored, so the abort message pointed at a file nobody could see. Both are
   evidence now; the abort message prints the actual last error.
 - Probe after the fixes: 10 images, 10 API attempts, 0 retries.
+
+## v2 Session 7 - Guard rebuilt on audit evidence
+- The audit overturned my assumption. I expected "family disagreement" to mean BioCLIP misidentified the
+  species; in fact only 28% of those photos contain a live animal. The rest are tracks, scat, remains or
+  empty scenes - BioCLIP has no "not an animal" option, so it named a mammal anyway. About 20% of this
+  research-grade corpus has no live animal in it.
+- Every catalog rule now cites the audit row that justifies it, including one that stopped me shipping a
+  bad threshold: 93% of low-confidence predictions were correct, so flagging on low confidence alone
+  would have discarded thousands of usable images.
+- Generic CLIP earned a permanent role as the content gate (96% right on its non-animal calls) - the same
+  model I nearly dropped after it lost the species comparison to BioCLIP.

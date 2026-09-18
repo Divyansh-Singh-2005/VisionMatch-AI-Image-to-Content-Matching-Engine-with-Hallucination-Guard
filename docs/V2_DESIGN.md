@@ -33,3 +33,27 @@ lowest confidence cutoff whose kept predictions reach 95% species accuracy again
 BioCLIP is the v2 tagger. Generic CLIP is kept as a second opinion on "is this an animal photo at all",
 since BioCLIP maps almost everything onto a species. The stored subject is the iNaturalist community
 label (verified data); the model is a verifier, and disagreements are what the LLM audit samples.
+
+## What the audit changed (v2-6/7)
+250 audited images (about $0.13) across five buckets, with a random control:
+
+| bucket | live animal | agrees with label | agrees with BioCLIP | family agreement |
+|---|---|---|---|---|
+| control_random | 0.88 | 0.98 | 0.98 | 1.00 |
+| cross_model_non_animal | 0.04 | 1.00 | 1.00 | 1.00 |
+| family_disagreement | 0.28 | 0.71 | 0.00 | 0.79 |
+| low_confidence | 0.85 | 0.93 | 0.93 | 0.95 |
+| species_disagreement | 0.67 | 0.79 | 0.12 | 0.91 |
+
+The assumption going in was that family disagreements meant BioCLIP had misidentified the species.
+The audit says otherwise: only 28% of those photos contain a live animal at all. The rest are tracks,
+scat, remains or empty scenes, and BioCLIP - which has no "not an animal" concept - was forced to name
+a mammal anyway. Roughly 20% of this "research-grade" corpus has no live animal in it.
+
+Resulting design:
+- **Content gate** is generic CLIP's job (right on 96% of its non-animal calls).
+- **Subject** is the iNaturalist community label (verified data), not a model guess.
+- **Verification is family-level** (0.91-1.00 agreement) because species-level look-alikes are genuinely
+  hard (0.12 agreement on the species_disagreement bucket).
+- **Low confidence does not flag**: 93% of low-confidence predictions were correct, so a 0.95 threshold
+  would have discarded thousands of good images.
