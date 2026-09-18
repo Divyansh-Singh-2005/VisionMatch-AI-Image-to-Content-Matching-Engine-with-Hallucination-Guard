@@ -80,3 +80,21 @@ def test_non_animal_bucket_credits_generic_clip():
 def test_format_audit_has_a_row_per_bucket():
     out = format_audit(score_audit(RESULTS, TAX), {"calls": 3, "ok": 3, "failed": 0, "est_cost_usd": 0.001})
     assert "family_disagreement" in out and "cross_model_non_animal" in out
+
+from scripts.v2.run_audit import classify
+
+
+@pytest.mark.parametrize(("message", "expected"), [
+    ("503 UNAVAILABLE. The service is currently unavailable.", "transient"),
+    ("500 INTERNAL", "transient"),
+    ("429 {'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier'}", "rate_limit"),
+    ("429 {'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier'}", "quota_daily"),
+    ("400 INVALID_ARGUMENT", "other"),
+])
+def test_classify_audit_errors(message, expected):
+    assert classify(Exception(message))[0] == expected
+
+
+def test_transient_errors_are_retryable_not_fatal():
+    """A busy service must not be treated like a broken pipeline."""
+    assert classify(Exception("503 UNAVAILABLE"))[0] not in ("other", "quota_daily")

@@ -23,8 +23,9 @@ COSTS = AUDIT / "ai_calls.jsonl"
 MODEL = "gemini-3.1-flash-lite"
 PRICES = (0.25, 1.50)  # USD per 1M input / output tokens, standard tier
 RPM = 8
-MAX_ATTEMPTS = 3
-CIRCUIT_BREAKER = 3
+MAX_ATTEMPTS = 5
+CIRCUIT_BREAKER = 5          # consecutive NON-RETRYABLE failures
+MAX_BACKOFF = 120.0
 _QUOTA = re.compile(r"quotaId['\"]?\s*:\s*['\"]([A-Za-z0-9_\-]+)")
 
 
@@ -87,13 +88,17 @@ def cmd_run(args) -> int:
     )
     interval = 60.0 / RPM
     failures = 0
+    attempts_used = 0
+    retried = 0
 
     for n, item in enumerate(todo, start=1):
         path = Path(by_id[item["photo_id"]]["file"])
         data = path.read_bytes()
         ref = f"photo:{item['photo_id']}"
         ok = False
+        gave_up_retryable = False
         for attempt in range(1, MAX_ATTEMPTS + 1):
+            attempts_used += 1
             try:
                 t0 = time.perf_counter()
                 resp = client.models.generate_content(
@@ -111,7 +116,12 @@ def cmd_run(args) -> int:
                     return 0
                 if kind == "other":
                     break
-                wait = interval * (2 ** attempt)
+                wait = min(interval * (2 ** attempt), MAX_BACKOFF)
+                retried += 1
+                if attempt == MAX_ATTEMPTS:
+                    gave_up_retryable = True
+                    print(f"  {ref}: {detail}; out of attempts, skipping this image")
+                    break
                 print(f"  {ref} attempt {attempt}: {detail}; retry in {wait:.0f}s")
                 time.sleep(wait)
                 continue
@@ -134,9 +144,13 @@ def cmd_run(args) -> int:
             ok = True
             break
 
-        failures = 0 if ok else failures + 1
+        # A transient failure (503 / rate limit) is the service having a bad minute, not a broken
+        # pipeline: it must not trip the breaker. Only schema or 4xx give-ups count.
+        failures = 0 if (ok or gave_up_retryable) else failures + 1
         if n % 25 == 0 or n == len(todo):
-            print(f"  {n}/{len(todo)} audited")
+            saved = len(read_jsonl(RESULTS))
+            print(f"  {n}/{len(todo)} processed | {saved} verdicts saved | "
+                  f"{attempts_used} api attempts ({retried} retried)")
         if failures >= CIRCUIT_BREAKER:
             print(f"ABORTED after {failures} consecutive failures - see {COSTS}")
             return 1
