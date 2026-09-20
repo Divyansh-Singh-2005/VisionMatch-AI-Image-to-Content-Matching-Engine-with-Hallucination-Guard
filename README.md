@@ -1,4 +1,4 @@
-# flyrank-capstone-image-relevance
+# VisionMatch : AI Image-to-Content Matching Engine with Hallucination Guard
 
 **AI Image Understanding & Content Matching Engine** - FlyRank Backend Track capstone.
 
